@@ -102,7 +102,8 @@ $(function(){
                                     .attr("height", img_h)
                                     .attr("xlink:href", function(which){
                                         //return "static/img/"+d.image;
-                                        return "/static/img/" + avatars[d.community] + ".png";
+                                        var community = d.community==null ? 0 : d.community;
+                                        return "/static/img/" + avatars[community] + ".png";
                                     })
                                 return "url(#catpattern" + i + ")";
                             })
