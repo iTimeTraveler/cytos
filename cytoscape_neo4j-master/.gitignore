@@ -56,4 +56,8 @@ docs/_build/
 # PyBuilder
 target/
 
-.idea/
+# Intellij
+*.iml
+.idea/workspace.xml
+.idea/libraries
+.idea/vcs.xml
