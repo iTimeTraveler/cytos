@@ -27,7 +27,7 @@ def buildEdges(relationRecord):
 @app.route('/')
 def index():
     # 渲染index页面
-    return render_template('index.html')
+    return render_template('demo.html')
 
 # 提供一个动态路由地址，供前端网页调用
 @app.route('/graph')
