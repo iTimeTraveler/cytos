@@ -9,11 +9,11 @@ $(document).on('click', '.switch-form-submit', function () {
 
     if (!imageMode) {
         alert('hello');
-        $("#depot_js").attr("src","/static/js/d3.v3.min.js");
+        $("#depot_js").attr("src","/static/lib/d3.v3.min.js");
         $("#showMode_js").attr("src","/static/js/img_network.js");
     } else {
         alert('hhhhhhhhhh');
-        $("#depot_js").attr("src","/static/js/d3.v4.min.js");
+        $("#depot_js").attr("src","/static/lib/d3.v4.min.js");
         $("#showMode_js").attr("src","/static/js/force_node.js");
     }
 
