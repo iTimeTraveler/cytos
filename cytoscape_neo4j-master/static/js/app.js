@@ -1,13 +1,5 @@
-/**
- * Modal Logic Playground -- application code
- *
- * Dependencies: D3, MathJax, MPL
- *
- * Copyright (c) 2013 Ross Kirsling
- * Released under the MIT License.
- */
 
-// app mode constants
+// 模式：编辑和浏览
 var MODE = {
       EDIT: 0,
       EVAL: 1
@@ -26,12 +18,12 @@ if(modelParam) modelString = modelParam[1];
 
 model.loadFromModelString(modelString);
 
-// set up initial nodes and links (edges) of graph, based on MPL model
+// 初始化节点和边, based on MPL model
 var lastNodeId = -1,
     nodes = [],
     links = [];
 
-// --> nodes setup
+// 生成节点数据
 var states = model.getStates();
 states.forEach(function(state) {
   if(!state) { lastNodeId++; return; }
@@ -47,7 +39,7 @@ states.forEach(function(state) {
   nodes.push(node);
 });
 
-// --> links setup
+// 生成边的数据
 nodes.forEach(function(source) {
   var sourceId = source.id,
       successors = model.getSuccessorsOf(sourceId);
@@ -83,7 +75,7 @@ var svg = d3.select('#app-body .graph')
   .attr('width', width)
   .attr('height', height);
 
-// init D3 force layout
+// 初始化d3力导向布局
 var force = d3.layout.force()
     .nodes(nodes)
     .links(links)
@@ -115,7 +107,7 @@ svg.append('svg:defs').append('svg:marker')
     .attr('d', 'M10,-5L0,0L10,5')
     .attr('fill', '#000');
 
-// line displayed when dragging new nodes
+// 编辑：拖拽节点出来的边
 var drag_line = svg.append('svg:path')
   .attr('class', 'link dragline hidden')
   .attr('d', 'M0,0L0,0');
@@ -124,7 +116,7 @@ var drag_line = svg.append('svg:path')
 var path = svg.append('svg:g').selectAll('path'),
     circle = svg.append('svg:g').selectAll('g');
 
-// mouse event vars
+// 鼠标事件
 var selected_node = null,
     selected_link = null,
     mousedown_link = null,
@@ -137,7 +129,7 @@ function resetMouseVars() {
   mousedown_link = null;
 }
 
-// handles for 'Link to Model' dialog
+// 右上角 'Link to Model' dialog
 var backdrop = d3.select('.modal-backdrop'),
     linkDialog = d3.select('#link-dialog'),
     linkInputElem = linkDialog.select('input').node();
@@ -166,7 +158,7 @@ var varCountButtons = d3.selectAll('#edit-pane .var-count button'),
     currentFormula = d3.select('#app-body .current-formula');
 
 function evaluateFormula() {
-  // make sure a formula has been input
+  // 确保已经输入了公式
   var formula = evalInput.select('input').node().value;
   if(!formula) {
     evalOutput
@@ -175,7 +167,7 @@ function evaluateFormula() {
     return;
   }
 
-  // check formula for bad vars
+  // 检查公式 check formula for bad vars
   var varsInUse = propvars.slice(0, varCount);
   var badVars = (formula.match(/\w+/g) || []).filter(function(v) {
     return varsInUse.indexOf(v) === -1;
@@ -187,7 +179,7 @@ function evaluateFormula() {
     return;
   }
 
-  // parse formula and catch bad input
+  // 解析公式 and catch bad input
   var wff = null;
   try {
     wff = new MPL.Wff(formula);
@@ -198,7 +190,7 @@ function evaluateFormula() {
     return;
   }
 
-  // evaluate formula at each state in model
+  // 评估公式 at each state in model
   var trueStates  = [],
       falseStates = [];
   nodes.forEach(function(node, index) {
@@ -227,19 +219,19 @@ function evaluateFormula() {
           '<div class="alert alert-error"><strong>False:</strong><div><div>' + latexFalse + '</div></div></div>')
     .classed('inactive', false);
 
-  // re-render LaTeX
+  // 重新渲染 LaTeX
   MathJax.Hub.Queue(['Typeset', MathJax.Hub, currentFormula.node()]);
   MathJax.Hub.Queue(['Typeset', MathJax.Hub, evalOutput.node()]);
 }
 
-// set selected node and notify panel of changes
+// 选中节点、更新面板
 function setSelectedNode(node) {
   selected_node = node;
 
-  // update selected node label
+  // 更新选中节点标签
   selectedNodeLabel.html(selected_node ? '<strong>State '+selected_node.id+'</strong>' : 'No state selected');
 
-  // update variable table
+  // 更新左侧变量面板
   if(selected_node) {
     var vals = selected_node.vals;
     varTableRows.each(function(d,i) {
@@ -299,7 +291,7 @@ function setVarForSelectedNode(varnum, value) {
   circle.selectAll('text:not(.id)').text(makeAssignmentString);
 }
 
-// update force layout (called automatically each iteration)
+// 力引导布局刷新 (called automatically each iteration)
 function tick() {
   // draw directed edges with proper padding from node centers
   path.attr('d', function(d) {
@@ -322,17 +314,18 @@ function tick() {
   });
 }
 
-// update graph (called when needed)
+// 更新整个svg布局 (called when needed)
 function restart() {
-  // path (link) group
+
+  //link
   path = path.data(links);
 
-  // update existing links
+  // 更新link
   path.classed('selected', function(d) { return d === selected_link; })
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
     .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; });
 
-  // add new links
+  // 添加新link
   path.enter().append('svg:path')
     .attr('class', 'link')
     .classed('selected', function(d) { return d === selected_link; })
@@ -349,10 +342,10 @@ function restart() {
       restart();
     });
 
-  // remove old links
+  // 删除旧的link
   path.exit().remove();
 
-  // circle (node) group
+  // 节点
   // NB: the function arg is crucial here! nodes are known by id, not by index!
   circle = circle.data(nodes, function(d) { return d.id; });
 
@@ -361,7 +354,7 @@ function restart() {
     .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
     .classed('reflexive', function(d) { return d.reflexive; });
 
-  // add new nodes
+  // 添加新节点
   var g = circle.enter().append('svg:g');
 
   g.append('svg:circle')
@@ -446,35 +439,36 @@ function restart() {
       restart();
     });
 
-  // show node IDs
+  //显示 node IDs
   g.append('svg:text')
       .attr('x', 0)
       .attr('y', 4)
       .attr('class', 'id')
       .text(function(d) { return d.id; });
 
-  // text shadow
+  //文字阴影
   g.append('svg:text')
       .attr('x', 16)
       .attr('y', 4)
       .attr('class', 'shadow')
       .text(makeAssignmentString);
 
-  // text foreground
+  //文字前景
   g.append('svg:text')
       .attr('x', 16)
       .attr('y', 4)
       .text(makeAssignmentString);
 
-  // remove old nodes
+  //删除旧 node
   circle.exit().remove();
 
   // set the graph in motion
   force.start();
 }
 
+//鼠标按下事件处理
 function mousedown() {
-  // prevent I-bar on drag
+  // 阻止 I-bar on drag
   d3.event.preventDefault();
 
   // because :active only works in WebKit?
@@ -496,6 +490,8 @@ function mousedown() {
   restart();
 }
 
+
+//鼠标move事件处理
 function mousemove() {
   if(!mousedown_node) return;
 
@@ -505,6 +501,7 @@ function mousemove() {
   restart();
 }
 
+//鼠标弹起事件处理
 function mouseup() {
   if(mousedown_node) {
     // hide drag line
@@ -531,6 +528,7 @@ function removeLinkFromModel(link) {
   if(link.right) model.removeTransition(sourceId, targetId);
 }
 
+//删掉节点时，同时断开边
 function spliceLinksForNode(node) {
   var toSplice = links.filter(function(l) {
     return (l.source === node || l.target === node);
@@ -543,13 +541,15 @@ function spliceLinksForNode(node) {
 // only respond once per keydown
 var lastKeyDown = -1;
 
+
+//键盘按键事件
 function keydown() {
   d3.event.preventDefault();
 
   if(lastKeyDown !== -1) return;
   lastKeyDown = d3.event.keyCode;
 
-  // ctrl
+  // ctrl键
   if(d3.event.keyCode === 17) {
     circle.call(force.drag);
     svg.classed('ctrl', true);
@@ -558,8 +558,8 @@ function keydown() {
 
   if(!selected_node && !selected_link) return;
   switch(d3.event.keyCode) {
-    case 8: // backspace
-    case 46: // delete
+    case 8: // backspace键
+    case 46: // delete键
       if(selected_node) {
         model.removeState(selected_node.id);
         nodes.splice(nodes.indexOf(selected_node), 1);
@@ -572,7 +572,7 @@ function keydown() {
       setSelectedNode(null);
       restart();
       break;
-    case 66: // B
+    case 66: // B键
       if(selected_link) {
         var sourceId = selected_link.source.id,
             targetId = selected_link.target.id;
@@ -588,7 +588,7 @@ function keydown() {
       }
       restart();
       break;
-    case 76: // L
+    case 76: // L键
       if(selected_link) {
         var sourceId = selected_link.source.id,
             targetId = selected_link.target.id;
@@ -604,7 +604,7 @@ function keydown() {
       }
       restart();
       break;
-    case 82: // R
+    case 82: // R键
       if(selected_node) {
         // toggle node reflexivity
         if(selected_node.reflexive) {
@@ -635,7 +635,7 @@ function keydown() {
 function keyup() {
   lastKeyDown = -1;
 
-  // ctrl
+  // ctrl键
   if(d3.event.keyCode === 17) {
     // "uncall" force.drag
     // see: https://groups.google.com/forum/?fromgroups=#!topic/d3-js/-HcNN1deSow
@@ -653,7 +653,7 @@ var modeButtons = d3.selectAll('#mode-select button'),
 function setAppMode(newMode) {
   // mode-specific settings
   if(newMode === MODE.EDIT) {
-    // enable listeners
+    // 启用listeners
     svg.classed('edit', true)
       .on('mousedown', mousedown)
       .on('mousemove', mousemove)
@@ -669,7 +669,7 @@ function setAppMode(newMode) {
       .classed('false', false);
     currentFormula.classed('inactive', true);
   } else if(newMode === MODE.EVAL) {
-    // disable listeners (except for I-bar prevention)
+    // 禁用listeners (except for I-bar prevention)
     svg.classed('edit', false)
       .on('mousedown', function() { d3.event.preventDefault(); })
       .on('mousemove', null)
@@ -714,7 +714,7 @@ function setAppMode(newMode) {
   restart();
 }
 
-// allow enter key to evaluate formula
+//enter键 to evaluate formula
 evalInput.select('input')
   .on('keyup', function() {
     // enter
@@ -725,5 +725,5 @@ evalInput.select('input')
     if(d3.event.keyCode === 13) d3.event.preventDefault();
   });
 
-// app starts here
+//入口
 setAppMode(MODE.EDIT);
