@@ -1,7 +1,7 @@
 # coding=utf-8
 from flask import Flask, jsonify, render_template
 # 导入py2neo包里的graph（图数据库）
-from py2neo import Graph
+from py2neo import Graph, Node, Relationship
 
 # 连接到neo4j相应数据库
 app = Flask(__name__)
@@ -24,18 +24,34 @@ def buildEdges(relationRecord):
 
 
 # 服务器的根路径
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+
+    # 定义相关节点
+    nicole = Node("Character", name="Nicole", age=24)
+    drew = Node("Character", name="Drew", age=20)
+    # 创建节点
+    graph.merge(nicole | drew)
+    # 创建关系
+    graph.merge(Relationship(nicole, "INTERACTS", drew))
+
+    #是否已存在
+    if graph.exists(nicole):
+        print "true"
+
+
     # 渲染index页面
     return render_template('demo.html')
 
+
 # 提供一个动态路由地址，供前端网页调用
-@app.route('/graph')
+@app.route('/graph', methods=['GET', 'POST'])
 def get_graph():
     nodes = map(buildNodes, graph.run('MATCH (n:Character) RETURN n').data())  # 从数据库里取出所有节点，交给buildNodes函数加工处理
     edges = map(buildEdges, graph.run('MATCH ()-[r:INTERACTS]->() RETURN r').data())  # 从数据库里取出所有关系，交给buildEdges加工处理
 
     return jsonify(elements = {"nodes": nodes, "edges": edges}) #把处理好的数据，整理成json格式，然后返回给客户端
+
 
 # 启动server服务器
 if __name__ == '__main__':

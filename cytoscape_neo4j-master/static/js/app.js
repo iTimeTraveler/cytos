@@ -19,6 +19,7 @@ $(function(){
     });
 
 
+    /****************************************************************************/
     // 模式：编辑和浏览
     var MODE = {
           EDIT: 0,
@@ -135,7 +136,7 @@ $(function(){
       .attr('class', 'link dragline hidden')
       .attr('d', 'M0,0L0,0');
 
-    // handles to link and node element groups
+    // link组 node组
     var path = svg.append('svg:g').selectAll('path'),
         circle = svg.append('svg:g').selectAll('g');
 
@@ -265,7 +266,7 @@ $(function(){
       varTable.classed('inactive', !selected_node);
     }
 
-    // get truth assignment for node as a displayable string
+    //节点旁边的text
     function makeAssignmentString(node) {
 //      var vals = node.vals,
 //          outputVars = [];
@@ -468,7 +469,7 @@ $(function(){
           .attr('x', 0)
           .attr('y', 4)
           .attr('class', 'id')
-          .text(function(d) { return d.id; });
+          .text(function(d) { return d.name; });
 
       //文字阴影
       g.append('svg:text')
