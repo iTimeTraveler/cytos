@@ -1,5 +1,5 @@
 $(function(){
-  $.get('/graph', function(result) {
+  $.get('/graph', {id: 'Robin', password: '123456'}, function(result) {
 
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));
@@ -749,6 +749,10 @@ $(function(){
         // enter -- needed on IE9
         if(d3.event.keyCode === 13) d3.event.preventDefault();
       });
+
+    function submmitGraph() {
+      $.post("/", {message: '123456'}, function(data){})
+    }
 
     //入口
     setAppMode(MODE.EDIT);

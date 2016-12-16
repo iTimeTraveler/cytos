@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request, current_app
 # 导入py2neo包里的graph（图数据库）
 from py2neo import Graph, Node, Relationship
 
@@ -26,22 +26,27 @@ def buildEdges(relationRecord):
 # 服务器的根路径
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'GET':
+        # 定义相关节点
+        nicole = Node("Character", name="Nicole", age=24)
+        drew = Node("Character", name="Drew", age=20)
+        # 创建节点
+        graph.merge(nicole | drew)
+        # 创建关系
+        graph.merge(Relationship(nicole, "INTERACTS", drew))
 
-    # 定义相关节点
-    nicole = Node("Character", name="Nicole", age=24)
-    drew = Node("Character", name="Drew", age=20)
-    # 创建节点
-    graph.merge(nicole | drew)
-    # 创建关系
-    graph.merge(Relationship(nicole, "INTERACTS", drew))
+        # 是否已存在
+        if graph.exists(nicole):
+            print "true"
 
-    #是否已存在
-    if graph.exists(nicole):
-        print "true"
+        return render_template('demo.html')
+
+    if request.method == 'POST':
+        return render_template('demo.html')
 
 
-    # 渲染index页面
-    return render_template('demo.html')
+
+
 
 
 # 提供一个动态路由地址，供前端网页调用
