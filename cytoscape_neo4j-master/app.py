@@ -37,11 +37,13 @@ def index():
 
         # 是否已存在
         if graph.exists(nicole):
-            print "true"
+            print "exists Node nicole"
 
         return render_template('demo.html')
 
     if request.method == 'POST':
+        value = request.values.get('message', "")
+        print("===" + value)
         return render_template('demo.html')
 
 
