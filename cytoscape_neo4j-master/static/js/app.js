@@ -755,7 +755,10 @@ evalInput.select('input')
   });
 
 function submmitGraph() {
-  $.post("/", {message: '123456'}, function(data){
+  console.log(JSON.stringify(nodes));
+  $.post("/", {
+        nodes: JSON.stringify(nodes)
+    }, function(data){
 
   })
 }
