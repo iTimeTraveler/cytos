@@ -27,26 +27,27 @@ i = 300
 
 # 创建节点
 def createNode(nodeObj):
-    print(nodeObj['name']+"_c")
-    newNode = Node("Character", name=nodeObj['name']+"_c", age=24)
-    graph.merge(newNode)
+    # print(nodeObj['name'], nodeObj['id'])
+    newNode = Node("Character", name=nodeObj['name'])
+    if not graph.exists(newNode):
+        graph.merge(newNode)
 
 
 # 服务器的根路径
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        # 定义相关节点
-        nicole = Node("Character", name="Nicole", age=24)
-        drew = Node("Character", name="Drew", age=20)
-        # 创建节点
-        graph.merge(nicole | drew)
-        # 创建关系
-        graph.merge(Relationship(nicole, "INTERACTS", drew))
-
-        # 是否已存在
-        if graph.exists(nicole):
-            print "exists Node nicole"
+        # # 定义相关节点
+        # nicole = Node("Character", name="Nicole", age=24)
+        # drew = Node("Character", name="Drew", age=20)
+        # # 创建节点
+        # graph.merge(nicole | drew)
+        # # 创建关系
+        # graph.merge(Relationship(nicole, "INTERACTS", drew))
+        #
+        # # 是否已存在
+        # if graph.exists(nicole):
+        #     print "exists Node nicole"
 
         return render_template('demo.html')
 
@@ -54,6 +55,7 @@ def index():
         v = request.values.get('nodes', "")
         jsonDict = json.loads(v, encoding="utf-8")
         map(createNode, jsonDict)
+        print("over...")
         return render_template('demo.html')
 
 

@@ -505,10 +505,9 @@ function mousedown() {
 
   if(d3.event.ctrlKey || mousedown_node || mousedown_link) return;
 
-  // insert new node at point
+  //添加新节点
   var point = d3.mouse(this),
-      defaultVals = propvars.map(function() { return false; }),
-      node = {id: ++lastNodeId, vals: defaultVals, reflexive: false};
+      node = {id: ++lastNodeId+"", "label":"Character","name": lastNodeId+"","weight":1};
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
