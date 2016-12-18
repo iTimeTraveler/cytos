@@ -7,9 +7,13 @@ from py2neo import Graph, Node, Relationship
 app = Flask(__name__)
 graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 
+count = 0
+
 # 对数据库里取出来的节点进行包装（这里是规范一下数据的格式）
 def wrapNodes(nodeRecord):
-    data = {"id": nodeRecord['n'].__name__, "label": next(iter(nodeRecord['n'].labels()))}  # 对每一个节点都构造包装成一个这样的格式
+    global count
+    count += 1
+    data = {"id": count, "nid": nodeRecord['n'].__name__, "label": next(iter(nodeRecord['n'].labels()))}  # 对每一个节点都构造包装成一个这样的格式
     data.update(nodeRecord['n'].properties)
 
     return data
@@ -23,14 +27,27 @@ def wrapEdges(relationRecord):
     return data
 
 
-i = 300
 
 # 创建节点
 def createNode(nodeObj):
     # print(nodeObj['name'], nodeObj['id'])
-    newNode = Node("Character", name=nodeObj['name'])
+    newNode = Node(nodeObj['label'], name=nodeObj['name'])
     if not graph.exists(newNode):
+        print(newNode)
         graph.merge(newNode)
+
+# 创建关系
+def createLink(linkObj):
+    if not linkObj.has_key('relation'):
+        return
+
+    srcNode = Node(linkObj['source']['label'], name=linkObj['source']['name'])
+    tarNode = Node(linkObj['target']['label'], name=linkObj['target']['name'])
+
+    newLink = Relationship(srcNode, linkObj['relation'], tarNode)
+    if not graph.exists(newLink):
+        print(newLink)
+        graph.merge(newLink)
 
 
 # 服务器的根路径
@@ -52,9 +69,13 @@ def index():
         return render_template('demo.html')
 
     if request.method == 'POST':
-        v = request.values.get('nodes', "")
-        jsonDict = json.loads(v, encoding="utf-8")
-        map(createNode, jsonDict)
+        nodesStr = request.values.get('nodes', "")
+        nodesDict = json.loads(nodesStr, encoding="utf-8")
+        map(createNode, nodesDict)
+
+        linksStr = request.values.get('links', "")
+        linksDict = json.loads(linksStr, encoding="utf-8")
+        map(createLink, linksDict)
         print("over...")
         return render_template('demo.html')
 
@@ -66,6 +87,8 @@ def index():
 # 提供一个动态路由地址，供前端网页调用
 @app.route('/graph', methods=['GET', 'POST'])
 def get_graph():
+    global count
+    count = 0
     nodes = map(wrapNodes, graph.run('MATCH (n:Character) RETURN n').data())  # 从数据库里取出所有节点，交给buildNodes函数加工处理
     edges = map(wrapEdges, graph.run('MATCH ()-[r:INTERACTS]->() RETURN r').data())  # 从数据库里取出所有关系，交给buildEdges加工处理
 

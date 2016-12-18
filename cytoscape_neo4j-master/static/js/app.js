@@ -53,7 +53,7 @@ if(modelParam) modelString = modelParam[1];
 model.loadFromModelString(modelString);
 
 // 初始化节点和边, based on MPL model
-var lastNodeId = -1,
+var lastNodeId = 0,
     nodes = [],
     links = [];
 
@@ -121,7 +121,7 @@ var force = d3.layout.force()
     .charge(-500)
     .on('tick', tick);
 
-// define arrow markers for graph links
+// 箭头连接线
 svg.append('svg:defs').append('svg:marker')
     .attr('id', 'end-arrow')
     .attr('viewBox', '0 -5 10 10')
@@ -270,11 +270,11 @@ function setSelectedNode(node) {
 
   // 更新左侧变量面板
   if(selected_node) {
-    var vals = selected_node.vals;
-    varTableRows.each(function(d,i) {
-      d3.select(this).select('.var-value .btn-success').classed('active', vals[i]);
-      d3.select(this).select('.var-value .btn-danger').classed('active', !vals[i]);
-    });
+//    var vals = selected_node.vals;
+//    varTableRows.each(function(d,i) {
+//      d3.select(this).select('.var-value .btn-success').classed('active', vals[i]);
+//      d3.select(this).select('.var-value .btn-danger').classed('active', !vals[i]);
+//    });
   }
   varTable.classed('inactive', !selected_node);
 }
@@ -389,7 +389,7 @@ function restart() {
   g.append('svg:circle')
     .attr('class', 'node')
     .attr('r', 12)
-    .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
+    .style('fill', function(d) {return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
     .style('stroke', function(d) { return d3.rgb(colors(d.id)).darker().toString(); })
     .classed('reflexive', function(d) { return d.reflexive; })
     .on('mouseover', function(d) {
@@ -457,7 +457,7 @@ function restart() {
       if(link) {
         link[direction] = true;
       } else {
-        link = {source: source, target: target, left: false, right: false};
+        link = {source: source, target: target, relation: 'INTERACTS'};
         link[direction] = true;
         links.push(link);
       }
@@ -505,9 +505,18 @@ function mousedown() {
 
   if(d3.event.ctrlKey || mousedown_node || mousedown_link) return;
 
+  var exist;
+  do {
+    exist = false;
+    ++lastNodeId;
+    for(i in nodes) {
+        if(nodes[i].id == lastNodeId) exist = true;
+    }
+  }while(exist)
+
   //添加新节点
   var point = d3.mouse(this),
-      node = {id: ++lastNodeId+"", "label":"Character","name": lastNodeId+"","weight":1};
+      node = {id: lastNodeId+"", "label":"Character","name": lastNodeId+"","weight":1};
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
@@ -755,8 +764,10 @@ evalInput.select('input')
 
 function submmitGraph() {
   console.log(JSON.stringify(nodes));
+  console.log(JSON.stringify(links));
   $.post("/", {
-        nodes: JSON.stringify(nodes)
+        nodes: JSON.stringify(nodes),
+        links: JSON.stringify(links)
     }, function(data){
 
   })
