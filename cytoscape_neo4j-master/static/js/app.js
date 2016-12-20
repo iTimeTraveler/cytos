@@ -188,6 +188,7 @@ function hideLinkDialog() {
 // handles for dynamic content in panel
 var varCountButtons = d3.selectAll('#edit-pane .var-count button'),
     varTable = d3.select('#edit-pane table.propvars'),
+    varTableBody = d3.select('#edit-pane table.propvars tbody'),
     varTableRows = varTable.selectAll('tr'),
     selectedNodeLabel = d3.select('#edit-pane .selected-node-id'),
     evalInput = d3.select('#eval-pane .eval-input'),
@@ -277,6 +278,18 @@ function setSelectedNode(node) {
 //    });
   }
   varTable.classed('inactive', !selected_node);
+
+  //生成左侧变量表
+  if(selected_node){
+      var htmlStr = "";
+      var nodeKeys = Object.keys(selected_node);
+      for(var key in nodeKeys){
+        htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                    '<input type="text" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
+      }
+      varTableBody.empty();
+      varTableBody.html(htmlStr);
+  }
 }
 
 //节点旁边的text

@@ -59,7 +59,6 @@ h3 {
 
 #app-body .panel {
   width: 280px;
-  height: 500px;
   padding: 20px 19px 20px 20px;
   background-color: #f5f5f5;
   border-right: 1px solid #e3e3e3;
@@ -80,9 +79,9 @@ div.var-count {
 
 table.propvars {
   position: relative;
-  top: -24px;
-  left: 100px;
-  margin-bottom: -28px;
+  top: 10px;
+  left: 0px;
+  margin-bottom: 10px;
 }
 
 table.propvars td.var-name {
@@ -120,7 +119,6 @@ table.propvars td.var-name {
 }
 
 .instructions {
-  position: absolute;
   bottom: 0;
   padding-top: 20px;
   margin-top: 20px;
@@ -351,4 +349,8 @@ footer {
   width: 516px;
   background-color: #fff;
   cursor: default;
+}
+
+.var-value input {
+    width: auto;
 }
