@@ -170,7 +170,7 @@ svg.edit:not(.active):not(.ctrl) {
 path.link {
   fill: none;
   stroke: #999;
-  stroke-width: 1px;
+  stroke-width: 5px;
   cursor: default;
 }
 
@@ -179,6 +179,7 @@ svg.edit:not(.active):not(.ctrl) path.link {
 }
 
 path.link.selected {
+  stroke: #000;
   stroke-dasharray: 10,2;
 }
 

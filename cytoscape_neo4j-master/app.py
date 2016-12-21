@@ -54,18 +54,6 @@ def createLink(linkObj):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        # # 定义相关节点
-        # nicole = Node("Character", name="Nicole", age=24)
-        # drew = Node("Character", name="Drew", age=20)
-        # # 创建节点
-        # graph.merge(nicole | drew)
-        # # 创建关系
-        # graph.merge(Relationship(nicole, "INTERACTS", drew))
-        #
-        # # 是否已存在
-        # if graph.exists(nicole):
-        #     print "exists Node nicole"
-
         return render_template('demo.html')
 
     if request.method == 'POST':

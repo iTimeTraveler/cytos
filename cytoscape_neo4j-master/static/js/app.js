@@ -15,7 +15,7 @@ $(function(){
             relationShip = e.relation;
 
         // Add the edge to the array
-        edges.push({source: sourceNode, target: targetNode, relation: relationShip});
+        edges.push({source: sourceNode, target: targetNode, relation: relationShip, left: false, right: true});
     });
 
     nodes = root.nodes;
@@ -262,34 +262,65 @@ function evaluateFormula() {
   MathJax.Hub.Queue(['Typeset', MathJax.Hub, evalOutput.node()]);
 }
 
-// 选中节点、更新面板
-function setSelectedNode(node) {
-  selected_node = node;
 
-  // 更新选中节点标签
-  selectedNodeLabel.html(selected_node ? '<strong>State '+selected_node.id+'</strong>' : 'No state selected');
-
-  // 更新左侧变量面板
-  if(selected_node) {
-//    var vals = selected_node.vals;
-//    varTableRows.each(function(d,i) {
-//      d3.select(this).select('.var-value .btn-success').classed('active', vals[i]);
-//      d3.select(this).select('.var-value .btn-danger').classed('active', !vals[i]);
-//    });
+function setSelectedNodeOrLink(node, link) {
+  if (node != null && link != null) {
+    return;
   }
-  varTable.classed('inactive', !selected_node);
 
-  //生成左侧变量表
-  if(selected_node){
-      var htmlStr = "";
-      var nodeKeys = Object.keys(selected_node);
-      for(var key in nodeKeys){
-        htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                    '<input type="text" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
+  if (node) {       // 选中节点、更新编辑面板
+      selected_node = node;
+
+      // 更新选中节点标签
+      selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.id+'</strong>' : '未选中人物');
+
+      // 更新左侧变量面板
+//      if(selected_node) {
+//        var vals = selected_node.vals;
+//        varTableRows.each(function(d,i) {
+//          d3.select(this).select('.var-value .btn-success').classed('active', vals[i]);
+//          d3.select(this).select('.var-value .btn-danger').classed('active', !vals[i]);
+//        });
+//      }
+      varTable.classed('inactive', !selected_node);
+
+      //生成左侧变量表
+      if(selected_node){
+          var htmlStr = "";
+          var nodeKeys = Object.keys(selected_node);
+          for(var key in nodeKeys){
+            htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                        '<input type="text" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
+          }
+          varTableBody.empty();
+          varTableBody.html(htmlStr);
       }
-      varTableBody.empty();
-      varTableBody.html(htmlStr);
+  /*==============================================================================================================*/
+  } else if (link) {    // 选中连线，更新编辑面板
+      selected_link = link;
+
+      // 更新选中节点标签
+      selectedNodeLabel.html(selected_node ? '<strong>选中了关系：'+'</strong>' : '未选中关系');
+
+      //生成左侧变量表
+      if(selected_link){
+          var htmlStr = "";
+          var linkKeys = Object.keys(selected_link);
+          for(var key in linkKeys){
+            htmlStr += ' <tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                        '<input type="text" value="' + selected_link[linkKeys[key]] + '"> </div></td></tr>';
+          }
+          varTableBody.empty();
+          varTableBody.html(htmlStr);
+      }
+  } else {
+      selected_node = null;
+      selected_link = null;
+      // 更新选中节点标签
+      selectedNodeLabel.html('未选中任何东西');
+      varTableBody.html('');
   }
+
 }
 
 //节点旁边的text
@@ -378,9 +409,8 @@ function restart() {
 
       // select link
       mousedown_link = d;
-      if(mousedown_link === selected_link) selected_link = null;
-      else selected_link = mousedown_link;
-      setSelectedNode(null);
+      if(mousedown_link === selected_link) setSelectedNodeOrLink(null, null);
+      else setSelectedNodeOrLink(null, mousedown_link);
       restart();
     });
 
@@ -420,9 +450,8 @@ function restart() {
 
       // select node
       mousedown_node = d;
-      if(mousedown_node === selected_node) setSelectedNode(null);
-      else setSelectedNode(mousedown_node);
-      selected_link = null;
+      if(mousedown_node === selected_node) setSelectedNodeOrLink(null, null);
+      else setSelectedNodeOrLink(mousedown_node, null);
 
       // reposition drag line
       drag_line
@@ -450,7 +479,7 @@ function restart() {
       // add transition to model
       model.addTransition(mousedown_node.id, mouseup_node.id);
 
-      // add link to graph (update if exists)
+      //生成新的连线 (update if exists)
       // note: links are strictly source < target; arrows separately specified by booleans
       var source, target, direction;
       if(mousedown_node.id < mouseup_node.id) {
@@ -475,9 +504,8 @@ function restart() {
         links.push(link);
       }
 
-      // select new link
-      selected_link = link;
-      setSelectedNode(null);
+      // 同时选中这条线
+      setSelectedNodeOrLink(null, link);
       restart();
     });
 
@@ -618,15 +646,14 @@ function keydown() {
         removeLinkFromModel(selected_link);
         links.splice(links.indexOf(selected_link), 1);
       }
-      selected_link = null;
-      setSelectedNode(null);
+      setSelectedNodeOrLink(null, null);
       restart();
       break;
     case 66: // B键
       if(selected_link) {
         var sourceId = selected_link.source.id,
             targetId = selected_link.target.id;
-        // set link direction to both left and right
+        // 把单向箭头改为双向
         if(!selected_link.left) {
           selected_link.left = true;
           model.addTransition(targetId, sourceId);
@@ -642,7 +669,7 @@ function keydown() {
       if(selected_link) {
         var sourceId = selected_link.source.id,
             targetId = selected_link.target.id;
-        // set link direction to left only
+        // 把箭头改为指向source
         if(!selected_link.left) {
           selected_link.left = true;
           model.addTransition(targetId, sourceId);
@@ -667,7 +694,7 @@ function keydown() {
       } else if(selected_link) {
         var sourceId = selected_link.source.id,
             targetId = selected_link.target.id;
-        // set link direction to right only
+        // 把箭头改为指向target
         if(selected_link.left) {
           selected_link.left = false;
           model.removeTransition(targetId, sourceId);
@@ -741,8 +768,7 @@ function setAppMode(newMode) {
       .style('marker-end', '');
 
     // clear mouse vars
-    selected_link = null;
-    setSelectedNode(null);
+    setSelectedNodeOrLink(null, null);
     resetMouseVars();
 
     // reset eval state
