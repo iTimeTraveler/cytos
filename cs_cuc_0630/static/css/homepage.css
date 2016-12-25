@@ -1,0 +1,157 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+  body {
+display:block;
+margin:0;
+    min-width: 1500px;
+
+}
+div.all_container
+{
+width:100%;
+margin:0;
+border:0px solid gray;
+
+}
+#font
+{
+font-family:myFirstFont;
+}
+div.container
+{
+width:100%;
+margin:0;
+padding:0;
+border:0px solid gray;
+background-image:url(../image/INF/bg-body.jpg);
+background-repeat: no-repeat;
+background-size: 100%, 100%;
+color:#000;
+
+}
+div.header
+{
+padding:2.5em;
+color:black;
+clear:left;
+height:25px;
+}
+div.footer
+{
+padding:1em 0 1em 0;
+color:#000;
+background-color:#e0e0e0;
+clear:left;
+height:auto;
+word-wrap:normal;
+bottom:0px;
+text-align:center;
+font-family:"微软雅黑";
+font-size:14px;
+}
+h1.header
+{
+padding:0;
+margin:0;
+text-align:center;
+}
+div.top
+{
+float:left;
+height:90px;
+margin:0 0 -1.5em 2em;
+padding:2em 1.5em 0 0em;
+text-align:center;
+font-family:myFirstFont;
+font-size:36px;
+
+}
+#cs
+{
+float:top;
+height:150px;
+margin:auto;
+padding:4em 0 0 0;
+text-align:center;
+font-family:"宋体";
+font-size:xx-large;
+
+}
+.button
+{
+display:inline;
+background-color:#FFF;
+color:#000;
+padding: 0.2em 0.6em 0.2em 0.6em;
+margin:auto 1em;
+-moz-border-radius:25px; /* Old Firefox */
+font-family:STKaiti,Geneva, sans-serif;
+font-size:20px;
+text-align:center;
+cursor: pointer;
+box-shadow:5px 5px 5px #666666;
+border-radius:10px;
+}
+a.buttons
+{
+	text-decoration:none;
+	color:#333;
+}
+a.buttons:hover {color:#ED8D00;}
+#but
+{
+display:table;
+min-width:480px;
+margin:0 auto 0em auto;
+padding-bottom:1em;
+}
+div.content
+{
+margin-top:0px;
+line-height:20px;
+text-indent:45px;
+padding:1em;
+text-align:center;
+height:560px;
+background-image:url(../image/INF/bg.jpg);
+color:#444;
+font-family:"宋体";
+border-radius:10px;
+}
+#introduce
+{
+width:60%;
+margin:auto;
+text-indent:20pt;
+text-align:left;
+font-size: 12px;
+line-height: 30px;
+}
+h2
+{
+text-align:center;
+  font-size: 20px;
+}
+span
+{
+margin:1em 3em;
+line-height:25px;
+}
+table, td, th
+  {
+  
+  text-align:center;
+  }
+  .logo {
+    float: left;
+    width: 55px;
+    height: 60px;
+    margin-top: -3px;
+}
+  div.container_bottom {
+    width: 100%;
+    text-align: center;
+    min-width: 1500px;
+}

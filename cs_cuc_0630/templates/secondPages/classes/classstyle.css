@@ -1,0 +1,35 @@
+ul.all {
+    float:left;
+    display: inline-block;
+    font-weight: bold;
+    vertical-align: top;
+    list-style-type:square;
+    line-height:50px;
+    font-size: 18px;
+    text-align:left;
+    font-family:"宋体";
+    margin-left: 120px;
+    margin-right: -200px;
+}
+iframe{
+    width:70%;
+    height: 800px;
+    border: hidden;
+    align-self: center;
+    padding:0px;
+    margin:0px;
+    background-color: beige;
+    min-width: 1200px;
+
+}
+a.card{
+    text-decoration: none;
+    color: #000066;
+
+
+}
+div.container_bottom{
+    width: 100%;
+    text-align:center;
+    min-width:1510px;
+}

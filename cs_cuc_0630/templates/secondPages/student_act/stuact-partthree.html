@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/recruitepartstyle.css') }}">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <ul class="all">
+        {% if studentact %}
+            {% for stu in studentact %}
+                <li><a class="card" href="{{ url_for('studentAct.studentact_thirdPage',stuactID=stu.id) }}"
+                       target="test">{{ stu.student_lable }}<span>{{ stu.student_update }}</span></a>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
+</body>
+</html>

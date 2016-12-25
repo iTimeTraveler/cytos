@@ -1,0 +1,64 @@
+h1 {
+    background-color: gray;
+}
+
+
+div.both {
+   width: 120px;
+    margin-left: 20px;
+    margin-top: 0px;
+    background-color: white;
+	padding-bottom:12px;
+}
+a{
+    align-content: center;
+    max-width: 2000px;
+    text-decoration: none;
+    padding: 20px;
+      color: black;
+}
+a:hover {
+    color:darkcyan;
+}
+div.name{
+    height:10px;
+    text-align: center;
+    font-size:12px;
+    line-height: 1px;
+}
+div.photo{
+    position: relative;
+    left: -20px;
+     width: 120px;
+    height: 180px;
+}
+li.card{
+    display:inline-block;
+    float: left;
+    margin: 50px 50px 50px 70px;
+}
+div.cardbox{
+    margin-left:0px;
+    margin-right:0px;
+    overflow: hidden;
+    background-color:beige;
+}
+ul.allcard{
+    list-style-type: square;
+}
+img{
+    width: 120px;
+    height: 160px;
+}
+.brief{
+    max-width: 120px;
+    max-height:5px;
+    font-family: 微软雅黑;
+    padding: 0px;
+}
+ .logo {
+    float: left;
+    width: 55px;
+    height: 60px;
+    margin-top: -3px;
+}

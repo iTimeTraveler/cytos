@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css"href="{{ url_for('static',filename='css/recruitepartstyle.css') }}" >
+    <title>Title</title>
+</head>
+<body>
+<div>
+<ul class="all">
+    {% if news %}
+        {% for new in news %}
+            <li><a class="card" href="{{ url_for('collegeNews.news_thirdPage',collegeNewsID=new.id) }}" target="test">{{ new.news_lable }}<span>{{ new.news_update }}</span></a> </li>
+        {% endfor %}
+    {% endif %}
+</ul>
+</div>
+</body>
+</html>

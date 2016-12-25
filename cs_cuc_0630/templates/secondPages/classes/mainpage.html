@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/classstyle.css') }}" />
+    <title>学科建设</title>
+    <style type="text/css">
+        body {
+            display:block;
+            margin:0;
+			min-width:1500px;
+        }
+        div.all_container
+        {
+            width:100%
+            margin:0;
+            border:0px solid gray;
+			min-width:1400px;
+        }
+        div.container
+            {
+            width:100%;
+            margin:0;
+            padding:0;
+            border:0px solid gray;
+            background-image:url(/static/image/INF/bg-body.jpg);
+            background-repeat: no-repeat;
+            background-size: 100%, 100%;
+            color:#000;
+
+            }
+        div.header
+        {
+            padding:2.5em;
+            color:black;
+            clear:left;
+            height:25px;
+        }
+        div.footer
+        {
+            padding:1em 0 1em 0;
+            color:#000;
+            background-color:#e0e0e0;
+            clear:left;
+            height:auto;
+            word-wrap:normal;
+            bottom:0px;
+            text-align:center;
+            font-family:"微软雅黑";
+            font-size:14px;
+			width:100%;
+        }
+        h1.header
+        {
+            background-color:#567;
+            padding:20px;
+            font-family:"宋体";
+            color:#FFF;
+            text-align:center;
+        }
+        div.top
+        {
+            float:left;
+            height:90px;
+            margin:0 0 -1.5em 2em;
+            padding:2em 1.5em 0 0;
+            text-align:center;
+            font-family:myFirstFont;
+            font-size:36px;
+			
+      
+        }
+        #cs
+        {
+            float:top;
+            height:150px;
+            margin:auto;
+            padding:4em 0 0 0;
+            text-align:center;
+            font-family:"宋体";
+            font-size:xx-large;
+			
+         
+        }
+       #student {
+    margin: 0 auto 0 auto;
+    padding: 1em 0 0 0;
+    height: 40px;
+    width: 70%;
+    min-width: 1200px;
+}
+h1.title {
+    background-color: #006dcc;
+    padding: 20px;
+    font-family: "宋体";
+    color: #FFF;
+    text-align: left;
+    text-indent: 40px;
+    font-size: 20px;
+}
+.button
+{
+display:inline;
+background-color:#FFF;
+color:#000;
+padding: 0.2em 0.6em 0.2em 0.6em;
+margin:auto 1em;
+border-radius:10px;
+-moz-border-radius:10px; /* Old Firefox */
+font-family:STKaiti, Geneva, sans-serif;
+font-size:20px;
+text-align:center;
+cursor: pointer;
+box-shadow:5px 5px 5px #666666;
+}
+a.buttons
+{
+	text-decoration:none;
+	color:#333;
+}
+a.buttons:hover {color:#ED8D00;}
+#but
+{
+display:table;
+min-width:480px;
+margin:0 auto 0 auto;
+padding-bottom:1em;
+}
+
+        span
+        {
+            margin:1em 3em;
+            line-height:25px;
+        }
+   .logo {
+    float: left;
+    width: 55px;
+    height: 60px;
+    margin-top: -3px;
+}
+
+
+    </style>
+</head>
+<body>
+<div class="all_container">
+    <div class="container">
+        <div id="cs"></div>
+        <ul id="but">
+<li class="button"><a class="buttons"   href="{{ url_for('main.home') }}">学院首页</a></li>
+<li class="button"><a class="buttons"  href="{{ url_for('collegeNews.college_news') }}">学院新闻</a></li>
+<li class="button"><a class="buttons"  href="{{ url_for('classes.classesmain') }}">学生风采</a></li>
+<li class="button"><a class="buttons"  href="{{ url_for('teachers.teacherInfo') }}">师资力量</a></li>
+<li class="button"><a class="buttons"  href="{{ url_for('studentAct.studentact') }}">科研成果</a></li>
+<li class="button"><a class="buttons"  href="{{ url_for('main.enrol') }}">招生信息</a></li>
+<li class="button"><a class="buttons" href="http://fst.cuc.edu.cn/" target="_blank">理工学部</a></li>
+
+</ul>
+    </div></div>
+<div class="container_bottom">
+    <h1 id="student" class="title">学生风采</h1>
+        <ul class="all">
+            <li class="card"><a class="card" href="{{ url_for('classes.classes_partone') }}" target="test">本科</a></li>
+            <li class="card"><a class="card" href="{{ url_for('classes.classes_parttwo') }}" target="test">硕士</a></li>
+            <li class="card"><a class="card" href="{{ url_for('classes.classes_partthree') }}" target="test">学生活动</a></li>
+            <li class="card"><a class="card" href="{{ url_for('classes.classes_partfour') }}" target="test">优秀硕士毕业生</a></li>
+        </ul>
+    <iframe src="{{ url_for('classes.classes_partone') }}" name="test"></iframe>
+
+        <div class="footer"><div style="width: 500px; margin-left: auto; margin-right: auto;"><img src="/static/image/INF/4-2.png" class="logo"><div><span>地址：北京市朝阳区定福庄东街一号</span>邮编：100024<br><span>版权所有 © 中国传媒大学计算机学院</span></div></div></div>
+</div>
+</body>
+</html>

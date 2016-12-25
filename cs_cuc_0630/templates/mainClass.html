@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <p>
+        {% if mainClass %}
+            {% for cc in mainClass %}
+                {{ cc.classes_content }}<br>
+            {% endfor %}
+        {% endif %}
+    </p>
+
+</body>
+</html>

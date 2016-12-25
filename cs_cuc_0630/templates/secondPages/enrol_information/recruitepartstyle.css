@@ -1,0 +1,20 @@
+a.card{
+    text-decoration: none;
+    font-size: 18px;
+    color:black;
+
+}
+div{
+    margin-left:0px;
+    margin-right:0px;
+    padding-top: 50px;
+    padding-left: 250px;
+    overflow: hidden;
+}
+ul{
+    line-height: 50px;
+    text-align:right;
+}
+li{
+    text-align: left;
+}

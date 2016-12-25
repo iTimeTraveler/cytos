@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/recruitepartstyle.css') }}">
+    <title>Title</title>
+</head>
+<body>
+<div class="container_table">
+    {#    <ul class="all">#}
+    {#        {% if studentact %}#}
+    {#            {% for stu in studentact %}#}
+    {#                <li><a class="card" href="{{ url_for('studentAct.studentact_thirdPage',stuactID=stu.id) }}"#}
+    {#                       target="test">{{ stu.student_lable }}#}
+    {#                    <span>{{ stu.student_update }}</span></a></li>#}
+    {#            {% endfor %}#}
+    {#        {% endif %}#}
+    {#    </ul>#}
+    <table class="article_patent" border="1">
+        <tr>
+            <td>序号</td>
+            <td>论文名称</td>
+            <td>第一作者</td>
+            <td>通讯作者</td>
+            <td>发表年月</td>
+            <td>刊物/会议名称</td>
+            <td>收录类型</td>
+            <td>期刊影响因子</td>
+            <td>他引次数</td>
+            <td>署名单位数</td>
+            <td>单位署名情况</td>
+            <td>补充说明</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Granular Neural Networks:Concepts and Development Schemes</td>
+            <td>宋明丽</td>
+            <td>宋明丽</td>
+            <td>201304</td>
+            <td>IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS,VOL.24,NO.4</td>
+            <td>SCI期刊</td>
+            <td>4.291</td>
+            <td>12</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Human centricity and information granularity in the agenda of theories and applications of soft
+                computing
+            </td>
+            <td>宋明丽</td>
+            <td>宋明丽</td>
+            <td>201502</td>
+            <td>Applied Soft Computing</td>
+            <td>SCI期刊</td>
+            <td>2.81</td>
+            <td>4</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Contrast Enhancement-Based Forensics in Digital Images</td>
+            <td>曹刚</td>
+            <td>曹刚</td>
+            <td>201403</td>
+            <td>IEEE TRANSACTIONS ON INFORMATION FORENSICS AND SECURITY, VOL.9, NO.3（TIFS）</td>
+            <td>SCI期刊</td>
+            <td>2.408</td>
+            <td>38</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Attacking Contrast Enhancement Forensics in Digital Images</td>
+            <td>曹刚</td>
+            <td>曹刚</td>
+            <td>201405</td>
+            <td>Science China Information Sciences</td>
+            <td>SCI期刊</td>
+            <td>0.85</td>
+            <td>2</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Forensic detection of Noise-addition Manipulation in Digital Images</td>
+            <td>曹刚</td>
+            <td>曹刚</td>
+            <td>201403</td>
+            <td>Journal of Electronic Imaging, Volume 23, Issue 2</td>
+            <td>SCI期刊</td>
+            <td>0.672</td>
+            <td>2</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>SShare: a simulator for studying and evaluating decentralized SPARQL query processing</td>
+            <td>周菁</td>
+            <td>周菁</td>
+            <td>201510</td>
+            <td>Personal and Ubiquitous Computing</td>
+            <td>SCI期刊</td>
+            <td>1.518</td>
+            <td>0</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>Advanced ODE Based Head Modeling for Chinese Marionette Art Preservation</td>
+            <td>梁辉</td>
+            <td>梁辉</td>
+            <td>201505</td>
+            <td>Computer Animation And Virtual World</td>
+            <td>SCI期刊</td>
+            <td>0.46</td>
+            <td>0</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>Privacy Protection Method for Multiple Sensitive Attributes Based on Strong Rule</td>
+            <td>易通</td>
+            <td>石民勇</td>
+            <td>201507</td>
+            <td>MATHEMATICAL PROBLEMS IN ENGINEERING</td>
+            <td>SCI期刊</td>
+            <td>0.762</td>
+            <td>0</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td>博士生</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>A Research of Speed Emotion Recognition Based on Deep Belief Network and SVM</td>
+            <td>黄晨晨</td>
+            <td>巩微</td>
+            <td>201407</td>
+            <td>MATHEMATICAL PROBLEMS IN ENGINEERING,2014</td>
+            <td>SCI期刊</td>
+            <td>0.762</td>
+            <td>2</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td>硕士生</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>Complex Networks: Statistical Properties, Community Structure, and Evolution</td>
+            <td>张雷</td>
+            <td>曹建香</td>
+            <td>201501</td>
+            <td>Mathematical Problems in Engineering</td>
+            <td>SCI期刊</td>
+            <td>0.762</td>
+            <td>2</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td>硕士生</td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>Chinese Lexical Networks: The Structure, Function And Formation</td>
+            <td>李健瑜</td>
+            <td>李健瑜</td>
+            <td>2012,11</td>
+            <td>Physica a-Statistical Mechanics And ITS Applications Vol. 391</td>
+            <td>SCI期刊</td>
+            <td>1.785</td>
+            <td>7</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>12</td>
+            <td>Scaling Concolic Testing for the Environment-Intensive Program</td>
+            <td>范文庆</td>
+            <td>黄玮</td>
+            <td>2015.10</td>
+            <td>Transactions on Information and Systems</td>
+            <td>SCI期刊</td>
+            <td>0.226</td>
+            <td>0</td>
+            <td>1</td>
+            <td></td>
+            <td>中国传媒大学</td>
+        </tr>
+        <tr>
+            <td>13</td>
+            <td>A Multistep Extending Truncation Method towards Model Construction of Infinite-State Markov Chains</td>
+            <td>王克敏</td>
+            <td>王克敏</td>
+            <td>2014.04</td>
+            <td>MATHEMATICAL PROBLEMS IN ENGINEERING（Volume 2014</td>
+            <td>SCI期刊</td>
+            <td>0.644</td>
+            <td>0</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>14</td>
+            <td>Distributed Information Consensus Filters for Simultaneous Input and State Estimation</td>
+            <td>吕颖</td>
+            <td>吕颖</td>
+            <td>2013.12</td>
+            <td>Circuits Systems and Signal Processing,Vol.32</td>
+            <td>SCI期刊</td>
+            <td>1.178</td>
+            <td>0</td>
+            <td>5</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>15</td>
+            <td>Research And Implementation of Discrete Wavelet Transform Audio Watermark Algorithm</td>
+            <td>田沛</td>
+            <td>田沛</td>
+            <td>201512</td>
+            <td>Sensor Letters</td>
+            <td>SCI期刊</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>16</td>
+            <td>PARALLEL FDTD SIMULATION USING NUMA ACCELERATION TECHNQUE</td>
+            <td>郭晓梅</td>
+            <td>郭晓梅</td>
+            <td>201207</td>
+            <td>Progress In Electromagnetics Research</td>
+            <td>EI期刊</td>
+            <td>无</td>
+            <td>8</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>17</td>
+            <td>Obfuscated Malicious Code Detection with Path Condition Analysis</td>
+            <td>范文庆</td>
+            <td>范文庆</td>
+            <td>201405</td>
+            <td>JOURNAL OF NETWORKS, Volume 9, Number 5</td>
+            <td>EI期刊</td>
+            <td>无</td>
+            <td>3</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>18</td>
+            <td>A Selection Algorithm of Training Set Based on Simillar Classification</td>
+            <td>梁小文</td>
+            <td>巩微</td>
+            <td>201403</td>
+            <td>Journal of Software, Vol.9, No.3</td>
+            <td>EI期刊</td>
+            <td>无</td>
+            <td></td>
+            <td></td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>19</td>
+            <td>Progress and Research of Network System Survivability Scheme with Cooperative Information Management
+            </td>
+            <td>王青龙</td>
+            <td>姜正涛</td>
+            <td>201210</td>
+            <td>Journal of Networks,Vol.7,No.10</td>
+            <td>EI期刊</td>
+            <td>无</td>
+            <td>1</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>20</td>
+            <td>A Trust Evaluation Model of Web Service</td>
+            <td>周美荣</td>
+            <td>姜正涛</td>
+            <td>201205</td>
+            <td>Advances in Information Sciences and Service Sciences(AISS), 2012, Vol. 4.</td>
+            <td>EI期刊</td>
+            <td>无</td>
+            <td>2</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>21</td>
+            <td>共模失效情况下集群系统可用性分析</td>
+            <td>洪志国</td>
+            <td>共模失效情况下集群系统可用性分析</td>
+            <td>201203</td>
+            <td>《华中科技大学学报（自然科学版）》2012年第40卷第3期</td>
+            <td>EI期刊</td>
+            <td>无</td>
+            <td>0</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>22</td>
+            <td>分布式目录同步的冲突处理与副本管理研究</td>
+            <td>李强</td>
+            <td>朱立谷</td>
+            <td>201202</td>
+            <td>《计算机研究与发展》2012年第49卷 增刊</td>
+            <td>EI期刊</td>
+            <td>无</td>
+            <td>2</td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>23</td>
+            <td>针对iSCSI传输链路聚合的优化</td>
+            <td>薛晨笛</td>
+            <td>朱立谷</td>
+            <td>201401</td>
+            <td>《高性能计算技术》第226期</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>24</td>
+            <td>数据迁移方法与测评技术研究</td>
+            <td>程伟男</td>
+            <td>朱立谷</td>
+            <td>201401</td>
+            <td>《高性能计算技术》第226期</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>11</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>25</td>
+            <td>利用条带伸缩重定向解决RAID-5写漏洞问题的研究</td>
+            <td>张雷</td>
+            <td>朱立谷</td>
+            <td>201205</td>
+            <td>《高性能计算技术》第5期</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>26</td>
+            <td>弱连接网络中的多主机文件同步</td>
+            <td>李强</td>
+            <td>朱立谷</td>
+            <td>201210</td>
+            <td>《小型微型计算机系统》第33卷第10期</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>27</td>
+            <td>基于扎根理论的手机电视服务顾客感知价值分析</td>
+            <td>刘小龙</td>
+            <td>刘丽华</td>
+            <td>201208</td>
+            <td>《移动通信》第15期</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>28</td>
+            <td>广播音频编辑器的底层数据结构与效率</td>
+            <td>徐航</td>
+            <td>孙书韬</td>
+            <td>201502</td>
+            <td>《中国传媒大学学报/自然科学版》第22卷第1期</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>29</td>
+            <td>基于深度信念网络的语音情感识别的研究</td>
+            <td>黄晨晨</td>
+            <td>巩微</td>
+            <td>201412</td>
+            <td>《计算机研究与发展》第51卷增刊</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>30</td>
+            <td>广播电视新闻信息移动终端系统技术研究</td>
+            <td>郭晓梅</td>
+            <td>郭晓梅</td>
+            <td>201304</td>
+            <td>《现代电视技术》第142期</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td>中国传媒大学</td>
+            <td></td>
+        </tr>
+</div>
+</body>
+</html>

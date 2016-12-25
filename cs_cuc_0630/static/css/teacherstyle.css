@@ -1,0 +1,40 @@
+ul.all {
+    float:left;
+    display: inline-block;
+    font-weight: bold;
+    vertical-align: top;
+    list-style-type:square;
+    line-height:50px;
+    font-size: 12px;
+	text-align:left;
+	font-family:"宋体";
+    margin-left: 30px;
+    margin-right: -200px;
+    margin-top:0;
+}
+iframe{
+    width:70%;
+     height: 700px;
+    border: hidden;
+    align-self: center;
+    padding:0px;
+    margin:0px;
+    background-color: beige;
+    min-width: 1200px;
+
+}
+a.card{
+    text-decoration: none;
+    color: #000066;
+}
+div.container_bottom{
+   width: 100%;
+   text-align:center;
+   min-width:1500px;
+}
+ .logo {
+    float: left;
+    width: 55px;
+    height: 60px;
+    margin-top: -3px;
+}

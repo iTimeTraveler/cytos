@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="handlebars.runtime-v4.0.5.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/classonestyle.css') }}"/>
+    <title>Title</title>
+</head>
+<body>
+<div class="container_article">
+    <table class="table_stu" border=1 width="1000">
+        <tr>
+        <tr>
+            <td rowspan="2">序号</td>
+            <td rowspan="2">姓名</td>
+            <td colspan="3">获得学位情况</td>
+            <td class="stu_brief" rowspan="2">优秀毕业生简介</td>
+        </tr>
+        <tr>
+            <td>学士</td>
+            <td width="30%">硕士</td>
+            <td>博士</td>
+        </tr>
+        <tr>
+            <td> 1</td>
+            <td>辛子俊</td>
+            <td>北京理工大学，统计学，200706</td>
+            <td>中国传媒大学，计算机应用技术，200906</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                北京智慧谷文化传媒有限公司总经理，北京市高新企业，北京市互动媒体艺术工程技术研究中心成员，与北京理工大学、中国传媒大学建立合作实验室。研发思政教育游戏《情商加油站》，职业培养与测评系统《我素我行》。
+            </td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>陈国伟</td>
+            <td>中国传媒大学，计算机科学与技术，200706</td>
+            <td>中国传媒大学，计算机应用技术，200906</td>
+            <td>中国传媒大学，通信与信息系统，201306</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                传媒大学新媒体研究院助理研究员，从事互联网数据挖掘、新闻传播影响力研究。《广播电视监测监管数据挖掘与多维度检索研究》、《互联网视频搜索及热点视频发现关键技术研究》、《基于数字指纹的版权管控技术研究》。
+            </td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>任勇</td>
+            <td>辽宁工业大学，计算机科学与技术，200607</td>
+            <td>中国传媒大学，计算机应用技术，200906</td>
+            <td>东京大学，信息科学与技术，201407</td>
+            <td class="stu_brief" style="width:550px;text-align: left">作为数据科学工程师就职于乐天集团（Rakuten,
+                Inc），从事大规模机器学习，深度学习方面的研发工作；同时参与商品识别，推荐系统，用户画像，大规模数据分析处理平台的建设等项目的开发。
+            </td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>王瑞鹏</td>
+            <td>辽宁工业大学，计算机科学与技术，200706</td>
+            <td>中国传媒大学，计算机应用技术，200906</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                现工作于中国电子信息产业发展研究院，主要负责信息系统集成资质、信息系统监理资质、ITSS运行维护体系等评审工作，2009年7月参加工作以来，累计为300家左右电子信息类企业进行资质评审类工作。
+            </td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>王茜</td>
+            <td>中国传媒大学，
+                计算机科学与技术，200706
+            </td>
+            <td>中国传媒大学，计算机应用技术，200906</td>
+            <td>中国科学院计算技术研究所，信息与通信工程，201607</td>
+            <td class="stu_brief" style="width:550px;text-align: left">在多媒体领域高质量国际期刊和国际会议发表多篇文章。包括多媒体顶级期刊IEEE
+                transactions on Multimedia、顶级会议 Data Compression Conference
+                和国内核心计算机与辅助图形学学报等。参与多项国家“973”计划、国家自然科学基金重点项目、面上项目等。
+            </td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>李强</td>
+            <td>中国传媒大学，计算机科学与技术，200806</td>
+            <td>中国传媒大学，计算机技术，201006</td>
+            <td>中国传媒大学，通信与信息系统，201306</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                博士毕业后入职奇虎360科技有限公司，负责垃圾短信拦截，大数据分析与挖掘，音频比对与识别等项目。工作期间，完成多项产品的研发与上线服务于亿计的终端用户。
+            </td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>董韬</td>
+            <td>浙江工商大学，电子信息工程，201006</td>
+            <td>中国传媒大学，计算机技术，201206</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                百度商务搜索部高级产品经理，移动应用推广检索产品负责人。获得百度2013年度“总裁特别奖”，多次部门嘉奖。为百度互联网无线流量变现做出贡献。现无界空间合伙人，负责空间项目拓展，完成pre-A轮融资。
+            </td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>范文</td>
+            <td>天津大学，计算机科学与技术，200806</td>
+            <td>中国传媒大学，计算机应用技术，201206</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                曾任职于东信北邮、奇虎360。2014年加入阿里巴巴，任资深算法工程师、技术专家，为阿里云开放计算平台建设、淘宝直通车优化做出突出贡献。目前负责阿里巴巴计算广告数据分析、挖掘。主攻方向为异常检测、深度学习等。
+            </td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>李雪</td>
+            <td>石家庄铁道大学，计算机科学与技术，200706</td>
+            <td>中国传媒大学，计算机软件与理论，200906</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                先后在百度、阿里巴巴担任商业产品资深产品经理、产品专家，获得百度季度之星、阿里巴巴金战旗项目奖，拥有专利品牌广告效果评估体系3AS。管理大客户商业产品平台，打通中小品牌广告售卖渠道，一年新增1.2亿收入。
+            </td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>杨旭</td>
+            <td>中国传媒大学，计算机科学与技术，200806</td>
+            <td>中国传媒大学，计算机软件与理论，201006</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                就职于中央电视台，从事国家广播电视光缆干线网广播电视信号安全传输与保障工作。获得中国有线“优秀员工”’，中央电视台 “先进个人”、“优秀党员”。2014年抽调中国广播电视网络有限公司，任综合处副处长。
+            </td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>杨莹</td>
+            <td>中国传媒大学，计算机科学与技术，200706</td>
+            <td>中国传媒大学，计算机应用技术，200906</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                现就职于广西电视台，2012年获得工程师职称，在制作部负责电视节目制作以及制作网络维护管理工作，荣获科技创新奖和多个节目技术质量奖，金帆奖，并获得广西技术能手称号。
+            </td>
+        </tr>
+        <tr>
+            <td>12</td>
+            <td>李琳</td>
+            <td>武警指挥学院，计算机科学与技术，200306</td>
+            <td>中国传媒大学，计算机应用技术，201006</td>
+            <td>中国社科院，少数民族语言文学，201406</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                博士毕业后任职于青海师范大学计算机学院，副教授。承担本科生和研究生的教学工作，积极参加科研工作。主要积从事藏语自然语言处理技术方面的研究。目前前主持自然科学基金项目1项、教育部项目1项、省级科研项目2项。
+            </td>
+        </tr>
+        <tr>
+            <td>13</td>
+            <td>宋卿</td>
+            <td>中国传媒大学，计算机科学与技术，200406</td>
+            <td>中国传媒大学，计算机应用技术，200706</td>
+            <td>中国传媒大学，通信与信息系统，在读博士</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                毕业留校任职于计算机学院，后调入新媒体研究院，参与研究院筹备与展示基地建设。从事知识抽取与知识图谱构建研究，承担国家级项目子课题1项、省部级项目2项，所在网络媒体技术科研团队获2010年中国传媒大学校长奖。
+            </td>
+        </tr>
+        <tr>
+            <td>14</td>
+            <td>潘炳坤</td>
+            <td>合肥工业大学，工商管理，200306</td>
+            <td>中国传媒大学，计算机应用技术，200706</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                任职于百度在线网络技术（北京）有限公司，任资深研发工程师。在任职期间，参与百度核心凤巢广告投放系统架构设计与研发，目前工作重心在大数据流式计算方向。
+            </td>
+        </tr>
+        <tr>
+            <td>15</td>
+            <td>王利</td>
+            <td>中国传媒大学，计算机科学与技术，200906</td>
+            <td>中国传媒大学，计算机应用技术，201206</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                先后负责淘宝特色中国、评价和问大家产品线算法工作。特色中国项目中获得最佳合伙人奖励，评价排序中效果超出预期，问大家产品线中作为算法总负责人，带领3人团队完成后端所有算法工作，年度绩效为优秀。
+            </td>
+        </tr>
+        <tr>
+            <td>16</td>
+            <td>阳小珊</td>
+            <td>中国传媒大学，计算机科学与技术，200806</td>
+            <td>中国传媒大学，计算机软件与理论，201006</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                中电科技十五所，国家计算机质检中心测评室主任。国家注册审查员、CNAS评审员、CCF存储专委委员、灾备联盟专家、行业评标专家。863项目电子学会三等奖，所青年人才。主编国标1个，参编国行标8个，专利4项，软著12个。
+            </td>
+        </tr>
+        <tr>
+            <td>17</td>
+            <td>曹玮</td>
+            <td>西安工业大学，计算机科学与技术，200007</td>
+            <td>中国传媒大学，计算机应用技术，200806</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                参加朝阳区协同创新项目-基于大数据的微视频主题推荐及评估系统的研发；参加中传艺考系统招生项目；发表2篇IEEE支持的EI论文。获得一等学业奖学金。
+            </td>
+        </tr>
+        <tr>
+            <td>18</td>
+            <td>孙志伟</td>
+            <td>北京印刷学院，印刷工程， 200407</td>
+            <td>中国传媒大学，计算机应用技术，200706</td>
+            <td>University of Alabama at Birmingham, Computer and Information Sciences,201412</td>
+            <td class="stu_brief" style="width:550px;text-align: left">在信息存储技术领域顶级学术期刊ACM Transactions on
+                Storage发表论文1篇，还有一篇已接受。曾在美国Sandia National Lab从事项目研究，现就职于美国Data Direct Networks 公司的Emerging
+                Technology部门，负责HPC存储产品的研究和设计。
+            </td>
+        </tr>
+        <tr>
+            <td>19</td>
+            <td>袁艺匀</td>
+            <td>中国传媒大学，计算机科学与技术，200806</td>
+            <td>中国传媒大学，计算机应用技术，201006</td>
+            <td>无</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                国家信息中心软件评测中心综合部经理。电子政务云国家工程实验室系统测评负责人；中国智慧城市发展研究中心产业发展组高级研究员；参编《软件产品登记测试通用技术要求》、《中国人民银行信息系统第三方测试规范》。
+            </td>
+        </tr>
+        <tr>
+            <td>20</td>
+            <td>张弛</td>
+            <td>中国传媒大学，计算机科学与技术，200006</td>
+            <td>中国传媒大学，计算机应用技术，200506</td>
+            <td>中国传媒大学，信息计算，201406</td>
+            <td class="stu_brief" style="width:550px;text-align: left">
+                传媒大学计算机学院副教授，从事媒体信息数据化，自然语言处理、数据挖掘、知识库研究。主持和参与国家级、省部级纵向研究课题和横向项目多项。发表论文10余篇，参编书籍2部，获得国家专利2项、软件著作权7项。
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

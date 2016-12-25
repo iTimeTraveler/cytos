@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="handlebars.runtime-v4.0.5.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/teacheronestyle.css') }}" />
+    <title>Title</title>
+</head>
+<body>
+<div class="cardbox" ;>
+    <ul class="all-card" >
+        {% if teacherinfo %}
+            {% for teacher in teacherinfo %}
+                <li class="card">
+                   <div class="both">
+                      <div class="photo"><a target="test" href="{{ url_for('teachers.teachers_thirdPage',teachersID=teacher.id) }}">
+                            {% if teacher.teachers_icon%}
+                                  <img src="{{ url_for('static',filename=teacher.teachers_icon) }}"/>
+                            {% endif %}
+                                   </a></div>
+                      <div class="name"><a target="test" href="{{ url_for('teachers.teachers_thirdPage',teachersID=teacher.id) }}" class="brief" style="color: black">{{ teacher.teachers_lable }}</a></div>
+                    </div>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
+
+</body>
+</html>

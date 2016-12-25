@@ -1,0 +1,69 @@
+h1 {
+    background-color: gray;
+}
+
+
+div.both {
+    width: 350px;
+    margin-left: 20px;
+    margin-top: 0px;
+    background-color: white;
+    padding-bottom:1em;
+}
+a{
+    align-content: center;
+    max-width: 2000px;
+    text-decoration: none;
+    padding: 20px;
+}
+a:hover {
+    color:darkcyan;
+}
+div.name{
+    padding:16px 16px 15px;
+    height:10px;
+    text-align: center;
+    font-size: 12px;
+}
+div.photo{
+    position: relative;
+    left: -20px;
+}
+li.card{
+    display:inline-block;
+    float: left;
+    margin: 50px 90px 50px 90px;
+}
+div.cardbox{
+    margin-left:0px;
+    margin-right:0px;
+    overflow: hidden;
+    background-color:beige;
+}
+ul.allcard{
+    list-style-type: square;
+}
+img{
+    width: 350px;
+    height: 250px;
+}
+.brief{
+    max-width: 350px;
+    max-height:10px;
+    font-family: 微软雅黑;
+    color: #000066;
+}
+.table_stu td{
+    width: 80px;
+     text-align: center;
+}
+.stu_brief{
+    width: 700px;
+    text-align: left;
+}
+.table_stu{
+       margin:auto;
+}
+.container_article{
+    padding: 50px;
+}
