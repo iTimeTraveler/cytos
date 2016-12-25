@@ -20,35 +20,70 @@ def wrapNodes(nodeRecord):
 
 # 对数据库里取出来的关系进行包装（这里也是规范一下数据的格式）
 def wrapEdges(relationRecord):
-    data = {"source": relationRecord['r'].start_node()['name'],
+    data = {"id": relationRecord['r'].__uuid__,
+            "source": relationRecord['r'].start_node()['name'],
             "target": relationRecord['r'].end_node()['name'],
             "relation": str(relationRecord['r'].type())}  # 对每一个关系都构造包装成一个这样的格式， str()是一个方法，把括号里的参数转换为字符串类型
 
     return data
 
 
+# 更改节点
+def dispacthNode(node_obj, action):
+    if action == '1':
+        createNode(node_obj)
+    elif action == '2':
+        deleteNode(node_obj)
+    elif action == '3':
+        deleteNode(node_obj)
+
+# 更改关系
+def dispacthLink(link_obj, action):
+    if action == '1':
+        createLink(link_obj)
+    elif action == '2':
+        deleteLink(link_obj)
+    elif action == '3':
+        deleteLink(link_obj)
 
 # 创建节点
-def createNode(nodeObj):
-    # print(nodeObj['name'], nodeObj['id'])
-    newNode = Node(nodeObj['label'], name=nodeObj['name'])
+def createNode(node_obj):
+    newNode = Node(node_obj['label'], name=node_obj['name'])
     if not graph.exists(newNode):
         print(newNode)
         graph.merge(newNode)
 
+
+# 删除节点
+def deleteNode(node_obj):
+    query = '''
+    MATCH (n)
+    WHERE n.name = {x}
+    DELETE n
+    '''
+    graph.run(query, x=node_obj['name'])
+
+
 # 创建关系
-def createLink(linkObj):
-    if not linkObj.has_key('relation'):
+def createLink(link_obj):
+    if not link_obj.has_key('relation'):
         return
 
-    srcNode = Node(linkObj['source']['label'], name=linkObj['source']['name'])
-    tarNode = Node(linkObj['target']['label'], name=linkObj['target']['name'])
-
-    newLink = Relationship(srcNode, linkObj['relation'], tarNode)
+    srcNode = Node(link_obj['source']['label'], name=link_obj['source']['name'])
+    tarNode = Node(link_obj['target']['label'], name=link_obj['target']['name'])
+    newLink = Relationship(srcNode, link_obj['relation'], tarNode)
     if not graph.exists(newLink):
         print(newLink)
         graph.merge(newLink)
 
+# 删除关系
+def deleteLink(link_obj):
+    query = '''
+    MATCH (n)-[r:INTERACTS]->(m)
+    WHERE (n.name = {src} and m.name = {tag})
+    DELETE r
+    '''
+    graph.run(query, src=link_obj['source']['name'], tag=link_obj['target']['name'])
 
 # 服务器的根路径
 @app.route('/', methods=['GET', 'POST'])
@@ -57,13 +92,24 @@ def index():
         return render_template('demo.html')
 
     if request.method == 'POST':
-        nodesStr = request.values.get('nodes', "")
-        nodesDict = json.loads(nodesStr, encoding="utf-8")
-        map(createNode, nodesDict)
+        if request.values.get('type', "") == 'node':
+            nodesStr = request.values.get('node', "")
+            actionStr = request.values.get('act', "")
+            newNode = json.loads(nodesStr, encoding="utf-8")
+            dispacthNode(newNode, actionStr)
+        elif request.values.get('type', "") == 'link':
+            linksStr = request.values.get('link', "")
+            actionStr = request.values.get('act', "")
+            newLink = json.loads(linksStr, encoding="utf-8")
+            dispacthLink(newLink, actionStr)
 
-        linksStr = request.values.get('links', "")
-        linksDict = json.loads(linksStr, encoding="utf-8")
-        map(createLink, linksDict)
+        # nodesStr = request.values.get('node', "")
+        # nodesDict = json.loads(nodesStr, encoding="utf-8")
+        # map(createNode, nodesDict)
+        #
+        # linksStr = request.values.get('link', "")
+        # linksDict = json.loads(linksStr, encoding="utf-8")
+        # map(createLink, linksDict)
         print("over...")
         return render_template('demo.html')
 

@@ -500,6 +500,7 @@ function restart() {
         link = {source: source, target: target, relation: 'INTERACTS'};
         link[direction] = true;
         links.push(link);
+        submmitModifyLink(link, ModifyAction.ADD);
       }
 
       // 同时选中这条线
@@ -559,6 +560,7 @@ function mousedown() {
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
+  submmitModifyNode(node, ModifyAction.ADD);
 
   // add state to model
   model.addState();
@@ -594,6 +596,7 @@ function mouseup() {
 }
 
 function removeLinkFromModel(link) {
+  submmitModifyLink(link, ModifyAction.DELETE);
   var sourceId = link.source.id,
       targetId = link.target.id;
 
@@ -611,12 +614,15 @@ function spliceLinksForNode(node) {
   });
   toSplice.map(function(l) {
     links.splice(links.indexOf(l), 1);
+    submmitModifyLink(l, ModifyAction.DELETE);
   });
+  submmitModifyNode(node, ModifyAction.DELETE);
 }
 
 // only respond once per keydown
 var lastKeyDown = -1;
 var keyitems = [17, //Ctrl
+                8,  // backspace键
                 46, // delete键
                 66, // B键
                 76, // L键
@@ -646,7 +652,6 @@ function keydown() {
   if(!selected_node && !selected_link) return;
   switch(d3.event.keyCode) {
     case 8: // backspace键
-      break;
     case 46: // delete键
       if(selected_node) {
         model.removeState(selected_node.id);
@@ -822,4 +827,33 @@ function submmitGraph() {
   })
 }
 
+
+var ModifyAction =
+{
+  ADD:1,
+  DELETE:2,
+  ALTER:3
+}
+
+function submmitModifyNode(node, action) {
+  console.log(node);
+  $.post("/", {
+        type: "node",
+        node: JSON.stringify(node),
+        act: action
+    }, function(data){
+
+  })
+}
+
+function submmitModifyLink(link, action) {
+  console.log(link);
+  $.post("/", {
+        type: "link",
+        link: JSON.stringify(link),
+        act: action
+    }, function(data){
+
+  })
+}
 /****************************************************************************/
