@@ -270,7 +270,6 @@ function setSelectedNodeOrLink(node, link) {
 
   if (node) {       // 选中节点、更新编辑面板
       selected_node = node;
-
       // 更新选中节点标签
       selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.id+'</strong>' : '未选中人物');
 
@@ -290,7 +289,7 @@ function setSelectedNodeOrLink(node, link) {
           var nodeKeys = Object.keys(selected_node);
           for(var key in nodeKeys){
             htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                        '<input type="text" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
+                        '<input type="text" value="' + selected_node[nodeKeys[key]] + '" disabled> </div></td></tr>';
           }
           varTableBody.empty();
           varTableBody.html(htmlStr);
@@ -298,7 +297,6 @@ function setSelectedNodeOrLink(node, link) {
   /*==============================================================================================================*/
   } else if (link) {    // 选中连线，更新编辑面板
       selected_link = link;
-
       // 更新选中节点标签
       selectedNodeLabel.html(selected_node ? '<strong>选中了关系：'+'</strong>' : '未选中关系');
 
@@ -431,7 +429,7 @@ function restart() {
 
   g.append('svg:circle')
     .attr('class', 'node')
-    .attr('r', 12)
+    .attr('r', 20)
     .style('fill', function(d) {return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
     .style('stroke', function(d) { return d3.rgb(colors(d.id)).darker().toString(); })
     .classed('reflexive', function(d) { return d.reflexive; })
@@ -618,11 +616,22 @@ function spliceLinksForNode(node) {
 
 // only respond once per keydown
 var lastKeyDown = -1;
-
+var keyitems = [17, //Ctrl
+                46, // delete键
+                66, // B键
+                76, // L键
+                82 // R键
+                ];
 
 //键盘按键事件
 function keydown() {
-  d3.event.preventDefault();
+  if (document.activeElement.nodeName == "INPUT") {
+    return;
+  }
+
+  if(keyitems.indexOf(d3.event.keyCode) > 0){
+    d3.event.preventDefault();      //阻止默认按键行为
+  }
 
   if(lastKeyDown !== -1) return;
   lastKeyDown = d3.event.keyCode;
@@ -637,6 +646,7 @@ function keydown() {
   if(!selected_node && !selected_link) return;
   switch(d3.event.keyCode) {
     case 8: // backspace键
+      break;
     case 46: // delete键
       if(selected_node) {
         model.removeState(selected_node.id);
