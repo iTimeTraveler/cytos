@@ -227,8 +227,10 @@ function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
     return;
   }
+  selected_node = node;
+  selected_link = link;
+
   if (node) {       // 选中节点、更新编辑面板
-      selected_node = node;
       // 更新选中节点标签
       selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.id+'</strong>' : '未选中人物');
 
@@ -251,7 +253,6 @@ function setSelectedNodeOrLink(node, link) {
       }
   /*==============================================================================================================*/
   } else if (link) {    // 选中连线，更新编辑面板
-      selected_link = link;
       // 更新选中节点标签
       selectedNodeLabel.html(selected_link ? '<strong>选中了关系：'+'</strong>' : '未选中关系');
       varTable.classed('inactive', !selected_link);
@@ -276,8 +277,6 @@ function setSelectedNodeOrLink(node, link) {
           varTableBody.html(htmlStr);
       }
   } else {
-      selected_node = null;
-      selected_link = null;
       // 更新选中节点标签
       varTable.classed('inactive', true);
       varSubmmit.classed('inactive', true);
@@ -727,7 +726,7 @@ function setAppMode(newMode) {
 
     // in case ctrl still held
     circle
-      .on('mousedown.drag', null)
+//      .on('mousedown.drag', null)
       .on('touchstart.drag', null);
     svg.classed('ctrl', false);
     lastKeyDown = -1;
@@ -742,7 +741,7 @@ function setAppMode(newMode) {
     resetMouseVars();
 
     // reset eval state
-    circle.classed('waiting', true);
+    circle.classed('waiting', false);
     evalOutput.classed('inactive', true);
   } else return;
 
