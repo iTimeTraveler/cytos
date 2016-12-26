@@ -22,7 +22,7 @@
           </button>
         </div>
         <div id="model-link">
-          <button class="btn btn-inverse" onclick="submmitGraph()">Link to Current Model</button>
+          <button class="btn btn-inverse" onclick="submmit()">Link to Current Model</button>
         </div>
         <div id="app-body">
           <div class="panel tab-content">
@@ -44,23 +44,15 @@
                     <tr class=""><td class="var-name">p:</td><td class="var-value"><div class="btn-group">
                       <input type="text" placeholder="e.g., (p -> []p)">
                     </div></td></tr>
-                    <tr class=""><td class="var-name">q:</td><td class="var-value"><div class="btn-group">
-                      <input type="text" placeholder="e.g., (p -> []p)">
-                    </div></td></tr>
                     <tr class="inactive"><td class="var-name">r:</td><td class="var-value"><div class="btn-group">
                       <button class="btn btn-small btn-success" onclick="setVarForSelectedNode(2,true)">True</button>
                       <button class="btn btn-small btn-danger" onclick="setVarForSelectedNode(2,false)">False</button>
                     </div></td></tr>
-                    <tr class="inactive"><td class="var-name">s:</td><td class="var-value"><div class="btn-group">
-                      <button class="btn btn-small btn-success" onclick="setVarForSelectedNode(3,true)">True</button>
-                      <button class="btn btn-small btn-danger" onclick="setVarForSelectedNode(3,false)">False</button>
-                    </div></td></tr>
-                    <tr class="inactive"><td class="var-name">t:</td><td class="var-value"><div class="btn-group">
-                      <button class="btn btn-small btn-success" onclick="setVarForSelectedNode(4,true)">True</button>
-                      <button class="btn btn-small btn-danger" onclick="setVarForSelectedNode(4,false)">False</button>
-                    </div></td></tr>
                   </tbody>
                 </table>
+                <div id="model-submmit" class="inactive">
+                  <button class="btn btn-success" onclick="updateNodeOrLink()">Link to Current Model</button>
+                </div>
               </div>
               <div class="instructions">
                 <ul class="unstyled">

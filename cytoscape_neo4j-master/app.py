@@ -35,7 +35,7 @@ def dispacthNode(node_obj, action):
     elif action == '2':
         deleteNode(node_obj)
     elif action == '3':
-        deleteNode(node_obj)
+        createNode(node_obj)
 
 # 更改关系
 def dispacthLink(link_obj, action):
@@ -44,7 +44,8 @@ def dispacthLink(link_obj, action):
     elif action == '2':
         deleteLink(link_obj)
     elif action == '3':
-        deleteLink(link_obj)
+        createLink(link_obj)
+
 
 # 创建节点
 def createNode(node_obj):
@@ -52,7 +53,6 @@ def createNode(node_obj):
     if not graph.exists(newNode):
         print(newNode)
         graph.merge(newNode)
-
 
 # 删除节点
 def deleteNode(node_obj):
@@ -62,6 +62,7 @@ def deleteNode(node_obj):
     DELETE n
     '''
     graph.run(query, x=node_obj['name'])
+
 
 
 # 创建关系
@@ -103,19 +104,8 @@ def index():
             newLink = json.loads(linksStr, encoding="utf-8")
             dispacthLink(newLink, actionStr)
 
-        # nodesStr = request.values.get('node', "")
-        # nodesDict = json.loads(nodesStr, encoding="utf-8")
-        # map(createNode, nodesDict)
-        #
-        # linksStr = request.values.get('link', "")
-        # linksDict = json.loads(linksStr, encoding="utf-8")
-        # map(createLink, linksDict)
         print("over...")
         return render_template('demo.html')
-
-
-
-
 
 
 # 提供一个动态路由地址，供前端网页调用

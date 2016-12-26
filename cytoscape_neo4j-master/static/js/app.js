@@ -57,49 +57,6 @@ var lastNodeId = 0,
     nodes = [],
     links = [];
 
-// 生成节点数据
-//var states = model.getStates();
-//states.forEach(function(state) {
-//  if(!state) { lastNodeId++; return; }
-//
-//  var defaultVals = propvars.map(function() { return false; }),
-//      node = {id: ++lastNodeId, vals: defaultVals, reflexive: false};
-//
-//  for(var propvar in state) {
-//    var index = propvars.indexOf(propvar);
-//    if(index !== -1) node.vals[index] = true;
-//  }
-//
-//  nodes.push(node);
-//});
-
-// 生成边的数据
-//nodes.forEach(function(source) {
-//  var sourceId = source.id,
-//      successors = model.getSuccessorsOf(sourceId);
-//
-//  successors.forEach(function(targetId) {
-//    if(sourceId === targetId) {
-//      source.reflexive = true;
-//      return;
-//    }
-//
-//    var target = nodes.filter(function(node) { return node.id === targetId; })[0];
-//
-//    if(sourceId < targetId) {
-//      links.push({source: source, target: target, left: false, right: true });
-//      return;
-//    }
-//
-//    var link = links.filter(function(l) { return (l.source === target && l.target === source); })[0];
-//
-//    if(link) link.left = true;
-//    else links.push({source: target, target: source, left: true, right: false });
-//  });
-//});
-
-//nodes = root.nodes;
-//links = edges;
 
 // set up SVG for D3
 var width  = 800,
@@ -189,6 +146,7 @@ function hideLinkDialog() {
 var varCountButtons = d3.selectAll('#edit-pane .var-count button'),
     varTable = d3.select('#edit-pane table.propvars'),
     varTableBody = d3.select('#edit-pane table.propvars tbody'),
+    varSubmmit = d3.select('#model-submmit'),
     varTableRows = varTable.selectAll('tr'),
     selectedNodeLabel = d3.select('#edit-pane .selected-node-id'),
     evalInput = d3.select('#eval-pane .eval-input'),
@@ -263,11 +221,16 @@ function evaluateFormula() {
 }
 
 
+var filtKeys = new Set();
+    filtKeys.add('x');
+    filtKeys.add('y');
+    filtKeys.add('px');
+    filtKeys.add('py');
+
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
     return;
   }
-
   if (node) {       // 选中节点、更新编辑面板
       selected_node = node;
       // 更新选中节点标签
@@ -282,14 +245,17 @@ function setSelectedNodeOrLink(node, link) {
 //        });
 //      }
       varTable.classed('inactive', !selected_node);
+      varSubmmit.classed('inactive', !selected_node);
 
       //生成左侧变量表
       if(selected_node){
           var htmlStr = "";
           var nodeKeys = Object.keys(selected_node);
           for(var key in nodeKeys){
-            htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+            if(!filtKeys.has(nodeKeys[key])){
+                htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
                         '<input type="text" value="' + selected_node[nodeKeys[key]] + '" disabled> </div></td></tr>';
+            }
           }
           varTableBody.empty();
           varTableBody.html(htmlStr);
@@ -298,7 +264,9 @@ function setSelectedNodeOrLink(node, link) {
   } else if (link) {    // 选中连线，更新编辑面板
       selected_link = link;
       // 更新选中节点标签
-      selectedNodeLabel.html(selected_node ? '<strong>选中了关系：'+'</strong>' : '未选中关系');
+      selectedNodeLabel.html(selected_link ? '<strong>选中了关系：'+'</strong>' : '未选中关系');
+      varTable.classed('inactive', !selected_link);
+      varSubmmit.classed('inactive', !selected_link);
 
       //生成左侧变量表
       if(selected_link){
@@ -315,7 +283,9 @@ function setSelectedNodeOrLink(node, link) {
       selected_node = null;
       selected_link = null;
       // 更新选中节点标签
-      selectedNodeLabel.html('未选中任何东西');
+      varTable.classed('inactive', true);
+      varSubmmit.classed('inactive', true);
+      selectedNodeLabel.html('未选中');
       varTableBody.html('');
   }
 
@@ -479,26 +449,15 @@ function restart() {
 
       //生成新的连线 (update if exists)
       // note: links are strictly source < target; arrows separately specified by booleans
-      var source, target, direction;
-      if(mousedown_node.id < mouseup_node.id) {
-        source = mousedown_node;
-        target = mouseup_node;
-        direction = 'right';
-      } else {
-        source = mouseup_node;
-        target = mousedown_node;
-        direction = 'left';
-      }
+      var source = mousedown_node,
+          target = mouseup_node;
 
       var link = links.filter(function(l) {
         return (l.source === source && l.target === target);
       })[0];
 
-      if(link) {
-        link[direction] = true;
-      } else {
-        link = {source: source, target: target, relation: 'INTERACTS'};
-        link[direction] = true;
+      if(link == null) {
+        link = {source: source, target: target, relation: 'INTERACTS', left: false, right: true};
         links.push(link);
         submmitModifyLink(link, ModifyAction.ADD);
       }
@@ -817,9 +776,9 @@ evalInput.select('input')
   });
 
 function submmitGraph() {
-  console.log(JSON.stringify(nodes));
-  console.log(JSON.stringify(links));
-  $.post("/", {
+//  console.log(JSON.stringify(nodes));
+//  console.log(JSON.stringify(links));
+  $.post("/submmit", {
         nodes: JSON.stringify(nodes),
         links: JSON.stringify(links)
     }, function(data){
@@ -834,26 +793,29 @@ var ModifyAction =
   DELETE:2,
   ALTER:3
 }
-
+function updateNodeOrLink() {
+  if(selected_node) {
+    submmitModifyNode(selected_node, ModifyAction.ALTER);
+  }else if(selected_link) {
+    submmitModifyLink(selected_link, ModifyAction.ALTER);
+  }
+}
 function submmitModifyNode(node, action) {
-  console.log(node);
+//  console.log(node);
   $.post("/", {
         type: "node",
         node: JSON.stringify(node),
         act: action
     }, function(data){
-
   })
 }
-
 function submmitModifyLink(link, action) {
-  console.log(link);
+//  console.log(link);
   $.post("/", {
         type: "link",
         link: JSON.stringify(link),
         act: action
     }, function(data){
-
   })
 }
 /****************************************************************************/
