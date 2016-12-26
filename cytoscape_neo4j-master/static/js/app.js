@@ -221,11 +221,7 @@ function evaluateFormula() {
 }
 
 
-var filtKeys = new Set();
-    filtKeys.add('x');
-    filtKeys.add('y');
-    filtKeys.add('px');
-    filtKeys.add('py');
+var hideKeys = new Set(['x', 'y', 'px', 'py']);
 
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
@@ -237,13 +233,6 @@ function setSelectedNodeOrLink(node, link) {
       selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.id+'</strong>' : '未选中人物');
 
       // 更新左侧变量面板
-//      if(selected_node) {
-//        var vals = selected_node.vals;
-//        varTableRows.each(function(d,i) {
-//          d3.select(this).select('.var-value .btn-success').classed('active', vals[i]);
-//          d3.select(this).select('.var-value .btn-danger').classed('active', !vals[i]);
-//        });
-//      }
       varTable.classed('inactive', !selected_node);
       varSubmmit.classed('inactive', !selected_node);
 
@@ -252,7 +241,7 @@ function setSelectedNodeOrLink(node, link) {
           var htmlStr = "";
           var nodeKeys = Object.keys(selected_node);
           for(var key in nodeKeys){
-            if(!filtKeys.has(nodeKeys[key])){
+            if(!hideKeys.has(nodeKeys[key])){
                 htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
                         '<input type="text" value="' + selected_node[nodeKeys[key]] + '" disabled> </div></td></tr>';
             }
@@ -270,11 +259,18 @@ function setSelectedNodeOrLink(node, link) {
 
       //生成左侧变量表
       if(selected_link){
-          var htmlStr = "";
-          var linkKeys = Object.keys(selected_link);
+          var value = "",
+              htmlStr = "",
+              linkKeys = Object.keys(selected_link);
           for(var key in linkKeys){
+            if(linkKeys[key] == 'source' || linkKeys[key] == 'target'){
+              console.log(selected_link[linkKeys[key]]);
+              value = selected_link[linkKeys[key]]['name'];
+            }else {
+              value = selected_link[linkKeys[key]];
+            }
             htmlStr += ' <tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                        '<input type="text" value="' + selected_link[linkKeys[key]] + '"> </div></td></tr>';
+                        '<input type="text" value="' + value + '"> </div></td></tr>';
           }
           varTableBody.empty();
           varTableBody.html(htmlStr);
