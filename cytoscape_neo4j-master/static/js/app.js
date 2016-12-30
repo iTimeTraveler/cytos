@@ -53,7 +53,7 @@ if(modelParam) modelString = modelParam[1];
 model.loadFromModelString(modelString);
 
 // 初始化节点和边, based on MPL model
-var lastNodeId = 0,
+var lastNodeIndex = 0,
     nodes = [],
     links = [];
 
@@ -61,7 +61,7 @@ var lastNodeId = 0,
 // set up SVG for D3
 var width  = 800,
     height = 800,
-    colors = d3.scale.category10();
+    colors = d3.scale.category20();
 
 var svg = d3.select('#app-body .graph')
   .append('svg')
@@ -142,7 +142,7 @@ function hideLinkDialog() {
   setTimeout(function() { backdrop.classed('inactive', true); }, 300);
 }
 
-// handles for dynamic content in panel
+// 左侧面板动态内容区 handles for dynamic content in panel
 var varCountButtons = d3.selectAll('#edit-pane .var-count button'),
     varTable = d3.select('#edit-pane table.propvars'),
     varTableBody = d3.select('#edit-pane table.propvars tbody'),
@@ -221,7 +221,7 @@ function evaluateFormula() {
 }
 
 
-var hideKeys = new Set(['x', 'y', 'px', 'py']);
+var hideKeys = new Set(['index', 'x', 'y', 'px', 'py']);
 
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
@@ -232,7 +232,7 @@ function setSelectedNodeOrLink(node, link) {
 
   if (node) {       // 选中节点、更新编辑面板
       // 更新选中节点标签
-      selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.id+'</strong>' : '未选中人物');
+      selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.temp_index+'</strong>' : '未选中人物');
 
       // 更新左侧变量面板
       varTable.classed('inactive', !selected_node);
@@ -316,7 +316,7 @@ function setVarForSelectedNode(varnum, value) {
   selected_node.vals[varnum] = value;
   var update = {};
   update[propvars[varnum]] = value;
-  model.editState(selected_node.id, update);
+  model.editState(selected_node.temp_index, update);
 
   //update buttons
   var row = d3.select(varTableRows[0][varnum]);
@@ -356,7 +356,7 @@ function restart() {
   //link
   path = path.data(links);
 
-  // 更新link
+  // 更新已存在的link
   path.classed('selected', function(d) { return d === selected_link; })
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
     .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; });
@@ -381,12 +381,11 @@ function restart() {
   path.exit().remove();
 
   // 节点
-  // NB: the function arg is crucial here! nodes are known by id, not by index!
-  circle = circle.data(nodes, function(d) { return d.id; });
+  circle = circle.data(nodes, function(d) { return d.temp_index; });
 
-  // update existing nodes (reflexive & selected visual states)
+  // 更新已存在的nodes (reflexive & selected visual states)
   circle.selectAll('circle')
-    .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
+    .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.temp_index)).brighter().toString() : colors(d.temp_index); })
     .classed('reflexive', function(d) { return d.reflexive; });
 
   // 添加新节点
@@ -395,8 +394,8 @@ function restart() {
   g.append('svg:circle')
     .attr('class', 'node')
     .attr('r', 20)
-    .style('fill', function(d) {return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
-    .style('stroke', function(d) { return d3.rgb(colors(d.id)).darker().toString(); })
+    .style('fill', function(d) {return (d === selected_node) ? d3.rgb(colors(d.temp_index)).brighter().toString() : colors(d.temp_index); })
+    .style('stroke', function(d) { return d3.rgb(colors(d.temp_index)).darker().toString(); })
     .classed('reflexive', function(d) { return d.reflexive; })
     .on('mouseover', function(d) {
       if(appMode !== MODE.EDIT || !mousedown_node || d === mousedown_node) return;
@@ -440,7 +439,7 @@ function restart() {
       d3.select(this).attr('transform', '');
 
       // add transition to model
-      model.addTransition(mousedown_node.id, mouseup_node.id);
+      model.addTransition(mousedown_node.temp_index, mouseup_node.temp_index);
 
       //生成新的连线 (update if exists)
       // note: links are strictly source < target; arrows separately specified by booleans
@@ -467,7 +466,7 @@ function restart() {
       .attr('x', 0)
       .attr('y', 4)
       .attr('class', 'id')
-      .text(function(d) { return d.name == null ? d.id : d.name; });
+      .text(function(d) { return d.name == null ? d.temp_index : d.name; });
 
   //文字阴影
   g.append('svg:text')
@@ -502,15 +501,15 @@ function mousedown() {
   var exist;
   do {
     exist = false;
-    ++lastNodeId;
+    ++lastNodeIndex;
     for(i in nodes) {
-        if(nodes[i].id == lastNodeId) exist = true;
+        if(nodes[i].temp_index == lastNodeIndex) exist = true;
     }
   }while(exist)
 
   //添加新节点
   var point = d3.mouse(this),
-      node = {id: lastNodeId+"", "label":"Character","name": lastNodeId+"","weight":1};
+      node = {temp_index: lastNodeIndex+"", "label":"Character", "name": lastNodeIndex+"", "weight":1};
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
@@ -551,8 +550,8 @@ function mouseup() {
 
 function removeLinkFromModel(link) {
   submmitModifyLink(link, ModifyAction.DELETE);
-  var sourceId = link.source.id,
-      targetId = link.target.id;
+  var sourceId = link.source.temp_index,
+      targetId = link.target.temp_index;
 
   // remove leftward transition
   if(link.left) model.removeTransition(targetId, sourceId);
@@ -608,7 +607,7 @@ function keydown() {
     case 8: // backspace键
     case 46: // delete键
       if(selected_node) {
-        model.removeState(selected_node.id);
+        model.removeState(selected_node.temp_index);
         nodes.splice(nodes.indexOf(selected_node), 1);
         spliceLinksForNode(selected_node);
       } else if(selected_link) {
@@ -620,8 +619,8 @@ function keydown() {
       break;
     case 66: // B键
       if(selected_link) {
-        var sourceId = selected_link.source.id,
-            targetId = selected_link.target.id;
+        var sourceId = selected_link.source.temp_index,
+            targetId = selected_link.target.temp_index;
         // 把单向箭头改为双向
         if(!selected_link.left) {
           selected_link.left = true;
@@ -636,8 +635,8 @@ function keydown() {
       break;
     case 76: // L键
       if(selected_link) {
-        var sourceId = selected_link.source.id,
-            targetId = selected_link.target.id;
+        var sourceId = selected_link.source.temp_index,
+            targetId = selected_link.target.temp_index;
         // 把箭头改为指向source
         if(!selected_link.left) {
           selected_link.left = true;
@@ -655,14 +654,14 @@ function keydown() {
         // toggle node reflexivity
         if(selected_node.reflexive) {
           selected_node.reflexive = false;
-          model.removeTransition(selected_node.id, selected_node.id);
+          model.removeTransition(selected_node.temp_index, selected_node.temp_index);
         } else {
           selected_node.reflexive = true;
-          model.addTransition(selected_node.id, selected_node.id);
+          model.addTransition(selected_node.temp_index, selected_node.temp_index);
         }
       } else if(selected_link) {
-        var sourceId = selected_link.source.id,
-            targetId = selected_link.target.id;
+        var sourceId = selected_link.source.temp_index,
+            targetId = selected_link.target.temp_index;
         // 把箭头改为指向target
         if(selected_link.left) {
           selected_link.left = false;

@@ -167,9 +167,13 @@ svg.edit:not(.active):not(.ctrl) {
   cursor: crosshair;
 }
 
+#end-arrow > path {
+  fill: #CBCBCB;
+}
+
 path.link {
   fill: none;
-  stroke: #999;
+  stroke: #CBCBCB;
   stroke-width: 7px;
   cursor: default;
 }
