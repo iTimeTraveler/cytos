@@ -28,7 +28,7 @@ def wrapEdges(relationRecord):
 
 
 ##### 更改节点 #####
-hideKeys = set(['index', 'x', 'y', 'px', 'py', 'temp_index'])
+hideKeys = {'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right'}
 def dispacthNode(node_obj, action):
     if action == '1':
         createNode(node_obj)
@@ -45,7 +45,6 @@ def createNode(node_obj):
         if key not in hideKeys:
             newNode[key] = node_obj[key]
     newNode.push()
-
 
 # 删除节点
 def deleteNode(node_obj):
@@ -75,17 +74,17 @@ def createLink(link_obj):
     srcNode = Node(link_obj['source']['label'], name=link_obj['source']['name'])
     tarNode = Node(link_obj['target']['label'], name=link_obj['target']['name'])
     newLink = Relationship(srcNode, link_obj['relation'], tarNode)
+    deleteLink(link_obj)
     graph.merge(newLink)
     for key in link_obj.keys():
         if key not in hideKeys:
             newLink[key] = link_obj[key]
     newLink.push()
 
-
 # 删除关系
 def deleteLink(link_obj):
     query = '''
-    MATCH (n)-[r:INTERACTS]->(m)
+    MATCH (n)-[r]->(m)
     WHERE (n.name = {src} and m.name = {tag})
     DELETE r
     '''

@@ -219,7 +219,7 @@ function evaluateFormula() {
 }
 
 
-var hideKeys = new Set(['index', 'x', 'y', 'px', 'py']);
+var hideKeys = new Set(['index', 'x', 'y', 'px', 'py', 'nid', 'temp_index', 'left', 'right']);
 
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
@@ -242,8 +242,17 @@ function setSelectedNodeOrLink(node, link) {
           var nodeKeys = Object.keys(selected_node);
           for(var key in nodeKeys){
             if(!hideKeys.has(nodeKeys[key])){
-                htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                        '<input type="text" value="' + selected_node[nodeKeys[key]] + '" disabled> </div></td></tr>';
+                switch(nodeKeys[key]) {
+                    // 不能修改的字段使用lable显示
+                    case 'name':
+                        htmlStr += '<tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                            '<label for="">' + selected_node[nodeKeys[key]] + '</label> </div></td></tr>';
+                        break;
+                    default:
+                        htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                            '<input id="' + nodeKeys[key] + '_value" type="text" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
+                        break;
+                }
             }
           }
           varTableBody.empty();
@@ -258,18 +267,23 @@ function setSelectedNodeOrLink(node, link) {
 
       //生成左侧变量表
       if(selected_link){
-          var value = "",
-              htmlStr = "",
+          var htmlStr = "",
               linkKeys = Object.keys(selected_link);
           for(var key in linkKeys){
-            if(linkKeys[key] == 'source' || linkKeys[key] == 'target'){
-              console.log(selected_link[linkKeys[key]]);
-              value = selected_link[linkKeys[key]]['name'];
-            }else {
-              value = selected_link[linkKeys[key]];
+            if(!hideKeys.has(linkKeys[key])){
+                switch(linkKeys[key]) {
+                    // 不能修改的字段使用lable显示
+                    case 'source':
+                    case 'target':
+                        htmlStr += '<tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                            '<label for="">' + selected_link[linkKeys[key]]['name'] + '</label> </div></td></tr>';
+                        break;
+                    default:
+                        htmlStr += '<tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                            '<input id="' + linkKeys[key] + '_value" type="text" value="' + selected_link[linkKeys[key]] + '"> </div></td></tr>';
+                        break;
+                }
             }
-            htmlStr += ' <tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                        '<input type="text" value="' + value + '"> </div></td></tr>';
           }
           varTableBody.empty();
           varTableBody.html(htmlStr);
@@ -787,8 +801,26 @@ var ModifyAction =
 }
 function updateNodeOrLink() {
   if(selected_node) {
+    // 读取左侧表格节点的数据
+    var nodeKeys = Object.keys(selected_node);
+    for(var i in nodeKeys){
+        var input = document.getElementById(nodeKeys[i]+'_value');
+        if(input != null){
+            selected_node[nodeKeys[i]] = input.value;
+            console.log(nodeKeys[i] + "=" + input.value);
+        }
+    }
+    console.log(selected_node);
     submmitModifyNode(selected_node, ModifyAction.ALTER);
   }else if(selected_link) {
+    // 读取左侧表格边的数据
+    var linkKeys = Object.keys(selected_link);
+    for(var i in linkKeys){
+        var input = document.getElementById(linkKeys[i]+'_value');
+        if(input != null){
+            selected_link[linkKeys[i]] = input.value;
+        }
+    }
     submmitModifyLink(selected_link, ModifyAction.ALTER);
   }
 }
@@ -810,4 +842,3 @@ function submmitModifyLink(link, action) {
     }, function(data){
   })
 }
-/****************************************************************************/
