@@ -87,8 +87,7 @@ svg.append('svg:defs').append('svg:marker')
     .attr('markerHeight', 3)
     .attr('orient', 'auto')
   .append('svg:path')
-    .attr('d', 'M0,-5L10,0L0,5')
-    .attr('fill', '#000');
+    .attr('d', 'M0,-5L10,0L0,5');
 
 svg.append('svg:defs').append('svg:marker')
     .attr('id', 'start-arrow')
@@ -98,8 +97,7 @@ svg.append('svg:defs').append('svg:marker')
     .attr('markerHeight', 3)
     .attr('orient', 'auto')
   .append('svg:path')
-    .attr('d', 'M10,-5L0,0L10,5')
-    .attr('fill', '#000');
+    .attr('d', 'M10,-5L0,0L10,5');
 
 // 编辑：拖拽节点出来的边
 var drag_line = svg.append('svg:path')

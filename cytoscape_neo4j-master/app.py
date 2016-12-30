@@ -40,12 +40,12 @@ def dispacthNode(node_obj, action):
 # 创建节点
 def createNode(node_obj):
     newNode = Node(node_obj['label'], name=node_obj['name'])
+    graph.merge(newNode)
     for key in node_obj.keys():
         if key not in hideKeys:
             newNode[key] = node_obj[key]
-    if not graph.exists(newNode):
-        print(newNode)
-        graph.merge(newNode)
+    newNode.push()
+
 
 # 删除节点
 def deleteNode(node_obj):
@@ -71,12 +71,16 @@ def dispacthLink(link_obj, action):
 def createLink(link_obj):
     if not link_obj.has_key('relation'):
         return
+    print(link_obj)
     srcNode = Node(link_obj['source']['label'], name=link_obj['source']['name'])
     tarNode = Node(link_obj['target']['label'], name=link_obj['target']['name'])
     newLink = Relationship(srcNode, link_obj['relation'], tarNode)
-    if not graph.exists(newLink):
-        print(newLink)
-        graph.merge(newLink)
+    graph.merge(newLink)
+    for key in link_obj.keys():
+        if key not in hideKeys:
+            newLink[key] = link_obj[key]
+    newLink.push()
+
 
 # 删除关系
 def deleteLink(link_obj):
