@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Flask, jsonify, json, render_template, request, current_app
+from flask import Flask, jsonify, json, render_template, redirect, request, url_for, current_app
 # 导入py2neo包里的graph（图数据库）
 from py2neo import Graph, Node, Relationship
 
@@ -15,7 +15,6 @@ def wrapNodes(nodeRecord):
     data = {"id": nodeRecord['id'], "temp_index": count, "label": next(iter(nodeRecord['n'].labels()))}  # 对每一个节点都构造包装成一个这样的格式
     data.update(nodeRecord['n'].properties)
     count += 1
-
     return data
 
 # 对数据库里取出来的关系进行包装（这里也是规范一下数据的格式）
@@ -24,7 +23,6 @@ def wrapEdges(relationRecord):
             "source": relationRecord['r'].start_node()['name'],
             "target": relationRecord['r'].end_node()['name'],
             "relation": str(relationRecord['r'].type())}  # 对每一个关系都构造包装成一个这样的格式， str()是一个方法，把括号里的参数转换为字符串类型
-
     return data
 
 
@@ -40,9 +38,10 @@ def dispacthNode(node_obj, action):
 
 # 创建节点
 def createNode(node_obj):
-    n = graph.node(node_obj['id'])
     # 数据库已存在则更新
-    if n is not None and graph.exists(n):
+    print(node_obj.has_key('id'))
+    if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
+        n = graph.node(node_obj['id'])
         for key in node_obj.keys():
             if key not in hideKeys:
                 n[key] = node_obj[key]
@@ -125,7 +124,8 @@ def index():
             dispacthLink(newLink, actionStr)
 
         print("response over...")
-        return render_template('demo.html')
+        # return render_template('demo.html')
+        return redirect(url_for('get_graph'))
 
 
 # 提供一个动态路由地址，供前端网页调用

@@ -1,6 +1,14 @@
 $(function(){
   $.get('/graph', {id: 'Robin', password: '123456'}, function(result) {
 
+    handleGraphResult(result);
+    
+}, 'json');
+});
+
+
+var handleGraphResult = function(result) {
+
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));
     var root = result.elements;
@@ -25,11 +33,7 @@ $(function(){
 
     //入口
     setAppMode(MODE.EDIT);
-
-  }, 'json');
-});
-
-
+}
 
 
 /****************************************************************************/
@@ -71,8 +75,6 @@ var svg = d3.select('#app-body .graph')
 
 // 初始化d3力导向布局
 var force = d3.layout.force()
-    .nodes(nodes)
-    .links(links)
     .size([width, height])
     .linkDistance(150)
     .charge(-500)
@@ -712,6 +714,7 @@ function setAppMode(newMode) {
   if(newMode === MODE.EDIT) {
     // 启用listeners
     svg.classed('edit', true)
+      .style('background', '#eee')
       .on('mousedown', mousedown)
       .on('mousemove', mousemove)
       .on('mouseup', mouseup);
@@ -728,6 +731,7 @@ function setAppMode(newMode) {
   } else if(newMode === MODE.EVAL) {
     // 禁用listeners (except for I-bar prevention)
     svg.classed('edit', false)
+      .style('background', '#fff')
       .on('mousedown', function() { d3.event.preventDefault(); })
       .on('mousemove', null)
       .on('mouseup', null);
@@ -831,6 +835,8 @@ function submmitModifyNode(node, action) {
         node: JSON.stringify(node),
         act: action
     }, function(data){
+    handleGraphResult(data);
+    restart();
   })
 }
 function submmitModifyLink(link, action) {
