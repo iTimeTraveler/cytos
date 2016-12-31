@@ -12,7 +12,7 @@ graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 # 对数据库里取出来的节点进行包装（这里是规范一下数据的格式）
 def wrapNodes(nodeRecord):
     global count
-    data = {"temp_index": count, "nid": nodeRecord['n'].__name__, "label": next(iter(nodeRecord['n'].labels()))}  # 对每一个节点都构造包装成一个这样的格式
+    data = {"id": nodeRecord['id'], "temp_index": count, "label": next(iter(nodeRecord['n'].labels()))}  # 对每一个节点都构造包装成一个这样的格式
     data.update(nodeRecord['n'].properties)
     count += 1
 
@@ -20,7 +20,8 @@ def wrapNodes(nodeRecord):
 
 # 对数据库里取出来的关系进行包装（这里也是规范一下数据的格式）
 def wrapEdges(relationRecord):
-    data = {"source": relationRecord['r'].start_node()['name'],
+    data = {"id": relationRecord['id'],
+            "source": relationRecord['r'].start_node()['name'],
             "target": relationRecord['r'].end_node()['name'],
             "relation": str(relationRecord['r'].type())}  # 对每一个关系都构造包装成一个这样的格式， str()是一个方法，把括号里的参数转换为字符串类型
 
@@ -39,12 +40,24 @@ def dispacthNode(node_obj, action):
 
 # 创建节点
 def createNode(node_obj):
-    newNode = Node(node_obj['label'], name=node_obj['name'])
-    graph.merge(newNode)
-    for key in node_obj.keys():
-        if key not in hideKeys:
-            newNode[key] = node_obj[key]
-    newNode.push()
+    n = graph.node(node_obj['id'])
+    # 数据库已存在则更新
+    if n is not None and graph.exists(n):
+        for key in node_obj.keys():
+            if key not in hideKeys:
+                n[key] = node_obj[key]
+        n.push()
+        print("oldNode: %s" % n)
+    # 不存在则新建
+    else:
+        newNode = Node(node_obj['label'], name=node_obj['name'])
+        graph.merge(newNode)
+        for key in node_obj.keys():
+            if key not in hideKeys:
+                newNode[key] = node_obj[key]
+        newNode.push()
+        print("newNode: %s" % newNode)
+
 
 # 删除节点
 def deleteNode(node_obj):
@@ -120,8 +133,8 @@ def index():
 def get_graph():
     global count
     count = 0
-    nodes = map(wrapNodes, graph.run('MATCH (n:Character) RETURN n').data())  # 从数据库里取出所有节点，交给buildNodes函数加工处理
-    edges = map(wrapEdges, graph.run('MATCH ()-[r:INTERACTS]->() RETURN r').data())  # 从数据库里取出所有关系，交给buildEdges加工处理
+    nodes = map(wrapNodes, graph.run('MATCH (n) RETURN n,ID(n) as id').data())  # 从数据库里取出所有节点，交给buildNodes函数加工处理
+    edges = map(wrapEdges, graph.run('MATCH ()-[r]->() RETURN r,ID(r) as id').data())  # 从数据库里取出所有关系，交给buildEdges加工处理
 
     return jsonify(elements = {"nodes": nodes, "edges": edges}) #把处理好的数据，整理成json格式，然后返回给客户端
 

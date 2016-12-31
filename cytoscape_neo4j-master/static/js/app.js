@@ -219,7 +219,7 @@ function evaluateFormula() {
 }
 
 
-var hideKeys = new Set(['index', 'x', 'y', 'px', 'py', 'nid', 'temp_index', 'left', 'right']);
+var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'temp_index', 'left', 'right']);
 
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
@@ -244,7 +244,7 @@ function setSelectedNodeOrLink(node, link) {
             if(!hideKeys.has(nodeKeys[key])){
                 switch(nodeKeys[key]) {
                     // 不能修改的字段使用lable显示
-                    case 'name':
+                    case '':
                         htmlStr += '<tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
                             '<label for="">' + selected_node[nodeKeys[key]] + '</label> </div></td></tr>';
                         break;
