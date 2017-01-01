@@ -216,7 +216,7 @@ function evaluateFormula() {
 }
 
 
-var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'temp_index', 'left', 'right']);
+var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'temp_index', 'left', 'right', 'hash']);
 
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {

@@ -99,7 +99,7 @@ def createLink(link_obj):
     srcNode = Node(link_obj['source']['label'], name=link_obj['source']['name'])
     tarNode = Node(link_obj['target']['label'], name=link_obj['target']['name'])
     newLink = Relationship(srcNode, link_obj['relation'], tarNode)
-    deleteLink(link_obj)
+    deleteLink(link_obj)    # 删除已存在的关系
     graph.merge(newLink)
     for key in link_obj.keys():
         if key not in hideKeys:
