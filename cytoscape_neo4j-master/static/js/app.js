@@ -1,14 +1,6 @@
 $(function(){
   $.get('/graph', {id: 'Robin', password: '123456'}, function(result) {
 
-    handleGraphResult(result);
-    
-}, 'json');
-});
-
-
-var handleGraphResult = function(result) {
-
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));
     var root = result.elements;
@@ -33,7 +25,10 @@ var handleGraphResult = function(result) {
 
     //入口
     setAppMode(MODE.EDIT);
-}
+    
+}, 'json');
+});
+
 
 
 /****************************************************************************/
@@ -797,8 +792,7 @@ function submmitGraph() {
 }
 
 
-var ModifyAction =
-{
+var ModifyAction ={
   ADD:1,
   DELETE:2,
   ALTER:3
@@ -806,16 +800,22 @@ var ModifyAction =
 function updateNodeOrLink() {
   if(selected_node) {
     // 读取左侧表格节点的数据
+    var posi = nodes.indexOf(selected_node);
     var nodeKeys = Object.keys(selected_node);
     for(var i in nodeKeys){
         var input = document.getElementById(nodeKeys[i]+'_value');
         if(input != null){
             selected_node[nodeKeys[i]] = input.value;
-            console.log(nodeKeys[i] + "=" + input.value);
         }
     }
-    console.log(selected_node);
     submmitModifyNode(selected_node, ModifyAction.ALTER);
+
+    // 先删除再添加
+    nodes.splice(posi, 1);
+    restart();
+    nodes.splice(posi, 0, selected_node);
+    restart();
+
   }else if(selected_link) {
     // 读取左侧表格边的数据
     var linkKeys = Object.keys(selected_link);
@@ -829,18 +829,22 @@ function updateNodeOrLink() {
   }
 }
 function submmitModifyNode(node, action) {
-//  console.log(node);
   $.post("/", {
         type: "node",
         node: JSON.stringify(node),
         act: action
     }, function(data){
-    handleGraphResult(data);
-    restart();
+        if(action === ModifyAction.ADD) {
+            // 添加服务端返回的id
+            temp = node;
+            temp['id'] = data.result.uid;
+            nodes.splice(nodes.indexOf(node), 1, temp);
+            restart();
+        }else if(action === ModifyAction.ALTER){
+        }
   })
 }
 function submmitModifyLink(link, action) {
-//  console.log(link);
   $.post("/", {
         type: "link",
         link: JSON.stringify(link),

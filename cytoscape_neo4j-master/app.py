@@ -30,16 +30,15 @@ def wrapEdges(relationRecord):
 hideKeys = {'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right'}
 def dispacthNode(node_obj, action):
     if action == '1':
-        createNode(node_obj)
+        return createNode(node_obj)
     elif action == '2':
-        deleteNode(node_obj)
+        return deleteNode(node_obj)
     elif action == '3':
-        createNode(node_obj)
+        return createNode(node_obj)
 
 # 创建节点
 def createNode(node_obj):
     # 数据库已存在则更新
-    print(node_obj.has_key('id'))
     if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
         n = graph.node(node_obj['id'])
         for key in node_obj.keys():
@@ -47,15 +46,28 @@ def createNode(node_obj):
                 n[key] = node_obj[key]
         n.push()
         print("oldNode: %s" % n)
+        return ''
     # 不存在则新建
     else:
         newNode = Node(node_obj['label'], name=node_obj['name'])
-        graph.merge(newNode)
         for key in node_obj.keys():
             if key not in hideKeys:
                 newNode[key] = node_obj[key]
+        h = str(hash(newNode))
+        newNode['hash'] = h
+        graph.merge(newNode)
         newNode.push()
         print("newNode: %s" % newNode)
+
+        # 返回新增节点的id
+        query = '''
+        MATCH (n)
+        WHERE n.hash = {x}
+        RETURN n, ID(n) as id
+        '''
+        result = graph.run(query, x=h).data()
+        print(result)
+        return jsonify(result={"uid":result[0]['id']})
 
 
 # 删除节点
@@ -66,6 +78,7 @@ def deleteNode(node_obj):
     DELETE n
     '''
     graph.run(query, x=node_obj['name'])
+    return ''
 
 
 
@@ -92,6 +105,7 @@ def createLink(link_obj):
         if key not in hideKeys:
             newLink[key] = link_obj[key]
     newLink.push()
+    return ''
 
 # 删除关系
 def deleteLink(link_obj):
@@ -101,6 +115,7 @@ def deleteLink(link_obj):
     DELETE r
     '''
     graph.run(query, src=link_obj['source']['name'], tag=link_obj['target']['name'])
+    return ''
 
 
 
@@ -116,16 +131,12 @@ def index():
             nodesStr = request.values.get('node', "")
             actionStr = request.values.get('act', "")
             newNode = json.loads(nodesStr, encoding="utf-8")
-            dispacthNode(newNode, actionStr)
+            return dispacthNode(newNode, actionStr)
         elif request.values.get('type', "") == 'link':
             linksStr = request.values.get('link', "")
             actionStr = request.values.get('act', "")
             newLink = json.loads(linksStr, encoding="utf-8")
-            dispacthLink(newLink, actionStr)
-
-        print("response over...")
-        # return render_template('demo.html')
-        return redirect(url_for('get_graph'))
+            return dispacthLink(newLink, actionStr)
 
 
 # 提供一个动态路由地址，供前端网页调用
