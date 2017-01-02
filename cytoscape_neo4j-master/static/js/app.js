@@ -22,6 +22,8 @@ $(function(){
     force.nodes(nodes)
         .links(links);
 
+    svg.call(zoomListener);
+
     //入口
     setAppMode(MODE.EDIT);
     
@@ -59,13 +61,35 @@ var lastNodeIndex = 0,
 // set up SVG for D3
 var width  = 800,
     height = 800,
+    radius = 20;
     colors = d3.scale.category20();
 
 var svg = d3.select('#app-body .graph')
-  .append('svg')
-  .attr('oncontextmenu', 'return false;')
-  .attr('width', width)
-  .attr('height', height);
+    .append('svg')
+    .attr('oncontextmenu', 'return false;')
+    .attr('width', width)
+    .attr('height', height);
+
+//缩放监听
+var zoomListener = d3.behavior.zoom()
+    .scaleExtent([0.3, 5])  //缩放比例区间
+    .on("zoom", function() {
+        var sc = "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")";
+        path.attr("transform", sc);
+        circle.selectAll('g').attr("transform",  sc);
+        circle.selectAll('circle').attr("transform",  sc);
+        circle.selectAll('text').attr("transform",  sc);
+    });
+
+var unzoomListener = d3.behavior.zoom()
+    .scaleExtent([1, 1])
+    .on("zoom", function() {
+        var sc = "translate(" + 1 + ")scale(" + 1 + ")";
+        path.attr("transform", sc);
+        circle.selectAll('g').attr("transform",  sc);
+        circle.selectAll('circle').attr("transform",  sc);
+        circle.selectAll('text').attr("transform",  sc);
+    });
 
 // 初始化d3力导向布局
 var force = d3.layout.force()
@@ -117,25 +141,6 @@ function resetMouseVars() {
   mousedown_link = null;
 }
 
-// 右上角 'Link to Model' dialog
-var backdrop = d3.select('.modal-backdrop'),
-    linkDialog = d3.select('#link-dialog'),
-    linkInputElem = linkDialog.select('input').node();
-
-function showLinkDialog() {
-  linkInputElem.value = 'http://rkirsling.github.com/modallogic/?model=' + model.getModelString();
-
-  backdrop.classed('inactive', false);
-  setTimeout(function() { backdrop.classed('in', true); linkDialog.classed('inactive', false); }, 0);
-  setTimeout(function() { linkDialog.classed('in', true); }, 150);
-}
-
-function hideLinkDialog() {
-  linkDialog.classed('in', false);
-  setTimeout(function() { linkDialog.classed('inactive', true); backdrop.classed('in', false); }, 150);
-  setTimeout(function() { backdrop.classed('inactive', true); }, 300);
-}
-
 // 左侧面板动态内容区 handles for dynamic content in panel
 var varCountButtons = d3.selectAll('#edit-pane .var-count button'),
     varTable = d3.select('#edit-pane table.propvars'),
@@ -147,152 +152,6 @@ var varCountButtons = d3.selectAll('#edit-pane .var-count button'),
     evalOutput = d3.select('#eval-pane .eval-output'),
     currentFormula = d3.select('#app-body .current-formula');
 
-function evaluateFormula() {
-  // 确保已经输入了公式
-  var formula = evalInput.select('input').node().value;
-  if(!formula) {
-    evalOutput
-      .html('<div class="alert">No formula!</div>')
-      .classed('inactive', false);
-    return;
-  }
-
-  // 检查公式 check formula for bad vars
-  var varsInUse = propvars.slice(0, varCount);
-  var badVars = (formula.match(/\w+/g) || []).filter(function(v) {
-    return varsInUse.indexOf(v) === -1;
-  });
-  if(badVars.length) {
-    evalOutput
-      .html('<div class="alert">Invalid variables in formula!</div>')
-      .classed('inactive', false);
-    return;
-  }
-
-  // 解析公式 and catch bad input
-  var wff = null;
-  try {
-    wff = new MPL.Wff(formula);
-  } catch(e) {
-    evalOutput
-      .html('<div class="alert">Invalid formula!</div>')
-      .classed('inactive', false);
-    return;
-  }
-
-  // 评估公式 at each state in model
-  var trueStates  = [],
-      falseStates = [];
-  nodes.forEach(function(node, index) {
-    var id = node.id,
-        truthVal = MPL.truth(model, id, wff);
-
-    if(truthVal) trueStates.push(id);
-    else falseStates.push(id);
-
-    d3.select(circle[0][index])
-      .classed('waiting', false)
-      .classed('true', truthVal)
-      .classed('false', !truthVal);
-  });
-
-  // display evaluated formula
-  currentFormula
-    .html('<strong>Current formula:</strong><br>$' + wff.latex() + '$')
-    .classed('inactive', false);
-
-  // display truth evaluation
-  var latexTrue  =  trueStates.length ? '$w_{' +  trueStates.join('},$ $w_{') + '}$' : '$\\varnothing$',
-      latexFalse = falseStates.length ? '$w_{' + falseStates.join('},$ $w_{') + '}$' : '$\\varnothing$';
-  evalOutput
-    .html('<div class="alert alert-success"><strong>True:</strong><div><div>' + latexTrue + '</div></div></div>' +
-          '<div class="alert alert-error"><strong>False:</strong><div><div>' + latexFalse + '</div></div></div>')
-    .classed('inactive', false);
-
-  // 重新渲染 LaTeX
-  MathJax.Hub.Queue(['Typeset', MathJax.Hub, currentFormula.node()]);
-  MathJax.Hub.Queue(['Typeset', MathJax.Hub, evalOutput.node()]);
-}
-
-
-var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'temp_index', 'left', 'right', 'hash']);
-
-function setSelectedNodeOrLink(node, link) {
-  if (node != null && link != null) {
-    return;
-  }
-  selected_node = node;
-  selected_link = link;
-
-  if (node) {       // 选中节点、更新编辑面板
-      // 更新选中节点标签
-      selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.temp_index+'</strong>' : '未选中人物');
-
-      // 更新左侧变量面板
-      varTable.classed('inactive', !selected_node);
-      varSubmmit.classed('inactive', !selected_node);
-
-      //生成左侧变量表
-      if(selected_node){
-          var htmlStr = "";
-          var nodeKeys = Object.keys(selected_node);
-          for(var key in nodeKeys){
-            if(!hideKeys.has(nodeKeys[key])){
-                switch(nodeKeys[key]) {
-                    // 不能修改的字段使用lable显示
-                    case '':
-                        htmlStr += '<tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                            '<label for="">' + selected_node[nodeKeys[key]] + '</label> </div></td></tr>';
-                        break;
-                    default:
-                        htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                            '<input id="' + nodeKeys[key] + '_value" type="text" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
-                        break;
-                }
-            }
-          }
-          varTableBody.empty();
-          varTableBody.html(htmlStr);
-      }
-  /*==============================================================================================================*/
-  } else if (link) {    // 选中连线，更新编辑面板
-      // 更新选中节点标签
-      selectedNodeLabel.html(selected_link ? '<strong>选中了关系：'+'</strong>' : '未选中关系');
-      varTable.classed('inactive', !selected_link);
-      varSubmmit.classed('inactive', !selected_link);
-
-      //生成左侧变量表
-      if(selected_link){
-          var htmlStr = "",
-              linkKeys = Object.keys(selected_link);
-          for(var key in linkKeys){
-            if(!hideKeys.has(linkKeys[key])){
-                switch(linkKeys[key]) {
-                    // 不能修改的字段使用lable显示
-                    case 'source':
-                    case 'target':
-                        htmlStr += '<tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                            '<label for="">' + selected_link[linkKeys[key]]['name'] + '</label> </div></td></tr>';
-                        break;
-                    default:
-                        htmlStr += '<tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                            '<input id="' + linkKeys[key] + '_value" type="text" value="' + selected_link[linkKeys[key]] + '"> </div></td></tr>';
-                        break;
-                }
-            }
-          }
-          varTableBody.empty();
-          varTableBody.html(htmlStr);
-      }
-  } else {
-      // 更新选中节点标签
-      varTable.classed('inactive', true);
-      varSubmmit.classed('inactive', true);
-      selectedNodeLabel.html('未选中');
-      varTableBody.html('');
-  }
-
-}
 
 //节点旁边的text
 function makeAssignmentString(node) {
@@ -353,9 +212,17 @@ function tick() {
     return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
   });
 
-  circle.attr('transform', function(d) {
-    return 'translate(' + d.x + ',' + d.y + ')';
-  });
+  circle.selectAll('circle')
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+
+  circle.selectAll('text')
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y + 4; });
+
+//  circle.attr('transform', function(d) {
+//    return 'translate(' + d.x + ',' + d.y + ')';
+//  });
 }
 
 
@@ -403,7 +270,7 @@ function restart() {
 
   g.append('svg:circle')
     .attr('class', 'node')
-    .attr('r', 20)
+    .attr('r', radius)
     .style('fill', function(d) {return (d === selected_node) ? d3.rgb(colors(d.temp_index)).brighter().toString() : colors(d.temp_index); })
 //    .style('stroke', function(d) { return d3.rgb(colors(d.temp_index)).darker().toString(); })
     .style('stroke', function(d) { return "#fff"; })
@@ -707,6 +574,87 @@ function keyup() {
 var modeButtons = d3.selectAll('#mode-select button'),
     panes = d3.selectAll('#app-body .panel .tab-pane');
 
+
+
+var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'temp_index', 'left', 'right', 'hash']);
+
+function setSelectedNodeOrLink(node, link) {
+  if (node != null && link != null) {
+    return;
+  }
+  selected_node = node;
+  selected_link = link;
+
+  if (node) {       // 选中节点、更新编辑面板
+      // 更新选中节点标签
+      selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.temp_index+'</strong>' : '未选中人物');
+
+      // 更新左侧变量面板
+      varTable.classed('inactive', !selected_node);
+      varSubmmit.classed('inactive', !selected_node);
+
+      //生成左侧变量表
+      if(selected_node){
+          var htmlStr = "";
+          var nodeKeys = Object.keys(selected_node);
+          for(var key in nodeKeys){
+            if(!hideKeys.has(nodeKeys[key])){
+                switch(nodeKeys[key]) {
+                    // 不能修改的字段使用lable显示
+                    case '':
+                        htmlStr += '<tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                            '<label for="">' + selected_node[nodeKeys[key]] + '</label> </div></td></tr>';
+                        break;
+                    default:
+                        htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                            '<input id="' + nodeKeys[key] + '_value" type="text" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
+                        break;
+                }
+            }
+          }
+          varTableBody.empty();
+          varTableBody.html(htmlStr);
+      }
+  /*==============================================================================================================*/
+  } else if (link) {    // 选中连线，更新编辑面板
+      // 更新选中节点标签
+      selectedNodeLabel.html(selected_link ? '<strong>选中了关系：'+'</strong>' : '未选中关系');
+      varTable.classed('inactive', !selected_link);
+      varSubmmit.classed('inactive', !selected_link);
+
+      //生成左侧变量表
+      if(selected_link){
+          var htmlStr = "",
+              linkKeys = Object.keys(selected_link);
+          for(var key in linkKeys){
+            if(!hideKeys.has(linkKeys[key])){
+                switch(linkKeys[key]) {
+                    // 不能修改的字段使用lable显示
+                    case 'source':
+                    case 'target':
+                        htmlStr += '<tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                            '<label for="">' + selected_link[linkKeys[key]]['name'] + '</label> </div></td></tr>';
+                        break;
+                    default:
+                        htmlStr += '<tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                            '<input id="' + linkKeys[key] + '_value" type="text" value="' + selected_link[linkKeys[key]] + '"> </div></td></tr>';
+                        break;
+                }
+            }
+          }
+          varTableBody.empty();
+          varTableBody.html(htmlStr);
+      }
+  } else {
+      // 更新选中节点标签
+      varTable.classed('inactive', true);
+      varSubmmit.classed('inactive', true);
+      selectedNodeLabel.html('未选中');
+      varTableBody.html('');
+  }
+}
+
+
 function setAppMode(newMode) {
   // mode-specific settings
   if(newMode === MODE.EDIT) {
@@ -715,7 +663,8 @@ function setAppMode(newMode) {
       .style('background', '#eee')
       .on('mousedown', mousedown)
       .on('mousemove', mousemove)
-      .on('mouseup', mouseup);
+      .on('mouseup', mouseup)
+      .call(unzoomListener);
     d3.select(window)
       .on('keydown', keydown)
       .on('keyup', keyup);
@@ -739,7 +688,8 @@ function setAppMode(newMode) {
       .style('background', '#fff')
       .on('mousedown', function() { d3.event.preventDefault(); })
       .on('mousemove', null)
-      .on('mouseup', null);
+      .on('mouseup', null)
+      .call(zoomListener);
     d3.select(window)
       .on('keydown', null)
       .on('keyup', null);
