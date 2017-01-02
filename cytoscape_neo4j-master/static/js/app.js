@@ -12,10 +12,9 @@ $(function(){
         // Get the source and target nodes
         var sourceNode = root.nodes.filter(function(n) { return n.name === e.source; })[0],
             targetNode = root.nodes.filter(function(n) { return n.name === e.target; })[0];
-            relationShip = e.relation;
 
         // Add the edge to the array
-        edges.push({source: sourceNode, target: targetNode, relation: relationShip, left: false, right: true});
+        edges.push({source: sourceNode, target: targetNode, relation: e.relation, weight: e.weight, left: false, right: true});
     });
 
     nodes = root.nodes;
@@ -359,6 +358,7 @@ function tick() {
   });
 }
 
+
 // 更新整个svg布局 (called when needed)
 function restart() {
 
@@ -373,6 +373,7 @@ function restart() {
   // 添加新link
   path.enter().append('svg:path')
     .attr('class', 'link')
+    .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? "8px" : Math.sqrt(d.weight); })
     .classed('selected', function(d) { return d === selected_link; })
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
     .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
@@ -404,7 +405,8 @@ function restart() {
     .attr('class', 'node')
     .attr('r', 20)
     .style('fill', function(d) {return (d === selected_node) ? d3.rgb(colors(d.temp_index)).brighter().toString() : colors(d.temp_index); })
-    .style('stroke', function(d) { return d3.rgb(colors(d.temp_index)).darker().toString(); })
+//    .style('stroke', function(d) { return d3.rgb(colors(d.temp_index)).darker().toString(); })
+    .style('stroke', function(d) { return "#fff"; })
     .classed('reflexive', function(d) { return d.reflexive; })
     .on('mouseover', function(d) {
       if(appMode !== MODE.EDIT || !mousedown_node || d === mousedown_node) return;
@@ -723,6 +725,13 @@ function setAppMode(newMode) {
       .classed('true', false)
       .classed('false', false);
     currentFormula.classed('inactive', true);
+
+    circle
+      .on('mousedown.drag', null)
+      .on('touchstart.drag', null);
+    svg.classed('ctrl', false);
+
+    path.attr("stroke-width", "8px");
   } else if(newMode === MODE.EVAL) {
     // 禁用listeners (except for I-bar prevention)
     svg.classed('edit', false)
@@ -734,12 +743,12 @@ function setAppMode(newMode) {
       .on('keydown', null)
       .on('keyup', null);
 
-    // in case ctrl still held
-    circle
-//      .on('mousedown.drag', null)
-      .on('touchstart.drag', null);
-    svg.classed('ctrl', false);
+    // 启用节点可拖拽
+    circle.call(force.drag);
+    svg.classed('ctrl', true);
     lastKeyDown = -1;
+
+    path.attr("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
     // in case still dragging
     drag_line
@@ -780,16 +789,7 @@ evalInput.select('input')
     if(d3.event.keyCode === 13) d3.event.preventDefault();
   });
 
-function submmitGraph() {
-//  console.log(JSON.stringify(nodes));
-//  console.log(JSON.stringify(links));
-  $.post("/submmit", {
-        nodes: JSON.stringify(nodes),
-        links: JSON.stringify(links)
-    }, function(data){
 
-  })
-}
 
 
 var ModifyAction ={
@@ -797,6 +797,7 @@ var ModifyAction ={
   DELETE:2,
   ALTER:3
 }
+//编辑：仅修改节点或关系
 function updateNodeOrLink() {
   if(selected_node) {
     // 读取左侧表格节点的数据
@@ -828,6 +829,7 @@ function updateNodeOrLink() {
     submmitModifyLink(selected_link, ModifyAction.ALTER);
   }
 }
+//编辑节点：增、删、改
 function submmitModifyNode(node, action) {
   $.post("/", {
         type: "node",
@@ -844,6 +846,7 @@ function submmitModifyNode(node, action) {
         }
   })
 }
+//编辑关系：增、删、改
 function submmitModifyLink(link, action) {
   $.post("/", {
         type: "link",

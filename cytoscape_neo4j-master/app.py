@@ -23,6 +23,7 @@ def wrapEdges(relationRecord):
             "source": relationRecord['r'].start_node()['name'],
             "target": relationRecord['r'].end_node()['name'],
             "relation": str(relationRecord['r'].type())}  # 对每一个关系都构造包装成一个这样的格式， str()是一个方法，把括号里的参数转换为字符串类型
+    data.update(relationRecord['r'].properties)
     return data
 
 
@@ -62,10 +63,10 @@ def createNode(node_obj):
         # 返回新增节点的id
         query = '''
         MATCH (n)
-        WHERE n.hash = {x}
+        WHERE n.hash = {x} and n.name = {y}
         RETURN n, ID(n) as id
         '''
-        result = graph.run(query, x=h).data()
+        result = graph.run(query, x=h, y=node_obj['name']).data()
         print(result)
         return jsonify(result={"uid":result[0]['id']})
 
