@@ -86,11 +86,11 @@ def deleteNode(node_obj):
 ##### 更改关系 #####
 def dispacthLink(link_obj, action):
     if action == '1':
-        createLink(link_obj)
+        return createLink(link_obj)
     elif action == '2':
-        deleteLink(link_obj)
+        return deleteLink(link_obj)
     elif action == '3':
-        createLink(link_obj)
+        return createLink(link_obj)
 
 # 创建关系
 def createLink(link_obj):

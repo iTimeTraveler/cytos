@@ -428,6 +428,7 @@ function restart() {
 
       // reposition drag line
       drag_line
+        .attr("stroke-width", "7px")
         .style('marker-end', 'url(#end-arrow)')
         .classed('hidden', false)
         .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
