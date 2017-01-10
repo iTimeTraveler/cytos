@@ -73,6 +73,7 @@ def createNode(node_obj):
 
 # 删除节点
 def deleteNode(node_obj):
+    print("deleteNode: %s" % node_obj)
     query = '''
     MATCH (n)
     WHERE n.name = {x}
@@ -110,6 +111,7 @@ def createLink(link_obj):
 
 # 删除关系
 def deleteLink(link_obj):
+    print("deleteLink: %s" % link_obj)
     query = '''
     MATCH (n)-[r]->(m)
     WHERE (n.name = {src} and m.name = {tag})
@@ -125,7 +127,7 @@ def deleteLink(link_obj):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('demo.html')
+        return render_template('demo2.html')
 
     if request.method == 'POST':
         if request.values.get('type', "") == 'node':

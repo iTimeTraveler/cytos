@@ -22,8 +22,6 @@ $(function(){
     force.nodes(nodes)
         .links(links);
 
-    svg.call(zoomListener);
-
     //入口
     setAppMode(MODE.EDIT);
     
@@ -74,7 +72,11 @@ var svg = d3.select('#app-body .graph')
 var zoomListener = d3.behavior.zoom()
     .scaleExtent([0.3, 5])  //缩放比例区间
     .on("zoom", function() {
-        var sc = "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")";
+        var centerX = width / 2,
+            centerY = height / 2,
+            scale = d3.event.scale;
+        // 绕整个svg的中心缩放
+        var sc = "translate(" + -centerX*(scale-1) + "," + -centerY*(scale-1)  + ")scale(" + scale + ")";
         path.attr("transform", sc);
         circle.selectAll('g').attr("transform",  sc);
         circle.selectAll('circle').attr("transform",  sc);
@@ -82,14 +84,7 @@ var zoomListener = d3.behavior.zoom()
     });
 
 var unzoomListener = d3.behavior.zoom()
-    .scaleExtent([1, 1])
-    .on("zoom", function() {
-        var sc = "translate(" + 1 + ")scale(" + 1 + ")";
-        path.attr("transform", sc);
-        circle.selectAll('g').attr("transform",  sc);
-        circle.selectAll('circle').attr("transform",  sc);
-        circle.selectAll('text').attr("transform",  sc);
-    });
+    .on("zoom", null);
 
 // 初始化d3力导向布局
 var force = d3.layout.force()
@@ -668,6 +663,16 @@ function setAppMode(newMode) {
     d3.select(window)
       .on('keydown', keydown)
       .on('keyup', keyup);
+
+    // 绕整个svg的中心缩放
+    var centerX = width / 2,
+        centerY = height / 2,
+        scale = 1.0;
+    var sc = "translate(" + -centerX*(scale-1) + "," + -centerY*(scale-1)  + ")scale(" + scale + ")";
+    path.attr("transform", sc);
+    circle.selectAll('g').attr("transform",  sc);
+    circle.selectAll('circle').attr("transform",  sc);
+    circle.selectAll('text').attr("transform",  sc);
 
     // remove eval classes
     circle
