@@ -1,5 +1,5 @@
 $(function(){
-  $.get('/graph', {id: 'Robin', password: '123456'}, function(result) {
+  $.get('/editor/graph', {id: 'Robin', password: '123456'}, function(result) {
 
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));
@@ -70,6 +70,7 @@ var svg = d3.select('#app-body .graph')
 
 //缩放监听
 var zoomListener = d3.behavior.zoom()
+    .scale(1.0)
     .scaleExtent([0.3, 5])  //缩放比例区间
     .on("zoom", function() {
         var centerX = width / 2,
@@ -84,6 +85,7 @@ var zoomListener = d3.behavior.zoom()
     });
 
 var unzoomListener = d3.behavior.zoom()
+    .scale(1.0)
     .on("zoom", null);
 
 // 初始化d3力导向布局
@@ -273,7 +275,7 @@ function restart() {
     .on('mouseover', function(d) {
       if(appMode !== MODE.EDIT || !mousedown_node || d === mousedown_node) return;
       // enlarge target node
-      d3.select(this).attr('transform', 'scale(1.1)');
+      //d3.select(this).attr('transform', 'scale(1.1)');
     })
     .on('mouseout', function(d) {
       if(appMode !== MODE.EDIT || !mousedown_node || d === mousedown_node) return;
@@ -664,15 +666,17 @@ function setAppMode(newMode) {
       .on('keydown', keydown)
       .on('keyup', keyup);
 
-    // 绕整个svg的中心缩放
-    var centerX = width / 2,
-        centerY = height / 2,
-        scale = 1.0;
-    var sc = "translate(" + -centerX*(scale-1) + "," + -centerY*(scale-1)  + ")scale(" + scale + ")";
-    path.attr("transform", sc);
-    circle.selectAll('g').attr("transform",  sc);
-    circle.selectAll('circle').attr("transform",  sc);
-    circle.selectAll('text').attr("transform",  sc);
+    var zoom = d3.behavior.zoom()
+    zoom.scale(zoom.scale()*2 ).translate(zoom.translate());
+    //// 绕整个svg的中心缩放
+    //var centerX = width / 2,
+    //    centerY = height / 2,
+    //    scale = 1.0;
+    //var sc = "translate(" + -centerX*(scale-1) + "," + -centerY*(scale-1)  + ")scale(" + scale + ")";
+    //path.attr("transform", sc);
+    //circle.selectAll('g').attr("transform",  sc);
+    //circle.selectAll('circle').attr("transform",  sc);
+    //circle.selectAll('text').attr("transform",  sc);
 
     // remove eval classes
     circle
@@ -787,7 +791,7 @@ function updateNodeOrLink() {
 }
 //编辑节点：增、删、改
 function submmitModifyNode(node, action) {
-  $.post("/", {
+  $.post("/editor/post", {
         type: "node",
         node: JSON.stringify(node),
         act: action
@@ -804,7 +808,7 @@ function submmitModifyNode(node, action) {
 }
 //编辑关系：增、删、改
 function submmitModifyLink(link, action) {
-  $.post("/", {
+  $.post("/editor/post", {
         type: "link",
         link: JSON.stringify(link),
         act: action
