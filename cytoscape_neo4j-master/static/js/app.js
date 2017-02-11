@@ -42,13 +42,8 @@ var MODE = {
 var propvars = ['p','q','r','s','t'],
     varCount = 2;
 
-var model = new MPL.Model(),
-    modelString = 'AS1;ApS1,2;AqS;';
+var model = new MPL.Model();
 
-var modelParam = window.location.search.match(/\?model=(.*)/);
-if(modelParam) modelString = modelParam[1];
-
-model.loadFromModelString(modelString);
 
 // 初始化节点和边, based on MPL model
 var lastNodeIndex = 0,
@@ -175,21 +170,6 @@ function setVarCount(count) {
   });
 }
 
-function setVarForSelectedNode(varnum, value) {
-  //update node in graph and state in model
-  selected_node.vals[varnum] = value;
-  var update = {};
-  update[propvars[varnum]] = value;
-  model.editState(selected_node.temp_index, update);
-
-  //update buttons
-  var row = d3.select(varTableRows[0][varnum]);
-  row.select('.var-value .btn-success').classed('active', value);
-  row.select('.var-value .btn-danger').classed('active', !value);
-
-  //update graph text
-  circle.selectAll('text:not(.id)').text(makeAssignmentString);
-}
 
 // 力引导布局刷新 (called automatically each iteration)
 function tick() {
@@ -604,7 +584,7 @@ function setSelectedNodeOrLink(node, link) {
                         break;
                     default:
                         htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                            '<input id="' + nodeKeys[key] + '_value" type="text" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
+                            '<input id="' + nodeKeys[key] + '_value" type="text" class="form-control" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
                         break;
                 }
             }
@@ -634,7 +614,7 @@ function setSelectedNodeOrLink(node, link) {
                         break;
                     default:
                         htmlStr += '<tr class=""><td class="var-name">' + linkKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
-                            '<input id="' + linkKeys[key] + '_value" type="text" value="' + selected_link[linkKeys[key]] + '"> </div></td></tr>';
+                            '<input id="' + linkKeys[key] + '_value" type="text" class="form-control" value="' + selected_link[linkKeys[key]] + '"> </div></td></tr>';
                         break;
                 }
             }
