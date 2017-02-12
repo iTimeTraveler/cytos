@@ -15,7 +15,7 @@
 
 
 {% block body %}
-<body class="mini-navbar  pace-done">
+<body class="pace-done">
 
     <div id="wrapper">
 
@@ -132,7 +132,9 @@
                     </ul>
                 </nav>
             </div>
-            <div class="row wrapper border-bottom white-bg page-heading">
+
+            {% block maintitle %}
+                <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-sm-4">
                     <h2>This is main title</h2>
                     <ol class="breadcrumb">
@@ -147,9 +149,10 @@
                         <a href="" class="btn btn-primary">This is action area</a></div>
                 </div>
             </div>
+            {% endblock maintitle %}
+
 
             <div class="wrapper wrapper-content">
-                <a href="index.html" class="btn btn-primary m-t">Dashboard</a>
                 {% block content %}
                 {% endblock content %}
             </div>
@@ -163,15 +166,18 @@
         </div>
     </div>
 
-    <!-- Mainly scripts -->
-    <script src="{{ url_for('static',filename='bootstrap/js/jquery-2.1.1.js') }}"></script>
-    <script src="{{ url_for('static',filename='bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static',filename='bootstrap/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
-    <script src="{{ url_for('static',filename='bootstrap/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
 
-    <!-- Custom and plugin javascript -->
-    <script src="{{ url_for('static',filename='bootstrap/js/inspinia.js') }}"></script>
-    <script src="{{ url_for('static',filename='bootstrap/js/plugins/pace/pace.min.js') }}"></script>
+    {% block script %}
+        <!-- Mainly scripts -->
+        <script src="{{ url_for('static',filename='bootstrap/js/jquery-2.1.1.js') }}"></script>
+        <script src="{{ url_for('static',filename='bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='bootstrap/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+        <script src="{{ url_for('static',filename='bootstrap/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+        <!-- Custom and plugin javascript -->
+        <script src="{{ url_for('static',filename='bootstrap/js/inspinia.js') }}"></script>
+        <script src="{{ url_for('static',filename='bootstrap/js/plugins/pace/pace.min.js') }}"></script>
+    {% endblock script %}
 
 </body>
 {% endblock body %}

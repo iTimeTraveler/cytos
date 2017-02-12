@@ -60,7 +60,7 @@ var width  = 800,
 var svg = d3.select('#app-body .graph')
     .append('svg')
     .attr('oncontextmenu', 'return false;')
-    .attr('width', width)
+    .attr('width', 'auto')
     .attr('height', height);
 
 //缩放监听
@@ -579,11 +579,11 @@ function setSelectedNodeOrLink(node, link) {
                 switch(nodeKeys[key]) {
                     // 不能修改的字段使用lable显示
                     case '':
-                        htmlStr += '<tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                        htmlStr += '<tr class="m-b-sm"><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
                             '<label for="">' + selected_node[nodeKeys[key]] + '</label> </div></td></tr>';
                         break;
                     default:
-                        htmlStr += ' <tr class=""><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                        htmlStr += ' <tr class="m-b-sm"><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
                             '<input id="' + nodeKeys[key] + '_value" type="text" class="form-control" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
                         break;
                 }
@@ -637,7 +637,7 @@ function setAppMode(newMode) {
   if(newMode === MODE.EDIT) {
     // 启用listeners
     svg.classed('edit', true)
-      .style('background', '#eee')
+      .style('background', '#32394c')
       .on('mousedown', mousedown)
       .on('mousemove', mousemove)
       .on('mouseup', mouseup)

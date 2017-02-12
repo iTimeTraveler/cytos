@@ -8,7 +8,7 @@ from flask import render_template, request, json, jsonify
 
 @editor.route('/',methods=['GET','POST'])
 def getEditor():
-    return render_template('editor_pages/demo2.html')
+    return render_template('editor_pages/index.html')
 
 
 # 修改节点或关系
