@@ -1,5 +1,5 @@
 $(function(){
-  $.get('/graph', function(result) {
+  $.get('/editor/graph', function(result) {
 
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));
@@ -27,7 +27,7 @@ $(function(){
     var radius = 20;
 
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#force_content").append("svg")
                                 .attr("width",width)
                                 .attr("height",height);
 

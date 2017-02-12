@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
 {% block head %}
+    {{ super() }}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>人物关系图谱</title>
 
     <link href="{{ url_for('static',filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static',filename='bootstrap/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
@@ -136,12 +135,20 @@
             {% block maintitle %}
                 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-sm-4">
-                    <h2>This is main title</h2>
+                    <h2>
+                        {% block titletext %}
+                            人物关系图谱
+                        {% endblock titletext %}
+                    </h2>
                     <ol class="breadcrumb">
                         <li>
-                            <a href="index.html">This is</a></li>
+                            <a href="/">主页</a></li>
                         <li class="active">
-                            <strong>Breadcrumb</strong></li>
+                            <strong>
+                                {% block pagename %}
+                                {% endblock pagename %}
+                            </strong>
+                        </li>
                     </ol>
                 </div>
                 <div class="col-sm-8">

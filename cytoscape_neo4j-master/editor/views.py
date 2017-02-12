@@ -14,9 +14,6 @@ def getEditor():
 # 修改节点或关系
 @editor.route('/post', methods=['GET', 'POST'])
 def index():
-    if request.method == 'GET':
-        return render_template('editor_pages/demo2.html')
-
     if request.method == 'POST':
         if request.values.get('type', "") == 'node':
             nodesStr = request.values.get('node', "")

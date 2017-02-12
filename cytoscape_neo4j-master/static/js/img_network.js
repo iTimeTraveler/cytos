@@ -1,5 +1,5 @@
 $(function(){
-  $.get('/graph', function(result) {
+  $.get('/editor/graph', function(result) {
 
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));
@@ -51,7 +51,7 @@ $(function(){
                         .on("zoom", zoomed);
 
 
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select("#imgnetwork_content").append("svg")
                         .attr("id", "mysvg")
                         .attr("width",width)
                         .attr("height",height)

@@ -6,9 +6,13 @@ from models import MyNode, MyLink, graph
 from flask import render_template, jsonify
 
 
-@analysis.route('/analysResult',methods=['GET','POST'])
-def analysResult():
-    return render_template('analysis_pages/index.html')
+@analysis.route('/demo_force',methods=['GET','POST'])
+def demo_force():
+    return render_template('analysis_pages/demo_force.html')
+
+@analysis.route('/demo_image',methods=['GET','POST'])
+def demo_image():
+    return render_template('analysis_pages/demo_image.html')
 
 
 # 提供一个动态路由地址，供前端网页调用

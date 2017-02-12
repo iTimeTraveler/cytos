@@ -29,6 +29,12 @@
   stroke-width: 2px;
 }
 
+.edgetext {
+    font-size: 8px ;
+    font-family: "Microsoft Yahei", Arial, Helvetica, sans-serif;
+    fill:#22cc00;
+}
+
 .name {
     font-size: 10px ;
     font-family: Helvetica, "楷体", "Microsoft Yahei", Arial, sans-serif;

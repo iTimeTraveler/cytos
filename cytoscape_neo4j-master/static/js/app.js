@@ -14,7 +14,7 @@ $(function(){
             targetNode = root.nodes.filter(function(n) { return n.name === e.target; })[0];
 
         // Add the edge to the array
-        edges.push({source: sourceNode, target: targetNode, relation: e.relation, weight: e.weight, left: false, right: true});
+        edges.push({source: sourceNode, target: targetNode, relation: e.relation, weight: e.weight, id: e.id, left: false, right: true});
     });
 
     nodes = root.nodes;
@@ -74,9 +74,11 @@ var zoomListener = d3.behavior.zoom()
         // 绕整个svg的中心缩放
         var sc = "translate(" + -centerX*(scale-1) + "," + -centerY*(scale-1)  + ")scale(" + scale + ")";
         path.attr("transform", sc);
+        pathtext.selectAll('textPath').attr("transform",  sc);
         circle.selectAll('g').attr("transform",  sc);
         circle.selectAll('circle').attr("transform",  sc);
         circle.selectAll('text').attr("transform",  sc);
+
     });
 
 var unzoomListener = d3.behavior.zoom()
@@ -118,6 +120,7 @@ var drag_line = svg.append('svg:path')
 
 // link组 node组
 var path = svg.append('svg:g').selectAll('path'),
+    pathtext = svg.append('svg:g').selectAll('text'),
     circle = svg.append('svg:g').selectAll('g');
 
 // 鼠标事件
@@ -217,6 +220,7 @@ function restart() {
   // 添加新link
   path.enter().append('svg:path')
     .attr('class', 'link')
+    .attr("id", function(d) { return "edgepath" + d.id; })
     .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? "8px" : Math.sqrt(d.weight); })
     .classed('selected', function(d) { return d === selected_link; })
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
@@ -230,6 +234,19 @@ function restart() {
       else setSelectedNodeOrLink(null, mousedown_link);
       restart();
     });
+
+  pathtext = pathtext.data(links);
+
+  // 边上的文字
+  var text = pathtext.enter()
+    .append("text")
+    .attr('class', 'edgetext')
+    .attr("x", 6)
+    .attr("dy", -5)
+    .append('textPath')
+    .attr('startOffset', '10%')
+    .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
+    .text(function(d) { return d.relation; });
 
   // 删除旧的link
   path.exit().remove();

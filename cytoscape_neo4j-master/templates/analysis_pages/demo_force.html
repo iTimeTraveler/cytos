@@ -1,0 +1,23 @@
+{% extends "main.html" %}
+
+
+{% block head %}
+    {{ super() }}
+    <title>学习neo4j和d3.js</title>
+    <link href="/static/css/style.css" rel="stylesheet" />
+    <link href="/static/css/d3.css" rel="stylesheet" />
+
+    <script src="/static/lib/jquery-1.11.2.min.js"></script>
+    <script id="depot_js" src="/static/lib/d3.v4.min.js"></script>
+    <script id="showMode_js" src="/static/js/force_node.js"></script>
+{% endblock head %}
+
+
+{% block titletext %}
+    人物网络图(force_node)
+{% endblock titletext %}
+
+{% block content %}
+    <div id="force_content" class="">
+    </div>
+{% endblock content %}
