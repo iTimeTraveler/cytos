@@ -11,11 +11,11 @@ hideKeys = {'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'le
 
 
 #节点操作
-class MyNode:
+class NodeUtils:
     global count
     count = 0
     def __init__(self):
-        print()
+        return
 
     # 对数据库里取出来的节点进行包装（这里是规范一下数据的格式）
     def wrapNodes(nodeRecord):
@@ -27,16 +27,16 @@ class MyNode:
 
 
     ##### 更改节点 #####
-    def dispacthNode(node_obj, action):
+    def dispacthNode(self, node_obj, action):
         if action == '1':
-            return MyNode.createNode(node_obj)
+            return self.createNode(node_obj)
         elif action == '2':
-            return MyNode.deleteNode(node_obj)
+            return self.deleteNode(node_obj)
         elif action == '3':
-            return MyNode.createNode(node_obj)
+            return self.createNode(node_obj)
 
     # 创建节点
-    def createNode(node_obj):
+    def createNode(self, node_obj):
         # 数据库已存在则更新
         if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
             n = graph.node(node_obj['id'])
@@ -70,7 +70,7 @@ class MyNode:
 
 
     # 删除节点
-    def deleteNode(node_obj):
+    def deleteNode(self, node_obj):
         print("deleteNode: %s" % node_obj)
         query = '''
         MATCH (n)
@@ -85,9 +85,9 @@ class MyNode:
 
 
 #关系操作
-class MyLink:
-    def __init__(link_obj):
-        print()
+class LinkUtils:
+    def __init__(self):
+        return
 
     # 对数据库里取出来的关系进行包装（这里也是规范一下数据的格式）
     def wrapEdges(relationRecord):
@@ -99,23 +99,23 @@ class MyLink:
         return data
 
     ##### 更改关系 #####
-    def dispacthLink(link_obj, action):
+    def dispacthLink(self, link_obj, action):
         if action == '1':
-            return MyLink.createLink(link_obj)
+            return self.createLink(link_obj)
         elif action == '2':
-            return MyLink.deleteLink(link_obj)
+            return self.deleteLink(link_obj)
         elif action == '3':
-            return MyLink.createLink(link_obj)
+            return self.createLink(link_obj)
 
     # 创建关系
-    def createLink(link_obj):
+    def createLink(self, link_obj):
         if not link_obj.has_key('relation'):
             return
         print(link_obj)
         srcNode = Node(link_obj['source']['label'], name=link_obj['source']['name'])
         tarNode = Node(link_obj['target']['label'], name=link_obj['target']['name'])
         newLink = Relationship(srcNode, link_obj['relation'], tarNode)
-        MyLink.deleteLink(link_obj)    # 删除已存在的关系
+        self.deleteLink(link_obj)    # 删除已存在的关系
         graph.merge(newLink)
         for key in link_obj.keys():
             if key not in hideKeys:
@@ -124,7 +124,7 @@ class MyLink:
         return ''
 
     # 删除关系
-    def deleteLink(link_obj):
+    def deleteLink(self, link_obj):
         print("deleteLink: %s" % link_obj)
         query = '''
         MATCH (n)-[r]->(m)

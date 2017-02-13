@@ -2,9 +2,16 @@
 #coding:utf8
 
 from . import editor
-from models import MyNode, MyLink, graph
+from models import NodeUtils, LinkUtils, graph
 from flask import render_template, request, json, jsonify
+import sys
 
+# 防止中文编译不过
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
+
+nodeUtils = NodeUtils()
+linkUtils = LinkUtils()
 
 @editor.route('/',methods=['GET','POST'])
 def getEditor():
@@ -19,12 +26,12 @@ def index():
             nodesStr = request.values.get('node', "")
             actionStr = request.values.get('act', "")
             newNode = json.loads(nodesStr, encoding="utf-8")
-            return MyNode.dispacthNode(newNode, actionStr)
+            return nodeUtils.dispacthNode(newNode, actionStr)
         elif request.values.get('type', "") == 'link':
             linksStr = request.values.get('link', "")
             actionStr = request.values.get('act', "")
             newLink = json.loads(linksStr, encoding="utf-8")
-            return MyLink.dispacthLink(newLink, actionStr)
+            return linkUtils.dispacthLink(newLink, actionStr)
 
 
 

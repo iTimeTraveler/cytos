@@ -2,7 +2,7 @@
 #coding:utf8
 
 from . import analysis
-from models import MyNode, MyLink, graph
+from models import NodeUtils, LinkUtils, graph
 from flask import render_template, jsonify
 
 
