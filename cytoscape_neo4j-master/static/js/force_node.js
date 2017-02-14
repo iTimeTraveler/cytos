@@ -23,7 +23,7 @@ $(function(){
     //svg窗口的宽高
     var width = window.screen.availWidth;
     var height = window.screen.availHeight;
-    var colors = d3.scaleOrdinal(d3.schemeCategory10);
+    var colors = d3.scaleOrdinal(d3.schemeCategory20);
     var radius = 20;
 
 
@@ -31,8 +31,6 @@ $(function(){
                                 .attr("width",width)
                                 .attr("height",height);
 
-
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
 
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().distance(50).id(function(d) { return d.id; }))

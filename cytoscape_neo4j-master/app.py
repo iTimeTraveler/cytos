@@ -1,4 +1,6 @@
-# coding=utf-8
+#!/usr/bin/env python
+#coding:utf8
+
 from flask import Flask, jsonify, json, render_template, redirect, request, url_for, current_app
 # 导入py2neo包里的graph（图数据库）
 from py2neo import Graph, Node, Relationship
