@@ -52,7 +52,7 @@ var lastNodeIndex = 0,
 
 
 // set up SVG for D3
-var width  = 800,
+var width  = 1200,
     height = 800,
     radius = 20;
     colors = d3.scale.category20();
@@ -177,19 +177,23 @@ function setVarCount(count) {
 // 力引导布局刷新 (called automatically each iteration)
 function tick() {
   // draw directed edges with proper padding from node centers
+//  path.attr('d', function(d) {
+//    var deltaX = d.target.x - d.source.x,
+//        deltaY = d.target.y - d.source.y,
+//        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+//        normX = deltaX / dist,
+//        normY = deltaY / dist,
+//        sourcePadding = d.left ? 17 : 12,
+//        targetPadding = d.right ? 17 : 12,
+//        sourceX = d.source.x + (sourcePadding * normX),
+//        sourceY = d.source.y + (sourcePadding * normY),
+//        targetX = d.target.x - (targetPadding * normX),
+//        targetY = d.target.y - (targetPadding * normY);
+//    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+//  });
+
   path.attr('d', function(d) {
-    var deltaX = d.target.x - d.source.x,
-        deltaY = d.target.y - d.source.y,
-        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
-        normX = deltaX / dist,
-        normY = deltaY / dist,
-        sourcePadding = d.left ? 17 : 12,
-        targetPadding = d.right ? 17 : 12,
-        sourceX = d.source.x + (sourcePadding * normX),
-        sourceY = d.source.y + (sourcePadding * normY),
-        targetX = d.target.x - (targetPadding * normX),
-        targetY = d.target.y - (targetPadding * normY);
-    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+    return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;
   });
 
   circle.selectAll('circle')
@@ -237,16 +241,16 @@ function restart() {
 
   pathtext = pathtext.data(links);
 
-  // 边上的文字
-  var text = pathtext.enter()
-    .append("text")
-    .attr('class', 'edgetext')
-    .attr("x", 6)
-    .attr("dy", -5)
-    .append('textPath')
-    .attr('startOffset', '10%')
-    .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
-    .text(function(d) { return d.relation; });
+//  // 边上的文字
+//  var text = pathtext.enter()
+//    .append("text")
+//    .attr('class', 'edgetext')
+//    .attr("x", 6)
+//    .attr("dy", -5)
+//    .append('textPath')
+//    .attr('startOffset', '10%')
+//    .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
+//    .text(function(d) { return d.relation; });
 
   // 删除旧的link
   path.exit().remove();
@@ -654,7 +658,7 @@ function setAppMode(newMode) {
   if(newMode === MODE.EDIT) {
     // 启用listeners
     svg.classed('edit', true)
-      .style('background', '#32394c')
+      .style('background', '#252d47')
       .on('mousedown', mousedown)
       .on('mousemove', mousemove)
       .on('mouseup', mouseup)
