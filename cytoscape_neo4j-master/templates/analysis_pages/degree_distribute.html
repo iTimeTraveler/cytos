@@ -34,13 +34,13 @@
                 formatter : function (params) {
                     if (params.value.length > 1) {
                         return params.seriesName + ' :<br/>'
-                           + params.value[0] + 'cm '
-                           + params.value[1] + 'kg ';
+                           + params.value[0] + '度 '
+                           + params.value[1] + '人 ';
                     }
                     else {
                         return params.seriesName + ' :<br/>'
                            + params.name + ' : '
-                           + params.value + 'kg ';
+                           + params.value + '人 ';
                     }
                 },
                 axisPointer:{
@@ -70,7 +70,7 @@
                     type : 'value',
                     scale:true,
                     axisLabel : {
-                        formatter: '{value} cm'
+                        formatter: '{value} 度'
                     }
                 }
             ],
@@ -79,7 +79,7 @@
                     type : 'value',
                     scale:true,
                     axisLabel : {
-                        formatter: '{value} kg'
+                        formatter: '{value} 人'
                     }
                 }
             ],
@@ -87,8 +87,10 @@
                 {
                     name:'女性',
                     type:'scatter',
-                    data: [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0], [155.8, 53.6],
-                        [170.0, 59.0], [159.1, 47.6], [166.0, 69.8], [176.2, 66.8], [160.2, 75.2]
+                    data: [{% for item in matrix %}
+                                [{{ item[0] }}, {{ item[1] }}]
+                                {% if not loop.last %},{% endif %}
+                            {% endfor %}
                     ],
                     markPoint : {
                         data : [
@@ -105,9 +107,7 @@
                 {
                     name:'男性',
                     type:'scatter',
-                    data: [[174.0, 65.6], [175.3, 71.8], [193.5, 80.7], [186.5, 72.6], [187.2, 78.8],
-                        [181.5, 74.8], [184.0, 86.4], [184.5, 78.4], [175.0, 62.0], [184.0, 81.6]
-                    ],
+                    data: [],
                     markPoint : {
                         data : [
                             {type : 'max', name: '最大值'},

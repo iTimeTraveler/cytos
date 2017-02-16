@@ -45,11 +45,17 @@ ig = IGraph.TupleList(graph.run(query), weights=True)
 
 
 
-
 # 度分布
-dd = ig.degree_distribution()
-ig.vs.degree()
-ig.vs['name']
-ig.degree(type="in")
-plot(dd)
-print (dd)
+def degree_distribution():
+    # dd = ig.degree_distribution()
+    mylist = ig.vs.degree()
+    ig.vs['name']
+    myset = set(mylist)  #myset是另外一个列表，里面的内容是mylist里面的无重复项
+    matrix = [[0 for col in range(2)] for row in range(len(myset))]
+    m = 0
+    for item in myset:
+      matrix[m][0] = item
+      matrix[m][1] = mylist.count(item)
+      m += 1
+    return matrix
+
