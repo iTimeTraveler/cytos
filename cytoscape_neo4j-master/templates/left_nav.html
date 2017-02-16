@@ -25,15 +25,13 @@
 
 
 
-            <li class="">
-                <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">关系图</span><span class="label label-warning pull-right">16/24</span></a>
-                <ul class="nav nav-second-level collapse" style="height: 0px;">
-                    <li><a href="/analysis/demo_force">demo_force</a></li>
-                    <li><a href="/analysis/demo_image">demo_image</a></li>
-                </ul>
+            <li id="demoforce">
+                <a href="/analysis/demo_force"><i class="fa fa-connectdevelop"></i> <span class="nav-label">demo_force</span></a>
             </li>
 
-
+            <li id="demoimage">
+                <a href="/analysis/demo_image"><i class="fa fa-picture-o"></i> <span class="nav-label">demo_image</span></a>
+            </li>
 
 
             <li class="">
@@ -41,19 +39,28 @@
                 <ul class="nav nav-second-level collapse" style="height: 0px;">
 
                     <li><a href="500.html">500 Page</a></li>
-                    <li class="active"><a href="empty_page.html">Empty page</a></li>
+                    <li><a href="empty_page.html">Empty page</a></li>
                 </ul>
             </li>
 
-            <li class="">
+            <li id="editor">
                 <a href="\editor"><i class="fa fa-pencil-square-o"></i> <span class="nav-label">人物编辑</span></a>
             </li>
 
-            <li class="active">
-                <a href="\analysis\poeplelist"><i class="fa fa-list-ul"></i> <span class="nav-label">人物列表</span></a>
+            <li id="peoplelist">
+                <a href="\analysis\peoplelist"><i class="fa fa-list-ul"></i> <span class="nav-label">人物列表</span></a>
             </li>
 
         </ul>
 
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $("li").removeClass("active");
+            if('{{ navId }}'){
+                $('li#{{ navId }}').addClass("active");
+            }
+        });
+    </script>
 </nav>

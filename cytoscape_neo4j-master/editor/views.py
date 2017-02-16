@@ -15,7 +15,7 @@ linkUtils = LinkUtils()
 
 @editor.route('/',methods=['GET','POST'])
 def getEditor():
-    return render_template('editor_pages/index.html')
+    return render_template('editor_pages/index.html', navId = "editor")
 
 
 # 修改节点或关系
