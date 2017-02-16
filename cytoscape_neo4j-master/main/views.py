@@ -6,4 +6,4 @@ from flask import render_template, request, json
 
 @main.route('/',methods=['GET','POST'])
 def home():
-    return render_template('main.html')
+    return render_template('main.html', navId = "main")
