@@ -15,6 +15,11 @@ def demo_image():
     return render_template('analysis_pages/demo_image.html', navId = "demoimage")
 
 
+@analysis.route('/degree_distribute',methods=['GET','POST'])
+def degree_distribute():
+    return render_template('analysis_pages/degree_distribute.html', navId = "degreedistribute")
+
+
 # 提供一个动态路由地址，供前端网页调用
 @analysis.route('/peoplelist', methods=['GET', 'POST'])
 def get_graph():
