@@ -4,8 +4,11 @@
 {% block head %}
     {{ super() }}
     <title>度分布</title>
+
+    <!-- ECharts.js -->
     <!--<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>-->
     <script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+    <script src="http://echarts.baidu.com/echarts2/doc/example/theme/macarons.js"></script>
 {% endblock head %}
 
 
@@ -18,71 +21,108 @@
 
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts图表
-        var myChart = echarts.init(document.getElementById('degreeContainer'));
+        var myChart = echarts.init(document.getElementById('degreeContainer'), "macarons");
 
         var option = {
+            title : {
+                text: '男性女性身高体重分布',
+                subtext: '抽样调查来自: Heinz  2003'
+            },
             tooltip : {
-                trigger: 'axis'
+                trigger: 'axis',
+                showDelay : 0,
+                formatter : function (params) {
+                    if (params.value.length > 1) {
+                        return params.seriesName + ' :<br/>'
+                           + params.value[0] + 'cm '
+                           + params.value[1] + 'kg ';
+                    }
+                    else {
+                        return params.seriesName + ' :<br/>'
+                           + params.name + ' : '
+                           + params.value + 'kg ';
+                    }
+                },
+                axisPointer:{
+                    show: true,
+                    type : 'cross',
+                    lineStyle: {
+                        type : 'dashed',
+                        width : 1
+                    }
+                }
             },
             legend: {
-                data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+                data:['女性','男性']
             },
             toolbox: {
                 show : true,
                 feature : {
                     mark : {show: true},
+                    dataZoom : {show: true},
                     dataView : {show: true, readOnly: false},
-                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
                     restore : {show: true},
                     saveAsImage : {show: true}
                 }
             },
-            calculable : true,
             xAxis : [
                 {
-                    type : 'category',
-                    boundaryGap : false,
-                    data : ['周一','周二','周三','周四','周五','周六','周日']
+                    type : 'value',
+                    scale:true,
+                    axisLabel : {
+                        formatter: '{value} cm'
+                    }
                 }
             ],
             yAxis : [
                 {
-                    type : 'value'
+                    type : 'value',
+                    scale:true,
+                    axisLabel : {
+                        formatter: '{value} kg'
+                    }
                 }
             ],
             series : [
                 {
-                    name:'邮件营销',
-                    type:'line',
-                    stack: '总量',
-                    data:[120, 132, 101, 134, 90, 230, 210]
+                    name:'女性',
+                    type:'scatter',
+                    data: [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0], [155.8, 53.6],
+                        [170.0, 59.0], [159.1, 47.6], [166.0, 69.8], [176.2, 66.8], [160.2, 75.2]
+                    ],
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
                 },
                 {
-                    name:'联盟广告',
-                    type:'line',
-                    stack: '总量',
-                    data:[220, 182, 191, 234, 290, 330, 310]
-                },
-                {
-                    name:'视频广告',
-                    type:'line',
-                    stack: '总量',
-                    data:[150, 232, 201, 154, 190, 330, 410]
-                },
-                {
-                    name:'直接访问',
-                    type:'line',
-                    stack: '总量',
-                    data:[320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name:'搜索引擎',
-                    type:'line',
-                    stack: '总量',
-                    data:[820, 932, 901, 934, 1290, 1330, 1320]
+                    name:'男性',
+                    type:'scatter',
+                    data: [[174.0, 65.6], [175.3, 71.8], [193.5, 80.7], [186.5, 72.6], [187.2, 78.8],
+                        [181.5, 74.8], [184.0, 86.4], [184.5, 78.4], [175.0, 62.0], [184.0, 81.6]
+                    ],
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
                 }
             ]
         };
+
 
 
         // 为echarts对象加载数据

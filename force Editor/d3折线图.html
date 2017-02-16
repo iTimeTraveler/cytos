@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Basic line demo</title>
+    <link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet'
+          type='text/css'>
+    <style>
+        body { font-family: Varela,sans-serif; }
+    </style>
+</head>
+<body>
+    <script src='http://d3js.org/d3.v3.min.js'></script>
+    <script>
+
+        // Convenience functions that provide parameters for
+        // the chart. In most cases these could be defined as
+        // CSS rules, but for this particular implementation
+        // we're avoiding CSS so that we can easily extract
+        // the SVG into a presentation.
+
+        // What colors are we going to use for the different
+        // datasets.
+        var color = function(i) {
+            var colors = ["#CA0000", "#A2005C",
+                          "#7EBD00", "#007979"];
+            return colors[i % colors.length]
+        };
+
+        // What symbols are we going to use for the different
+        // datasets.
+        var symbol = function(i) {
+            var symbols = ["circle", "diamond", "square",
+                           "triangle-up", "triangle-down", "cross"];
+            return d3.svg.symbol()
+                     .size(81)
+                     .type(symbols[i % symbols.length]);
+        };
+
+        // Define the dimensions of the visualization.
+        var margin = {top: 80, right: 140, bottom: 50, left: 50},
+            width = 636 - margin.left - margin.right,
+            height = 436 - margin.top - margin.bottom;
+
+        // Since this is a line chart, it graphs x- and y-values.
+        // Define scales for each. Both scales span the size of the
+        // chart. The x-scale is time-based (we're assuming months)
+        // and the y-scale is linear. Note that the y-scale
+        // ranges from `height` to 0 (opposite of what might be
+        // expected) because the SVG coordinate system places a
+        // y-value of `0` at the _top_ of the container.
+
+        // At this point we don't know the domain for either of
+        // the x- or y-values since that depends on the data
+        // itself (which we'll retrieve in a moment) so we only
+        // define the type of each scale and its range. We'll
+        // add a definition of the domain after we retrieve the
+        // actual data.
+        var x = d3.time.scale()
+            .range([0, width]);
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        // Define the axes for both x- and y-values. For the
+        // x-axis, we specify a format for the tick labels
+        // (just the month abbreviation) since we only have
+        // the month value for the data. (The year is unknown.)
+        // Without the override, D3 will try to display an
+        // actual date (e.g. with a year).
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .tickSize(0, 0, 0)
+            .tickPadding(10)
+            .tickFormat(d3.time.format("%b"))
+            .orient("bottom");
+
+        // For the y-axis we add grid lines by specifying a
+        // negative value for the major tick mark size. We
+        // set the size of the grid lines to be the entire
+        // width of the graph.
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .tickSize(-width, 0, 0)
+            .tickPadding(10)
+            .orient("left");
+
+        // Define a convenience function to create a line on
+        // the chart. The line's x-values are dates and the
+        // y-values are the temperature values. The result
+        // of this statement is that `line` will be a
+        // function that, when passed a selection with an
+        // associated array of data points, returns an SVG
+        // path whose coordinates match the x- and y-scales
+        // of the chart.
+        var line = d3.svg.line()
+            .x(function(d) { return x(d.date); })
+            .y(function(d) { return y(d.temp); });
+
+        // Create the SVG container for the visualization and
+        // define its dimensions. Within that container, add a
+        // group element (`<g>`) that can be transformed via
+        // a translation to account for the margins.
+        var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left +
+                  "," + margin.top + ")");
+
+        // Define the data
+        var datasets = [{
+          "name": "Tokyo",
+          "data": [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+         },{
+          "name": "New York",
+          "data": [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
+         },{
+          "name": "Berlin",
+          "data": [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
+         },{
+          "name": "London",
+          "data": [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+        }];
+
+        // Convert the data into a more "understandable"
+        // JavaScript object. Instead of just an array
+        // of numbers, make it an array of objects with
+        // appropriate properties.
+        datasets.forEach(function(dataset) {
+            dataset.data = dataset.data.map(function(d,i) {
+
+                // Although no year is given for the data
+                // (so we won't display one), we can simply
+                // pick an abitrary year (2013, in this case)
+                // to use for our dates. We'll start in January
+                // and increment by the index of the data value.
+                // The data value itself is the temperature.
+                return {
+                    "date": d3.time.month.offset(
+                                new Date(2013,0,1), i),
+                    "temp": d
+                };
+            });
+        })
+
+        // Now that we have the data, we can calculate
+        // the domains for our x- and y-values. The x-values
+        // are a little tricky because we want to add additional
+        // space before and after the data. We start by getting
+        // the extent of the data, and then extending that range
+        // 16 days before the first date and 15 days after the
+         // last date. To account for datasets of differing
+        // lengths, we get the maximum length fromamong all
+            // datasets.
+            var xMin = new Date(2013,0,1),
+                xMax = d3.time.month.offset(xMin,
+                           d3.max(datasets,function(dataset) {
+                               return dataset.data.length-1;
+                       }));
+            x.domain([d3.time.day.offset(xMin,-16),
+                  d3.time.day.offset(xMax,15)]);
+
+        // For the y-values, we want the chart to show the minimum
+            // and maximum valuesfrom all the datasets.
+            var yMin = d3.min(datasets, function(dataset) {
+            return d3.min(dataset.data, function(d) {
+                    return d.temp;
+            });
+            });
+            var yMax = d3.max(datasets, function(dataset) {
+            return d3.max(dataset.data, function(d) {
+                return d.temp;
+            });
+        });
+
+        // The `.nice()` function gives the domain nice
+        // rounded limits.
+        y.domain([yMin, yMax]).nice();
+
+        // With the domains defined, we now have enough
+        // information to complete the axes. We position
+        // the x-axis by translating it below the chart.
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        // For the y-axis, we add a label.
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 9)
+            .attr("dy", ".71em")
+            .attr("text-anchor", "end")
+            .text("Temperature (°C)");
+
+        // Style the axes. As with other styles, these
+        // could be more easily defined in CSS. For this
+        // particular code, though, we're avoiding CSS
+        // to make it easy to extract the resulting SVG
+        // and paste it into a presentation.
+        svg.selectAll(".axis line, .axis path")
+            .attr("fill", "none")
+            .attr("stroke", "#bbbbbb")
+            .attr("stroke-width", "2px")
+            .attr("shape-rendering", "crispEdges");
+
+        svg.selectAll(".axis text")
+            .attr("font-size", "14");
+
+        svg.selectAll(".axis .tick line")
+            .attr("stroke", "#d0d0d0")
+            .attr("stroke-width", "1");
+
+
+        // Plot the data and the legend
+        datasets.forEach(function(dataset, i) {
+
+            // Individual points
+            svg.selectAll(".point.dataset-" + i)
+                .data(dataset.data)
+              .enter().append("path")
+                .attr("class", "point dataset-" + i)
+                .attr("fill", color(i))
+                .attr("stroke", color(i))
+                .attr("d", symbol(i))
+                .attr("transform", function(d) {
+                    return "translate(" + x(d.date) +
+                                      "," + y(d.temp) + ")";
+                });
+
+            // Connect the points with lines
+            svg.append("path")
+                .datum(dataset.data)
+                .attr("class", "line dataset-" + i)
+                .attr("fill", "none")
+                .attr("stroke", color(i))
+                .attr("stroke-width", "2")
+                .attr("d", line);
+
+            // Legend. In general, it would be cleaner
+            // to create an SVG group for the legend,
+            // position that group, and then position
+            // the individual elements of the legend
+            // relative to the group. We're not doing
+            // it in this case because we want to do
+            // some fancy animation tricks with the
+            // resulting SVG within the presentation.
+            d3.select("svg").append("path")
+                .attr("class", "point dataset-" + i)
+                .attr("fill", color(i))
+                .attr("stroke", color(i))
+                .attr("d", symbol(i))
+                .attr("transform", "translate(" +
+                    (margin.left + width + 40) + "," +
+                    (20*i + margin.top + height/2 -
+                     20*datasets.length/2 - 6) + ")");
+
+            d3.select("svg").append("line")
+                .attr("class", "line dataset-" + i)
+                .attr("stroke", color(i))
+                .attr("stroke-width", "2")
+                .attr("x1", margin.left + width + 30)
+                .attr("x2", margin.left + width + 50)
+                .attr("y1", 20*i + margin.top + height/2 -
+                            20*datasets.length/2 - 6)
+                .attr("y2", 20*i + margin.top + height/2 -
+                            20*datasets.length/2 - 6);
+
+            d3.select("svg").append("text")
+                .attr("transform", "translate(" +
+                    (margin.left + width + 60) + "," +
+                    (20*i + margin.top + height/2 -
+                     20*datasets.length/2) + ")")
+                .attr("class", "legend")
+                .attr("font-size", "15")
+                .attr("text-anchor", "left")
+                .text(dataset.name);
+
+        });
+
+        // Chart decoration. Once more we're avoiding
+        // CSS for styling, but usually that would be
+        // a better approach.
+        d3.select("svg").append("text")
+            .attr("transform", "translate(" +
+                (margin.left + width/2 + 20) + ",20)")
+            .attr("class", "title")
+            .attr("font-size", "20")
+            .attr("text-anchor", "middle")
+            .text("Monthly Average Temperature");
+
+        d3.select("svg").append("text")
+            .attr("transform", "translate(" +
+                (margin.left + width/2 + 20) + ",48)")
+            .attr("class", "subtitle")
+            .attr("font-size", "15")
+            .attr("text-anchor", "middle")
+            .text("Source: WorldClimate.com");
+
+    </script>
+</body>
+</html>
