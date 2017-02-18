@@ -2,13 +2,14 @@
 #coding:utf8
 
 from . import analysis
-from findcommunities import *
+from analyse import *
 from models import NodeUtils, LinkUtils, graph
 from flask import render_template, jsonify
 
 
 @analysis.route('/demo_force',methods=['GET','POST'])
 def demo_force():
+    calculate_communities()
     return render_template('analysis_pages/demo_force.html', navId = "demoforce")
 
 @analysis.route('/demo_image',methods=['GET','POST'])
@@ -19,7 +20,8 @@ def demo_image():
 @analysis.route('/degree_distribute',methods=['GET','POST'])
 def degree():
     matrix = degree_distribution()
-    return render_template('analysis_pages/degree_distribute.html', navId = "degreedistribute", matrix = matrix)
+    dl = degree_of_people()
+    return render_template('analysis_pages/degree_distribute.html', navId = "degreedistribute", matrix = matrix, degreedict = dl)
 
 
 # 提供一个动态路由地址，供前端网页调用

@@ -16,6 +16,11 @@
     度分布
 {% endblock titletext %}
 
+{% block pagename %}
+    度分布
+{% endblock pagename %}
+
+
 {% block content %}
     <div id="degreeContainer" style="height: 100%; min-height: 500px;"></div>
 
@@ -25,8 +30,8 @@
 
         var option = {
             title : {
-                text: '男性女性身高体重分布',
-                subtext: '抽样调查来自: Heinz  2003'
+                text: '人物度分布',
+                subtext: 'Degree Distribution'
             },
             tooltip : {
                 trigger: 'axis',
@@ -53,7 +58,7 @@
                 }
             },
             legend: {
-                data:['女性','男性']
+                data:['人物']
             },
             toolbox: {
                 show : true,
@@ -85,8 +90,8 @@
             ],
             series : [
                 {
-                    name:'女性',
-                    type:'scatter',
+                    name:'人物',
+                    type:'bar',
                     data: [{% for item in matrix %}
                                 [{{ item[0] }}, {{ item[1] }}]
                                 {% if not loop.last %},{% endif %}
@@ -103,11 +108,78 @@
                             {type : 'average', name: '平均值'}
                         ]
                     }
-                },
+                }
+            ]
+        };
+
+        // 为echarts对象加载数据
+        myChart.setOption(option);
+    </script>
+
+
+
+
+
+
+
+
+
+
+    <div id="peopleContainer" style="height: 100%; min-height: 1000px;"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts图表
+        var myChart2 = echarts.init(document.getElementById('peopleContainer'), "macarons");
+        console.log('{% for key in degreedict %}{{ degreedict[key] }}\n{% endfor %}');
+        var option2 = {
+            title : {
+                text: '每个人物的度',
+                subtext: 'Degree of People'
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['degree']
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
                 {
-                    name:'男性',
-                    type:'scatter',
-                    data: [],
+                    name: "度",
+                    type : 'value'
+                }
+            ],
+            yAxis : [
+                {
+                    name: "名字",
+                    type : 'category',
+{#                    data : [{% for key, value in degreedict.iteritems() %}#}
+{#                                '{% if key|e %}{{ key|e }}{% else %}none{% endif %}'{% if not loop.last %},{% endif %}#}
+{#                            {% endfor %}]#}
+                    data : [{% for key, value in degreedict %}
+                                '{{ key|e }}'
+                                {% if not loop.last %},{% endif %}
+                            {% endfor %}]
+                }
+            ],
+            series : [
+                {
+                    name:'degree',
+                    type:'bar',
+                    data:[{% for key, value in degreedict %}
+                                {{ value|e }}
+                                {% if not loop.last %},{% endif %}
+                            {% endfor %}
+                    ],
                     markPoint : {
                         data : [
                             {type : 'max', name: '最大值'},
@@ -118,15 +190,20 @@
                         data : [
                             {type : 'average', name: '平均值'}
                         ]
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#9BCA63'
+                        }
                     }
+
                 }
             ]
         };
 
 
-
         // 为echarts对象加载数据
-        myChart.setOption(option);
+        myChart2.setOption(option2);
     </script>
 {% endblock content %}
 

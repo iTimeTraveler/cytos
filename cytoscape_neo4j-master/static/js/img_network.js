@@ -11,9 +11,9 @@ $(function(){
     var width = window.screen.availWidth;
     var height = window.screen.availHeight - 200;
     //人物图片的宽高
-    var img_w = 77;
-    var img_h = 90;
-    var radius = 35;	//圆形半径
+    var img_w = 47;
+    var img_h = 60;
+    var radius = 20;	//圆形半径
     var line_width = 1;
 
 
@@ -42,7 +42,7 @@ $(function(){
                         .links(edges)
                         .size([width,height])
                         .linkDistance(400)
-                        .charge(-3000)
+                        .charge(-1000)
                         .start();
 
         //缩放监听
