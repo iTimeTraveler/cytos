@@ -66,6 +66,7 @@
                     mark : {show: true},
                     dataZoom : {show: true},
                     dataView : {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
                     restore : {show: true},
                     saveAsImage : {show: true}
                 }
@@ -123,9 +124,13 @@
 
 
 
-
-
-    <div id="peopleContainer" style="height: 100%; min-height: 1000px;"></div>
+    <hr>
+    <br>
+    {% set height = degreedict|length * 30 + 100%}
+    {% if height > 1000 %}
+        {% set height = degreedict|length * 12 + 100%}
+    {% endif %}
+    <div id="peopleContainer" style="height: 100%; min-height: {{height}}px;"></div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts图表
         var myChart2 = echarts.init(document.getElementById('peopleContainer'), "macarons");
@@ -162,9 +167,6 @@
                 {
                     name: "名字",
                     type : 'category',
-{#                    data : [{% for key, value in degreedict.iteritems() %}#}
-{#                                '{% if key|e %}{{ key|e }}{% else %}none{% endif %}'{% if not loop.last %},{% endif %}#}
-{#                            {% endfor %}]#}
                     data : [{% for key, value in degreedict %}
                                 '{{ key|e }}'
                                 {% if not loop.last %},{% endif %}

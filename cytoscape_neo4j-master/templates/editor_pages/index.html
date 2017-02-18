@@ -22,7 +22,7 @@
                   <button class="btn btn-primary active" onclick="setAppMode(MODE.EDIT)">
                     <i class="fa fa-pencil"></i> 编辑模式
                   </button>
-                  <button class="btn btn-primary" onclick="setAppMode(MODE.EVAL)">
+                  <button class="btn btn-warning" onclick="setAppMode(MODE.EVAL)">
                     <i class="fa fa-eye"></i> 预览模式
                   </button>
                 </div>
@@ -30,7 +30,7 @@
         </div>
         <div class="col-sm-4">
             <div class="title-action">
-                  <button class="btn btn-inverse" onclick="submmitGraph()">submmitGraph</button>
+                  <button class="btn btn-inverse" onclick="">submmitGraph</button>
             </div>
         </div>
 
@@ -48,6 +48,7 @@
                 <div class="selected-node-id">未选中任何东西</div>
                 <table class="propvars inactive">
                   <tbody>
+                    <!-- 变量列表填充区 start -->
                     <tr class=""><td class="var-name">p:</td><td class="var-value"><div class="btn-group">
                       <input type="text" placeholder="e.g., (p -> []p)">
                     </div></td></tr>
@@ -55,6 +56,7 @@
                       <button class="btn btn-small btn-success" onclick="setVarForSelectedNode(2,true)">True</button>
                       <button class="btn btn-small btn-danger" onclick="setVarForSelectedNode(2,false)">False</button>
                     </div></td></tr>
+                    <!-- 变量列表 end -->
                   </tbody>
                 </table>
                 <div id="model-submmit" class="inactive">
@@ -64,14 +66,17 @@
               <div class="instructions">
                 <h3>Tips</h3>
                 <ul class="unstyled">
+                  <li><strong>选中人物或关系</strong>：点击人物或关系</li>
+                  <li><strong>移动人物</strong>：按住Ctrl再拖拽人物</li>
+                  <br>
                   <li><strong>添加一个人物</strong>：点击空白处</li>
                   <li><strong>添加一条关系</strong>：拖拽人物到另一个人物上</li>
-                  <li><strong>移动人物</strong>：按住Ctrl再拖拽人物</li>
-                  <li><strong>选中人物或关系</strong>：点击人物或关系</li>
                   <li>
-                    选中人物或关系以后:
+                    <strong>删除人物或关系</strong>: 选中人物或关系以后
                     <ul>
-                      <li><strong>Delete键</strong>：删除人物或关系</li>
+                      <br>
+                      <li>Delete键</li>
+                      <li>BackSpace键</li>
                     </ul>
                   </li>
                 </ul>
@@ -80,9 +85,29 @@
 
             <div id="eval-pane" class="tab-pane">
               <div class="eval-input">
-                Enter a formula:
-                <input type="text" placeholder="e.g., (p -> []p)">
-                <button class="btn btn-block" onclick="evaluateFormula()">Evaluate</button>
+                  <div class="widget style1 lazur-bg" style="background-image: linear-gradient(45deg,#00b6ee,#0080e2);">
+                    <div class="row">
+                        <div class="col-xs-4 text-center">
+                            <i class="fa fa-user fa-5x"></i>
+                        </div>
+                        <div class="col-xs-8 text-right">
+                            <span> 总人数 </span>
+                            <h2 id="peopleCount" class="font-bold">4,232</h2>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="widget style1 red-bg" style="background-image: linear-gradient(-45deg,#a83279,#d38312); opacity: .7;">
+                    <div class="row">
+                        <div class="col-xs-8 text-center">
+                            <a class="check-link" style="color:white; font-size: 18px;" href="javascript:void(0)" onclick="setShowCommunities()"><i class="fa fa-square-o fa-1x"></i>
+                                <span class="m-l-xs" style="color:white;">区分社区颜色</span>
+                            </a>
+                        </div>
+                    </div>
+                  </div>
+
+
               </div>
             </div>
 

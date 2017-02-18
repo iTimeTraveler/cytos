@@ -4,7 +4,7 @@ $(function(){
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));
     var root = result.elements;
-    console.log(JSON.stringify(root));
+    //console.log(JSON.stringify(root));
 
     //把边的source和target转换成序号连接的
     var edges = [];
@@ -24,6 +24,8 @@ $(function(){
 
     //入口
     setAppMode(MODE.EDIT);
+    setTotalPeople(nodes.length);
+    console.log(links);
     
 }, 'json');
 });
@@ -39,10 +41,9 @@ var MODE = {
     appMode = MODE.EDIT;
 
 // set up initial MPL model (loads saved model if available, default otherwise)
-var propvars = ['p','q','r','s','t'],
-    varCount = 2;
-
 var model = new MPL.Model();
+var showCommunty = false;
+var varCount = 2;
 
 
 // 初始化节点和边, based on MPL model
@@ -177,24 +178,24 @@ function setVarCount(count) {
 // 力引导布局刷新 (called automatically each iteration)
 function tick() {
   // draw directed edges with proper padding from node centers
-//  path.attr('d', function(d) {
-//    var deltaX = d.target.x - d.source.x,
-//        deltaY = d.target.y - d.source.y,
-//        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
-//        normX = deltaX / dist,
-//        normY = deltaY / dist,
-//        sourcePadding = d.left ? 17 : 12,
-//        targetPadding = d.right ? 17 : 12,
-//        sourceX = d.source.x + (sourcePadding * normX),
-//        sourceY = d.source.y + (sourcePadding * normY),
-//        targetX = d.target.x - (targetPadding * normX),
-//        targetY = d.target.y - (targetPadding * normY);
-//    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
-//  });
-
   path.attr('d', function(d) {
-    return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;
+    var deltaX = d.target.x - d.source.x,
+        deltaY = d.target.y - d.source.y,
+        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+        normX = deltaX / dist,
+        normY = deltaY / dist,
+        sourcePadding = d.left ? 17 : 12,
+        targetPadding = d.right ? 17 : 12,
+        sourceX = d.source.x + (sourcePadding * normX),
+        sourceY = d.source.y + (sourcePadding * normY),
+        targetX = d.target.x - (targetPadding * normX),
+        targetY = d.target.y - (targetPadding * normY);
+    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
   });
+
+  //path.attr('d', function(d) {
+  //  return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;
+  //});
 
   circle.selectAll('circle')
         .attr("cx", function(d) { return d.x; })
@@ -239,8 +240,8 @@ function restart() {
       restart();
     });
 
-  pathtext = pathtext.data(links);
-
+//  pathtext = pathtext.data(links);
+//
 //  // 边上的文字
 //  var text = pathtext.enter()
 //    .append("text")
@@ -260,7 +261,9 @@ function restart() {
 
   // 更新已存在的nodes (reflexive & selected visual states)
   circle.selectAll('circle')
-    .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.temp_index)).brighter().toString() : colors(d.temp_index); })
+    .style('fill', function(d) {
+          return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.temp_index)).brighter().toString() : colors(showCommunty ? d.community : d.temp_index);
+      })
     .classed('reflexive', function(d) { return d.reflexive; });
 
   // 添加新节点
@@ -269,7 +272,9 @@ function restart() {
   g.append('svg:circle')
     .attr('class', 'node')
     .attr('r', radius)
-    .style('fill', function(d) {return (d === selected_node) ? d3.rgb(colors(d.temp_index)).brighter().toString() : colors(d.temp_index); })
+    .style('fill', function(d) {
+          return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.temp_index)).brighter().toString() : colors(showCommunty ? d.community : d.temp_index);
+      })
 //    .style('stroke', function(d) { return d3.rgb(colors(d.temp_index)).darker().toString(); })
     .style('stroke', function(d) { return "#fff"; })
     .classed('reflexive', function(d) { return d.reflexive; })
@@ -738,6 +743,19 @@ function setAppMode(newMode) {
 
   restart();
 }
+
+/**
+ * 显示社区区分的颜色
+ */
+function setShowCommunities() {
+    showCommunty = !showCommunty;
+    restart();
+}
+
+function setTotalPeople(total) {
+    d3.select('#peopleCount').html(total);
+}
+
 
 //enter键 to evaluate formula
 evalInput.select('input')

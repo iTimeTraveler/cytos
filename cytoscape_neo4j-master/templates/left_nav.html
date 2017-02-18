@@ -47,7 +47,7 @@
             </li>
 
 
-            <li>
+            <li id="analyse">
                 <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">分析</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" style="height: 0px;">
 
@@ -68,6 +68,11 @@
             $("li").removeClass("active");
             if('{{ navId }}'){
                 $('li#{{ navId }}').addClass("active");
+            }
+            switch('{{ navId }}'){
+                case 'degreedistribute':
+                    $('li#analyse').addClass("active");
+                    break;
             }
         });
     </script>

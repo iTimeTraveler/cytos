@@ -7,7 +7,7 @@ from igraph import Graph as IGraph
 
 # 角色节点创建一个pagerank属性
 query = '''
-MATCH (c1:Character)-[r]->(c2:Character)
+MATCH (c1)-[r]->(c2)
 RETURN c1.name, c2.name, r.weight AS weight
 '''
 
@@ -26,7 +26,7 @@ def calculate_communities():
         pgvs.append({"name": p[0]["name"], "pg": p[1]})
     write_clusters_query = '''
     UNWIND {nodes} AS n
-    MATCH (c:Character) WHERE c.name = n.name
+    MATCH (c) WHERE c.name = n.name
     SET c.pagerank = n.pg
     '''
     graph.run(write_clusters_query, nodes=pgvs)
@@ -40,7 +40,7 @@ def calculate_communities():
 
     write_clusters_query = '''
     UNWIND {nodes} AS n
-    MATCH (c:Character) WHERE c.name = n.name
+    MATCH (c) WHERE c.name = n.name
     SET c.community = toInt(n.community)
     '''
     graph.run(write_clusters_query, nodes=nodes)
