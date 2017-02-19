@@ -28,4 +28,4 @@ def index():
 # 启动server服务器
 if __name__ == '__main__':
     # app.run(debug = True)
-    app.run(port=2000)
+    app.run(port=2000, debug = True)
