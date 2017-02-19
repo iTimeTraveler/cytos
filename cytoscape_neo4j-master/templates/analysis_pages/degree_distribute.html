@@ -151,7 +151,7 @@
                 feature : {
                     mark : {show: true},
                     dataView : {show: true, readOnly: false},
-                    magicType: {show: true, type: ['line', 'bar']},
+                    magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
                     restore : {show: true},
                     saveAsImage : {show: true}
                 }
@@ -196,6 +196,9 @@
                     itemStyle: {
                         normal: {
                             color: '#9BCA63'
+                        },
+                        areaStyle: {
+                            type: 'default'
                         }
                     }
 

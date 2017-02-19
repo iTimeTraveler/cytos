@@ -240,18 +240,18 @@ function restart() {
       restart();
     });
 
-//  pathtext = pathtext.data(links);
-//
-//  // 边上的文字
-//  var text = pathtext.enter()
-//    .append("text")
-//    .attr('class', 'edgetext')
-//    .attr("x", 6)
-//    .attr("dy", -5)
-//    .append('textPath')
-//    .attr('startOffset', '10%')
-//    .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
-//    .text(function(d) { return d.relation; });
+  pathtext = pathtext.data(links);
+
+  // 边上的文字
+  var text = pathtext.enter()
+    .append("text")
+    .attr('class', 'edgetext')
+    .attr("x", 6)
+    .attr("dy", -5)
+    .append('textPath')
+    .attr('startOffset', '10%')
+    .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
+    .text(function(d) { return d.relation; });
 
   // 删除旧的link
   path.exit().remove();

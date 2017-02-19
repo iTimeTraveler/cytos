@@ -32,7 +32,7 @@ def calculate_communities():
     graph.run(write_clusters_query, nodes=pgvs)
 
     # 随机游走的社区发现算法
-    clusters = IGraph.community_walktrap(ig, weights="weight").as_clustering()
+    clusters = IGraph.community_walktrap(ig, weights=None).as_clustering()
     nodes = [{"name": node["name"]} for node in ig.vs]
     for node in nodes:
         idx = ig.vs.find(name=node["name"]).index
