@@ -25,8 +25,7 @@ $(function(){
     //入口
     setAppMode(MODE.EDIT);
     setTotalPeople(nodes.length);
-    console.log(links);
-    
+
 }, 'json');
 });
 
@@ -255,6 +254,9 @@ function restart() {
 
   // 删除旧的link
   path.exit().remove();
+
+  // 删除旧的link上的文字
+  pathtext.exit().remove();
 
   // 节点
   circle = circle.data(nodes, function(d) { return d.temp_index; });
@@ -604,7 +606,9 @@ function setSelectedNodeOrLink(node, link) {
             if(!hideKeys.has(nodeKeys[key])){
                 switch(nodeKeys[key]) {
                     // 不能修改的字段使用lable显示
-                    case '':
+                    case 'pagerank':
+                    case 'community':
+                    case 'fixed':
                         htmlStr += '<tr class="m-b-sm"><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
                             '<label for="">' + selected_node[nodeKeys[key]] + '</label> </div></td></tr>';
                         break;
@@ -614,6 +618,15 @@ function setSelectedNodeOrLink(node, link) {
                         break;
                 }
             }
+          }
+          if(nodeKeys.hasOwnProperty('avatarUrl')){
+              htmlStr += '<tr class="m-b-sm"><td class="var-name">avatarUrl:</td><td class="var-value"><div class="btn-group">' +
+                        ' </div></td></tr>';
+          }else{
+              htmlStr += '<tr class="m-b-sm"><td class="var-name">avatarUrl:</td><td class="var-value"><div class="btn-group">' +
+                        '<form action="/editor/upload/avatar" method=post enctype=multipart/form-data>' +
+                        '<input type=file name=file><br/>' +
+                        '<input type=submit value=Upload></form> </div></td></tr>';
           }
           varTableBody.empty();
           varTableBody.html(htmlStr);
@@ -798,6 +811,7 @@ function updateNodeOrLink() {
 
   }else if(selected_link) {
     // 读取左侧表格边的数据
+    var pos_l = links.indexOf(selected_link);
     var linkKeys = Object.keys(selected_link);
     for(var i in linkKeys){
         var input = document.getElementById(linkKeys[i]+'_value');
@@ -806,6 +820,12 @@ function updateNodeOrLink() {
         }
     }
     submmitModifyLink(selected_link, ModifyAction.ALTER);
+
+    // 先删除再添加
+    links.splice(pos_l, 1);
+    restart();
+    links.splice(pos_l, 0, selected_link);
+    restart();
   }
 }
 //编辑节点：增、删、改
