@@ -287,7 +287,7 @@ function restart() {
             .attr("width", img_w)
             .attr("height", img_h)
             .attr("xlink:href", function(which){
-                return "/static/img/suyu.png";
+                return d.avatar == null ? "/static/img/suyu.png" : d.avatar;
             })
         return "url(#catpattern" + i + ")";
     })
@@ -635,6 +635,8 @@ function setSelectedNodeOrLink(node, link) {
             if(!hideKeys.has(nodeKeys[key])){
                 switch(nodeKeys[key]) {
                     // 不能修改的字段使用lable显示
+                    case 'avatar':
+                        break;
                     case 'pagerank':
                     case 'community':
                     case 'fixed':
@@ -648,14 +650,16 @@ function setSelectedNodeOrLink(node, link) {
                 }
             }
           }
-          if(!nodeKeys.hasOwnProperty('avatarUrl')){
-              htmlStr += '<tr class="m-b-sm"><td class="var-name">avatarUrl:</td><td class="var-value"><div class="btn-group">' +
+
+          htmlStr += '<tr class="m-b-sm"><td class="var-name">avatar:</td><td class="var-value"><div class="btn-group">' +
                             varAvatarRow.html() + '</div></td></tr>';
-          }else{
-          }
 
           varTableBody.empty();
           varTableBody.html(htmlStr);
+
+          if(nodeKeys.indexOf('avatar') > -1){
+                $('#avatar_value').val(selected_node['avatar']);
+          }
       }
   /*==============================================================================================================*/
   } else if (link) {    // 选中连线，更新编辑面板
@@ -826,6 +830,9 @@ function updateNodeOrLink() {
         if(input != null){
             selected_node[nodeKeys[i]] = input.value;
         }
+    }
+    if($('#avatar_value').val()){
+        selected_node['avatar'] = $('#avatar_value').val();
     }
     submmitModifyNode(selected_node, ModifyAction.ALTER);
 

@@ -77,22 +77,43 @@
 
                 <!-- 上传头像 -->
                 <div id="avatar-content" style="display:none">
-                    <form action="/editor/upload/avatar" method=post enctype=multipart/form-data>
-                        <input id="lefile" type="file" name=file style="display:none">
-                        <input id="uploadfile" type=submit style="display:none">
+                    <form id="myform" action="/editor/upload/avatar" method=post enctype=multipart/form-data>
+                        <input id="lefile" type="file" name="file" style="display:none">
                         <div class="input-append">
-                            <input id="photoCover" type="text" class="form-control" style="height:34px; width: 54%; display: inline-block;" onclick="$('input[id=lefile]').click();">
-                            <div class="btn btn-primary btn-file" onclick="$('input[id=uploadfile]').click();">
+                            <input id="avatar_value" type="text" class="form-control" style="height:34px; width: 54%; display: inline-block;" onclick="$('input[id=lefile]').click();">
+                            <div class="btn btn-primary btn-file" onclick="doUpload()">
                                 <i class="fa fa-upload"></i> 上传
                             </div>
                         </div>
                     </form>
-                    <script type="text/javascript">
-                        $('input[id=lefile]').change(function() {
-                            $('#photoCover').val($(this).val());
-                        });
-                    </script>
                 </div>
+
+                <script type="text/javascript">
+                    $('input[id=lefile]').change(function() {
+                        $('#avatar_value').val($(this).val());
+                    });
+
+                    function doUpload(){
+                        //使用FormData来上传文件
+                        var formData = new FormData($("#myform")[0]);
+                         $.ajax({
+                              url: $('#myform').attr('action'),
+                              type: 'POST',
+                              data: formData,
+                              async: false,
+                              cache: false,
+                              contentType: false,
+                              processData: false,
+                              success: function (returndata) {
+                                  alert("上传成功，头像地址为：" + returndata + "，请点击[提交]保存人物信息");
+                                  $('#avatar_value').val(returndata);
+                              },
+                              error: function (returndata) {
+                                  alert("上传出错：" +returndata);
+                              }
+                         });
+                    }
+                </script>
 
 
                 <!-- 个人信息卡片 start -->
