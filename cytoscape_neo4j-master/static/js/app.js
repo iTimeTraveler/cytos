@@ -148,6 +148,7 @@ var varCountButtons = d3.selectAll('#edit-pane .var-count button'),
     varTableBody = d3.select('#edit-pane table.propvars tbody'),
     varSubmmit = d3.select('#model-submmit'),
     varTableRows = varTable.selectAll('tr'),
+    varAvatarRow = d3.select('#avatar-content'),
     selectedNodeLabel = d3.select('#edit-pane .selected-node-id'),
     evalInput = d3.select('#eval-pane .eval-input'),
     evalOutput = d3.select('#eval-pane .eval-output'),
@@ -641,21 +642,18 @@ function setSelectedNodeOrLink(node, link) {
                             '<label for="">' + selected_node[nodeKeys[key]] + '</label> </div></td></tr>';
                         break;
                     default:
-                        htmlStr += ' <tr class="m-b-sm"><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
+                        htmlStr += '<tr class="m-b-sm"><td class="var-name">' + nodeKeys[key] + ':</td><td class="var-value"><div class="btn-group">' +
                             '<input id="' + nodeKeys[key] + '_value" type="text" class="form-control" value="' + selected_node[nodeKeys[key]] + '"> </div></td></tr>';
                         break;
                 }
             }
           }
-          if(nodeKeys.hasOwnProperty('avatarUrl')){
+          if(!nodeKeys.hasOwnProperty('avatarUrl')){
               htmlStr += '<tr class="m-b-sm"><td class="var-name">avatarUrl:</td><td class="var-value"><div class="btn-group">' +
-                        ' </div></td></tr>';
+                            varAvatarRow.html() + '</div></td></tr>';
           }else{
-              htmlStr += '<tr class="m-b-sm"><td class="var-name">avatarUrl:</td><td class="var-value"><div class="btn-group">' +
-                        '<form action="/editor/upload/avatar" method=post enctype=multipart/form-data>' +
-                        '<input type=file name=file><br/>' +
-                        '<input type=submit value=Upload></form> </div></td></tr>';
           }
+
           varTableBody.empty();
           varTableBody.html(htmlStr);
       }
