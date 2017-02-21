@@ -58,9 +58,9 @@ var width  = 1200,
 
 
 //人物图片的宽高
-var img_w = 70,
-    img_h = 80,
-    radius = 30;	//圆形半径
+var img_w = 60,
+    img_h = 70,
+    radius = 25;	//圆形半径
 
 
 var svg = d3.select('#app-body .graph')
