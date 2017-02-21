@@ -54,13 +54,19 @@ var lastNodeIndex = 0,
 // set up SVG for D3
 var width  = 1200,
     height = 800,
-    radius = 20;
     colors = d3.scale.category20();
+
+
+//人物图片的宽高
+var img_w = 60,
+    img_h = 70,
+    radius = 30;	//圆形半径
+
 
 var svg = d3.select('#app-body .graph')
     .append('svg')
     .attr('oncontextmenu', 'return false;')
-    .attr('width', 'auto')
+    .attr('width', '100%')
     .attr('height', height);
 
 //缩放监听
@@ -153,26 +159,6 @@ function makeAssignmentString(node) {
     return "";
 }
 
-//左侧面板变量 set # of vars currently in use and notify panel of changes
-function setVarCount(count) {
-  varCount = count;
-
-  // update variable count button states
-  varCountButtons.each(function(d,i) {
-    if(i !== varCount-1) d3.select(this).classed('active', false);
-    else d3.select(this).classed('active', true);
-  });
-
-  //更新节点旁文字
-  circle.selectAll('text:not(.id)').text(makeAssignmentString);
-
-  //update variable table rows
-  varTableRows.each(function(d,i) {
-    if(i < varCount) d3.select(this).classed('inactive', false);
-    else d3.select(this).classed('inactive', true);
-  });
-}
-
 
 // 力引导布局刷新 (called automatically each iteration)
 function tick() {
@@ -210,6 +196,8 @@ function tick() {
 }
 
 
+
+
 // 更新整个svg布局 (called when needed)
 function restart() {
 
@@ -232,57 +220,82 @@ function restart() {
     .on('mousedown', function(d) {
       if(appMode !== MODE.EDIT || d3.event.ctrlKey) return;
 
-      // select link
+      //选中边
       mousedown_link = d;
       if(mousedown_link === selected_link) setSelectedNodeOrLink(null, null);
       else setSelectedNodeOrLink(null, mousedown_link);
       restart();
     });
 
-  pathtext = pathtext.data(links);
+  // 删除旧的link
+  path.exit().remove();
+
 
   // 边上的文字
+  pathtext = pathtext.data(links);
+
+  //更新已存在的边上的文字
+  pathtext.selectAll('text')
+    .text(function(d) { return d.relation; });
+
+  // 添加边上的文字
   var text = pathtext.enter()
     .append("text")
     .attr('class', 'edgetext')
     .attr("x", 6)
     .attr("dy", -5)
     .append('textPath')
-    .attr('startOffset', '10%')
     .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
+    .style("text-anchor","middle")
+    .attr("startOffset","50%")
     .text(function(d) { return d.relation; });
-
-  // 删除旧的link
-  path.exit().remove();
 
   // 删除旧的link上的文字
   pathtext.exit().remove();
+
+
 
   // 节点
   circle = circle.data(nodes, function(d) { return d.temp_index; });
 
   // 更新已存在的nodes (reflexive & selected visual states)
   circle.selectAll('circle')
-    .style('fill', function(d) {
-          return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.temp_index)).brighter().toString() : colors(showCommunty ? d.community : d.temp_index);
-      })
+    .style('stroke', function(d) {
+        return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.temp_index)).brighter().toString() : colors(showCommunty ? d.community : d.temp_index);
+    })
     .classed('reflexive', function(d) { return d.reflexive; });
 
   // 添加新节点
   var g = circle.enter().append('svg:g');
 
+  //节点图片
   g.append('svg:circle')
     .attr('class', 'node')
     .attr('r', radius)
-    .style('fill', function(d) {
-          return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.temp_index)).brighter().toString() : colors(showCommunty ? d.community : d.temp_index);
-      })
-//    .style('stroke', function(d) { return d3.rgb(colors(d.temp_index)).darker().toString(); })
-    .style('stroke', function(d) { return "#fff"; })
+    .attr("fill", function(d, i){
+
+        //创建圆形图片
+        var defs = svg.append("defs").attr("id", "imgdefs")
+        var catpattern = defs.append("pattern")
+                            .attr("id", "catpattern" + i)
+                            .attr("height", 1)
+                            .attr("width", 1)
+        catpattern.append("image")
+            .attr("x", - (img_w / 2 - radius))
+            .attr("y", - (img_h / 2 - radius))
+            .attr("width", img_w)
+            .attr("height", img_h)
+            .attr("xlink:href", function(which){
+                return "/static/img/suyu.png";
+            })
+        return "url(#catpattern" + i + ")";
+    })
+    .style('stroke', function(d) {
+        return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.temp_index)).brighter().toString() : colors(showCommunty ? d.community : d.temp_index);
+     })
     .classed('reflexive', function(d) { return d.reflexive; })
     .on('mouseover', function(d) {
       if(appMode !== MODE.EDIT || !mousedown_node || d === mousedown_node) return;
-      // enlarge target node
       //d3.select(this).attr('transform', 'scale(1.1)');
     })
     .on('mouseout', function(d) {
@@ -293,7 +306,7 @@ function restart() {
     .on('mousedown', function(d) {
       if(appMode !== MODE.EDIT || d3.event.ctrlKey) return;
 
-      // select node
+      // 选中节点
       mousedown_node = d;
       if(mousedown_node === selected_node) setSelectedNodeOrLink(null, null);
       else setSelectedNodeOrLink(mousedown_node, null);
@@ -345,11 +358,25 @@ function restart() {
       restart();
     });
 
-  //显示 node IDs
+
+  // 更新已存在的节点文字 (reflexive & selected visual states)
+  circle.selectAll('text')
+    .style('fill', function(d) {
+          return colors(showCommunty ? d.community : d.temp_index);
+      })
+
+  //显示 node Name
   g.append('svg:text')
       .attr('x', 0)
       .attr('y', 4)
+      .attr("dx",function(d){
+        return d.name.length * -1;
+      })
+      .attr("dy",radius + 5)
       .attr('class', 'id')
+      .style('fill', function(d) {
+        return colors(showCommunty ? d.community : d.temp_index);
+      })
       .text(function(d) { return d.name == null ? d.temp_index : d.name; });
 
   //文字阴影
@@ -398,6 +425,7 @@ function mousedown() {
   node.y = point[1];
   nodes.push(node);
   submmitModifyNode(node, ModifyAction.ADD);
+  setSelectedNodeOrLink(node, null);    //选中新加的节点
 
   // add state to model
   model.addState();
