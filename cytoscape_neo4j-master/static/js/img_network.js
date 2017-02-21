@@ -41,7 +41,7 @@ $(function(){
                         .nodes(root.nodes)
                         .links(edges)
                         .size([width,height])
-                        .linkDistance(400)
+                        .linkDistance(200)
                         .charge(-1000)
                         .start();
 

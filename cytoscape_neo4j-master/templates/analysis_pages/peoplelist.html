@@ -46,7 +46,8 @@
                                 {% for people in nodes %}
                                     {% for key, value in people.iteritems() %}
                                         {% if key and key not in array %}
-                                            {{ array.append(key|e) }}
+                                            {% if array.append(key|e) %}
+                                            {% endif %}
                                         {% endif %}
                                     {% endfor %}
                                 {% endfor %}
@@ -67,8 +68,8 @@
 
                             {% for people in nodes %}
                                 <tr>
-                                    {% for key, value in people.iteritems() %}
-                                        <td>{{ value|e }}</td>
+                                    {% for key in array %}
+                                        <td>{{ people[key] }}</td>
                                     {% endfor %}
 
                                     <td>

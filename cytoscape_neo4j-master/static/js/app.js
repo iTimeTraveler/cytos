@@ -58,8 +58,8 @@ var width  = 1200,
 
 
 //人物图片的宽高
-var img_w = 60,
-    img_h = 70,
+var img_w = 70,
+    img_h = 80,
     radius = 30;	//圆形半径
 
 
@@ -67,7 +67,7 @@ var svg = d3.select('#app-body .graph')
     .append('svg')
     .attr('oncontextmenu', 'return false;')
     .attr('width', '100%')
-    .attr('height', "100%");
+    .attr('height', height);
 
 //缩放监听
 var zoomListener = d3.behavior.zoom()
@@ -94,8 +94,8 @@ var unzoomListener = d3.behavior.zoom()
 // 初始化d3力导向布局
 var force = d3.layout.force()
     .size([width, height])
-    .linkDistance(150)
-    .charge(-500)
+    .linkDistance(200)
+    .charge(-1000)
     .on('tick', tick);
 
 // 箭头连接线
@@ -371,9 +371,9 @@ function restart() {
       .attr('x', 0)
       .attr('y', 4)
       .attr("dx",function(d){
-        return d.name.length * -1;
+        return d.name.length * -0.5;
       })
-      .attr("dy",radius + 5)
+      .attr("dy",radius + 7)
       .attr('class', 'id')
       .style('fill', function(d) {
         return colors(showCommunty ? d.community : d.temp_index);
