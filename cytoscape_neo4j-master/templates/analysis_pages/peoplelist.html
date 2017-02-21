@@ -42,16 +42,23 @@
                     <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
                         <thead>
                             <tr>
-                                {% if nodes|length > 0 %}
-                                    {% set people = nodes[0] %}
+                                {% set array = [] %}
+                                {% for people in nodes %}
                                     {% for key, value in people.iteritems() %}
-                                        {% if loop.index <= 5 %}
-                                            <th>{{ key|e }}</th>
-                                        {% else %}
-                                            <th data-hide="all">{{ key|e }}</th>
+                                        {% if key and key not in array %}
+                                            {{ array.append(key|e) }}
                                         {% endif %}
                                     {% endfor %}
-                                {% endif %}
+                                {% endfor %}
+
+
+                                {% for key in array %}
+                                    {% if loop.index <= 5 %}
+                                        <th>{{ key|e }}</th>
+                                    {% else %}
+                                        <th data-hide="all">{{ key|e }}</th>
+                                    {% endif %}
+                                {% endfor %}
 
                                 <!--<th data-toggle="true">ID</th>-->
                                 <th>保存状态</th></tr>

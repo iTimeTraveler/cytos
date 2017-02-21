@@ -67,7 +67,7 @@ var svg = d3.select('#app-body .graph')
     .append('svg')
     .attr('oncontextmenu', 'return false;')
     .attr('width', '100%')
-    .attr('height', height);
+    .attr('height', "100%");
 
 //缩放监听
 var zoomListener = d3.behavior.zoom()
