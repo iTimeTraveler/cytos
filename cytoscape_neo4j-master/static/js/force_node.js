@@ -21,8 +21,8 @@ $(function(){
 
 
     //svg窗口的宽高
-    var width = window.screen.availWidth;
-    var height = window.screen.availHeight;
+    var width = window.screen.availWidth - 220;
+    var height = window.screen.availHeight - 220;
     var colors = d3.scaleOrdinal(d3.schemeCategory20);
     var radius = 20;
 

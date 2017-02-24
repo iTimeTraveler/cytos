@@ -11,10 +11,10 @@ $(function(){
     var width = window.screen.availWidth;
     var height = window.screen.availHeight - 200;
     //人物图片的宽高
-    var img_w = 47;
-    var img_h = 60;
-    var radius = 20;	//圆形半径
-    var line_width = 1;
+    var img_w = 60;
+    var img_h = 70;
+    var radius = 25;	//圆形半径
+    var line_width = 2;
 
 
     //把边的source和target转换成序号连接的
@@ -101,9 +101,12 @@ $(function(){
                                     .attr("width", img_w)
                                     .attr("height", img_h)
                                     .attr("xlink:href", function(which){
-                                        //return "static/img/"+d.image;
-                                        var community = d.community==null ? 0 : d.community;
-                                        return "/static/img/" + avatars[community] + ".png";
+                                        if(d.avatar){
+                                            return d.avatar;
+                                        }else{
+                                            var community = d.community==null ? 0 : d.community;
+                                            return "/static/img/" + avatars[community] + ".png";
+                                        }
                                     })
                                 return "url(#catpattern" + i + ")";
                             })
