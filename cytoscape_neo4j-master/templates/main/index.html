@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+
+
+{% block head %}
+    {{ super() }}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>人物关系图谱</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+{% endblock head %}
+
+
+{% block maintitle %}
+    {{ super() }}
+{% endblock maintitle %}
+
+
+
+<!-- 内容区 start -->
+{% block content %}
+<div class="img-wrapper" style="height: 100%; text-align: center; background: #b1ddf8;">
+<img class="currentImg" id="currentImg" height="100%" src="{{ url_for('static',filename='img/main_anim.gif') }}">
+
+</div>
+{% endblock content %}
+<!-- 内容区 end -->
+
+
+
+{% block script %}
+    {{ super() }}
+{% endblock script %}
