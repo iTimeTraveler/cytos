@@ -51,7 +51,7 @@ def calculate_communities():
 # 度分布
 def degree_distribution():
     # dd = ig.degree_distribution()
-    mylist = ig.vs.degree()
+    mylist = ig.vs.degree(type="in")
     ig.vs['name']
     myset = set(mylist)  #myset是另外一个列表，里面的内容是mylist里面的无重复项
     matrix = [[0 for col in range(2)] for row in range(len(myset))]
@@ -73,3 +73,34 @@ def degree_of_people():
     mylist = sorted(temp.iteritems(), key=lambda (k,v): (v,k))
     return mylist
 
+
+# 图（网络）的直径
+def diameter_of_network():
+    query = '''
+    MATCH (a:Character), (b:Character) WHERE id(a) > id(b)
+    MATCH p=shortestPath((a)-[:INTERACTS*]-(b))
+    RETURN length(p) AS len, extract(x IN nodes(p) | x.name) AS path
+    ORDER BY len DESC LIMIT 4
+    '''
+    return graph.run(query).data()
+
+
+# 最短路径
+def shortest_path():
+    query = '''
+    MATCH (catelyn:Character {name: "Catelyn"}), (drogo:Character {name: "Drogo"})
+    MATCH p=shortestPath((catelyn)-[INTERACTS*]-(drogo))
+    RETURN p
+    '''
+    return graph.run(query).data()
+
+
+# 关键节点
+def pivotal_nodes():
+    query = '''
+    MATCH (a:Character), (b:Character)
+    MATCH p=allShortestPaths((a)-[:INTERACTS*]-(b)) WITH collect(p) AS paths, a, b
+    MATCH (c:Character) WHERE all(x IN paths WHERE c IN nodes(x)) AND NOT c IN [a,b]
+    RETURN a.name, b.name, c.name AS PivotalNode SKIP 490 LIMIT 10
+    '''
+    return graph.run(query).data()

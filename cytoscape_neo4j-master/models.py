@@ -18,6 +18,7 @@ class NodeUtils:
         return
 
     # 对数据库里取出来的节点进行包装（这里是规范一下数据的格式）
+    @staticmethod
     def wrapNodes(nodeRecord):
         global count
         data = {"id": nodeRecord['id'], "temp_index": count, "label": next(iter(nodeRecord['n'].labels()))}  # 对每一个节点都构造包装成一个这样的格式
@@ -90,10 +91,12 @@ class LinkUtils:
         return
 
     # 对数据库里取出来的关系进行包装（这里也是规范一下数据的格式）
+    @staticmethod
     def wrapEdges(relationRecord):
         data = {"id": relationRecord['id'],
                 "source": relationRecord['r'].start_node()['name'],
                 "target": relationRecord['r'].end_node()['name'],
+                "weight": relationRecord['r']['weight'],
                 "relation": str(relationRecord['r'].type())}  # 对每一个关系都构造包装成一个这样的格式， str()是一个方法，把括号里的参数转换为字符串类型
         data.update(relationRecord['r'].properties)
         return data

@@ -22,8 +22,12 @@
 
 
 {% block content %}
-    <div id="degreeContainer" style="height: 100%; min-height: 500px;"></div>
+    <div>
+        {{ networkdiameter }}
+    </div>
 
+    <!-- 度分布 -->
+    <div id="degreeContainer" style="height: 100%; min-height: 500px;"></div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts图表
         var myChart = echarts.init(document.getElementById('degreeContainer'), "macarons");
@@ -116,16 +120,14 @@
         // 为echarts对象加载数据
         myChart.setOption(option);
     </script>
-
-
-
-
-
-
-
-
     <hr>
     <br>
+
+
+
+
+
+    <!-- 每个人的度 -->
     {% set height = degreedict|length * 30 + 100%}
     {% if height > 1000 %}
         {% set height = degreedict|length * 12 + 100%}
@@ -134,7 +136,6 @@
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts图表
         var myChart2 = echarts.init(document.getElementById('peopleContainer'), "macarons");
-        console.log('{% for key in degreedict %}{{ degreedict[key] }}\n{% endfor %}');
         var option2 = {
             title : {
                 text: '每个人物的度',
@@ -205,10 +206,74 @@
                 }
             ]
         };
-
-
-        // 为echarts对象加载数据
         myChart2.setOption(option2);
     </script>
+    <hr>
+    <br>
+
+
+
+
+    <div id="chordContainer" style="height: 100%; min-height: 700px;"></div>
+    <script type="text/javascript">
+        var myChart3 = echarts.init(document.getElementById('chordContainer'), "macarons");
+        option3 = {
+            title : {
+                text: '人物关系和弦图',
+                x:'left',
+                y:'top'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: function (params) {
+                    if (params.indicator2) {    // is edge
+{#                        return params.indicator2 + ' ' + params.name + ' ' + params.indicator;#}
+                        return params.name;
+                    } else {    // is node
+                        return params.name
+                    }
+                }
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    restore : {show: true},
+                    magicType: {show: true, type: ['force', 'chord']},
+                    saveAsImage : {show: true}
+                }
+            },
+            series : [
+                {
+                    type:'chord',
+                    sort : 'ascending',
+                    sortSub : 'descending',
+                    showScale : false,
+                    itemStyle : {
+                        normal : {
+                            label : {
+                                rotate : true
+                            }
+                        }
+                    },
+                    // 使用 nodes links 表达和弦图
+                    nodes: [{% for item in nodes -%}
+                                {name:'{{ item.name }}'}{% if not loop.last -%},{%- endif %}
+                            {%- endfor %}
+                    ],
+                    links: [{% for item in links -%}
+                                {source:'{{ item.source }}', target:'{{ item.target }}', relation:'{{ item.relation }}', weight: {{ item.weight }}},
+                                {target:'{{ item.source }}', source:'{{ item.target }}', relation:'{{ item.relation }}', weight: {{ item.weight }}} // RibbonType的和弦图每一对节点之间必须是双向边
+                                {% if not loop.last -%},{%- endif %}
+                            {%- endfor %}
+                    ]
+                }
+            ]
+        };
+        myChart3.setOption(option3);
+    </script>
+    <hr>
+    <br>
+
+
 {% endblock content %}
 
