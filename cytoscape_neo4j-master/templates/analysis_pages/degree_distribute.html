@@ -228,7 +228,7 @@
                 formatter: function (params) {
                     if (params.indicator2) {    // is edge
 {#                        return params.indicator2 + ' ' + params.name + ' ' + params.indicator;#}
-                        return params.name;
+                        return params.name + ", Weight: " + params.value.weight;
                     } else {    // is node
                         return params.name
                     }
@@ -261,8 +261,8 @@
                             {%- endfor %}
                     ],
                     links: [{% for item in links -%}
-                                {source:'{{ item.source }}', target:'{{ item.target }}', relation:'{{ item.relation }}', weight: {{ item.weight }}},
-                                {target:'{{ item.source }}', source:'{{ item.target }}', relation:'{{ item.relation }}', weight: {{ item.weight }}} // RibbonType的和弦图每一对节点之间必须是双向边
+                                {source:'{{ item.source }}', target:'{{ item.target }}', relation:'{{ item.relation }}', weight: {% if(item.weight==None) %}1{% else %}{{item.weight}}{% endif %} },
+                                {target:'{{ item.source }}', source:'{{ item.target }}', relation:'{{ item.relation }}', weight: {% if(item.weight==None) %}1{% else %}{{item.weight}}{% endif %}} // RibbonType的和弦图每一对节点之间必须是双向边
                                 {% if not loop.last -%},{%- endif %}
                             {%- endfor %}
                     ]
