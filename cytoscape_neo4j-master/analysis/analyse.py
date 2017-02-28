@@ -58,7 +58,7 @@ def degree_distribution():
     m = 0
     for item in myset:
       matrix[m][0] = item
-      matrix[m][1] = mylist.count(item)
+      matrix[m][1] = round(mylist.count(item)/float(len(mylist)), 3)
       m += 1
     return matrix
 

@@ -33,6 +33,7 @@
         var myChart = echarts.init(document.getElementById('degreeContainer'), "macarons");
 
         var option = {
+            backgroundColor: '#ffffff',
             title : {
                 text: '人物度分布',
                 subtext: 'Degree Distribution'
@@ -89,7 +90,7 @@
                     type : 'value',
                     scale:true,
                     axisLabel : {
-                        formatter: '{value} 人'
+                        formatter: '{value} '
                     }
                 }
             ],
@@ -214,6 +215,7 @@
 
 
 
+    <!-- 和弦图 -->
     <div id="chordContainer" style="height: 100%; min-height: 700px;"></div>
     <script type="text/javascript">
         var myChart3 = echarts.init(document.getElementById('chordContainer'), "macarons");
