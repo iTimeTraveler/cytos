@@ -63,6 +63,20 @@ def degree_distribution():
     return matrix
 
 
+# 累积度分布
+def cumulative_degree_distribution():
+    mylist = ig.vs.degree()
+    myset = set(mylist)  # myset是另外一个列表，里面的内容是mylist里面的无重复项
+    matrix = [[0 for col in range(2)] for row in range(len(myset))]
+    m = 0
+    for item in myset:
+        new_list = [i for i in mylist if i >= item]
+        matrix[m][0] = item
+        matrix[m][1] = round(len(new_list) / float(len(mylist)), 3)
+        m += 1
+    return matrix
+
+
 # 每个人物的度
 def degree_of_people():
     temp = {}

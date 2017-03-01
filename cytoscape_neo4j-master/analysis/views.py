@@ -21,6 +21,7 @@ def demo_image():
 @analysis.route('/degree_distribute',methods=['GET','POST'])
 def degree():
     matrix = degree_distribution()
+    cdd = cumulative_degree_distribution()
     dl = degree_of_people()
     nd = shortest_path()
 
@@ -30,7 +31,7 @@ def degree():
     edges = map(LinkUtils.wrapEdges, graph.run('MATCH ()-[r]->() RETURN r,ID(r) as id').data())  # 从数据库里取出所有关系，交给buildEdges加工处理
 
     return render_template('analysis_pages/degree_distribute.html', navId = "degreedistribute",
-                           matrix = matrix, degreedict = dl, networkdiameter = nd, nodes = nodes, links = edges)
+                           matrix = matrix, cumulative_degree = cdd, degreedict = dl, networkdiameter = nd, nodes = nodes, links = edges)
 
 
 # 提供一个动态路由地址，供前端网页调用
