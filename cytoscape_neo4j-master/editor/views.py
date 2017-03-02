@@ -15,7 +15,8 @@ linkUtils = LinkUtils()
 
 @editor.route('/',methods=['GET','POST'])
 def getEditor():
-    return render_template('editor_pages/index.html', navId = "editor")
+    communities = graph.run('MATCH (n) RETURN distinct n.community AS index, count(*) as count ORDER BY n.community ASC').data()
+    return render_template('editor_pages/index.html', navId = "editor", communities = communities)
 
 
 # 修改节点或关系

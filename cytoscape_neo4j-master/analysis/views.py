@@ -10,7 +10,6 @@ from models import graph, NodeUtils, LinkUtils
 
 @analysis.route('/demo_force',methods=['GET','POST'])
 def demo_force():
-    calculate_communities()
     return render_template('analysis_pages/demo_force.html', navId = "demoforce")
 
 @analysis.route('/demo_image',methods=['GET','POST'])
