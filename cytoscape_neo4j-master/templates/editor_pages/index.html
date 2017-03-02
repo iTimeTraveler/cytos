@@ -231,7 +231,11 @@
     <script type="text/javascript">
         var str = "";
         {% for commu in communities -%}
-            str += '<li><a> <i class="fa fa-circle text-navy" style="color:' + colors({{ commu.index }}) + '"></i> 社区{{ commu.index }} : {{ commu.count }}人</a></li>';
+            {% if(commu.index) %}
+                 str += '<li><a> <i class="fa fa-circle text-navy" style="color:' + colors({{ commu.index }}) + '"></i> 社区{{ commu.index }} : {{ commu.count }}人</a></li>';
+            {% else %}
+                str += '<li><a> <i class="fa fa-circle text-navy" style="color:#000000"></i> 无社区 : {{ commu.count }}人</a></li>';
+            {% endif %}
         {%- endfor %}
         $("#communitiesWrap").html(str);
     </script>

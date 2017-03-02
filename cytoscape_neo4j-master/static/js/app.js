@@ -236,20 +236,20 @@ function restart() {
   pathtext = pathtext.data(links);
 
   ////更新已存在的边上的文字
-  //pathtext.selectAll('text')
-  //  .text(function(d) { return d.relation; });
-  //
-  //// 添加边上的文字
-  //var text = pathtext.enter()
-  //  .append("text")
-  //  .attr('class', 'edgetext')
-  //  .attr("x", 6)
-  //  .attr("dy", -5)
-  //  .append('textPath')
-  //  .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
-  //  .style("text-anchor","middle")
-  //  .attr("startOffset","50%")
-  //  .text(function(d) { return d.relation; });
+  pathtext.selectAll('text')
+    .text(function(d) { return d.relation; });
+
+  // 添加边上的文字
+  var text = pathtext.enter()
+    .append("text")
+    .attr('class', 'edgetext')
+    .attr("x", 6)
+    .attr("dy", -5)
+    .append('textPath')
+    .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
+    .style("text-anchor","middle")
+    .attr("startOffset","50%")
+    .text(function(d) { return d.relation; });
 
   // 删除旧的link上的文字
   pathtext.exit().remove();
