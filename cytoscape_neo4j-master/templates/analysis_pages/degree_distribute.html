@@ -73,12 +73,20 @@
                     saveAsImage : {show: true}
                 }
             },
+            calculable : true,
             xAxis : [
                 {
                     type : 'value',
                     scale:true,
                     axisLabel : {
                         formatter: '{value} 度'
+                    },
+                    axisLine : {
+                        lineStyle : {
+                            color: '#E3E4E6',
+                            width: 1,
+                            type: 'solid'
+                        }
                     }
                 }
             ],
@@ -88,6 +96,13 @@
                     scale:true,
                     axisLabel : {
                         formatter: '{value} '
+                    },
+                    axisLine : {
+                        lineStyle : {
+                            color: '#E3E4E6',
+                            width: 1,
+                            type: 'solid'
+                        }
                     }
                 }
             ],
@@ -110,6 +125,11 @@
                         data : [
                             {type : 'average', name: '平均值'}
                         ]
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#87cefa'
+                        }
                     }
                 }
             ]
@@ -172,12 +192,20 @@
                     saveAsImage : {show: true}
                 }
             },
+            calculable : true,
             xAxis : [
                 {
                     type : 'value',
                     scale:true,
                     axisLabel : {
                         formatter: '{value} 度'
+                    },
+                    axisLine : {
+                        lineStyle : {
+                            color: '#E3E4E6',
+                            width: 1,
+                            type: 'solid'
+                        }
                     }
                 }
             ],
@@ -187,6 +215,13 @@
                     scale:true,
                     axisLabel : {
                         formatter: '{value} '
+                    },
+                    axisLine : {
+                        lineStyle : {
+                            color: '#E3E4E6',
+                            width: 1,
+                            type: 'solid'
+                        }
                     }
                 }
             ],
@@ -194,6 +229,7 @@
                 {
                     name:'频率',
                     type:'line',
+                    smooth:true,
                     data: [{% for item in cumulative_degree %}
                                 [{{ item[0] }}, {{ item[1] }}]
                                 {% if not loop.last %},{% endif %}
@@ -209,6 +245,14 @@
                         data : [
                             {type : 'average', name: '平均值'}
                         ]
+                    },
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default',
+                                color: '#87cefa'
+                            }
+                        }
                     }
                 }
             ]
@@ -294,9 +338,6 @@
                     itemStyle: {
                         normal: {
                             color: '#46c36a'
-                        },
-                        areaStyle: {
-                            type: 'default'
                         }
                     }
 
