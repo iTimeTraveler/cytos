@@ -45,7 +45,7 @@ class NodeUtils:
                 if key not in hideKeys:
                     n[key] = node_obj[key]
             n.push()
-            print("oldNode: %s" % n)
+            print("更新节点: %s" % n)
             return ''
         # 不存在则新建
         else:
@@ -57,7 +57,7 @@ class NodeUtils:
             newNode['hash'] = h
             graph.merge(newNode)
             newNode.push()
-            print("newNode: %s" % newNode)
+            print("新增节点: %s" % newNode)
 
             # 返回新增节点的id
             query = '''
@@ -79,6 +79,18 @@ class NodeUtils:
         DELETE n
         '''
         graph.run(query, x=node_obj['name'])
+        return ''
+
+
+    # 添加一个属性
+    def addProperty(self, node_obj, property_name, property_value):
+        # 数据库是否存在节点
+        if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
+            n = graph.node(node_obj['id'])
+            if property_name not in hideKeys:
+                n[property_name] = property_value
+            n.push()
+            print("添加一个属性后: %s" % n)
         return ''
 
 

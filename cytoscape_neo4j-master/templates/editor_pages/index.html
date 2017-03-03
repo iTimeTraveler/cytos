@@ -30,9 +30,11 @@
         </div>
         <div class="col-sm-3">
             <div class="input-group title-action">
-                <input type="text" placeholder="给节点添加一个属性" class="input-sm form-control">
+                <input id="node_property_value" type="text" placeholder="给节点添加一个属性" class="input-sm form-control">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> 添加</button>
+                    <button id="node_property_button" onclick="addPropertyForNodes()" type="button" class="btn btn-sm btn-primary btn-lg" data-loading-text="<i class='fa fa-spinner fa-spin '></i> 提交中">
+                        <i class="fa fa-plus"></i> 添加
+                    </button>
                 </span>
             </div>
         </div>

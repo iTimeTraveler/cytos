@@ -8,7 +8,7 @@ import sys
 
 # 防止中文编译不过
 reload(sys)
-sys.setdefaultencoding( "utf-8" )
+sys.setdefaultencoding("utf-8")
 
 nodeUtils = NodeUtils()
 linkUtils = LinkUtils()
@@ -20,20 +20,34 @@ def getEditor():
 
 
 # 修改节点或关系
-@editor.route('/post', methods=['GET', 'POST'])
-def index():
+@editor.route('/modify', methods=['POST'])
+def modify():
     if request.method == 'POST':
         if request.values.get('type', "") == 'node':
-            nodesStr = request.values.get('node', "")
+            nodeStr = request.values.get('node', "")
             actionStr = request.values.get('act', "")
-            newNode = json.loads(nodesStr, encoding="utf-8")
+            newNode = json.loads(nodeStr, encoding="utf-8")
             return nodeUtils.dispacthNode(newNode, actionStr)
         elif request.values.get('type', "") == 'link':
-            linksStr = request.values.get('link', "")
+            linkStr = request.values.get('link', "")
             actionStr = request.values.get('act', "")
-            newLink = json.loads(linksStr, encoding="utf-8")
+            newLink = json.loads(linkStr, encoding="utf-8")
             return linkUtils.dispacthLink(newLink, actionStr)
 
+
+
+# 给节点增加一个属性
+@editor.route('/addproperty', methods=['POST'])
+def addNodeProperty():
+    if request.method == 'POST':
+        nodesStr = request.values.get('nodes', "")
+        property_name = request.values.get('property_name', "")
+        property_value = request.values.get('property_value', "")
+        all_nodes = json.loads(nodesStr, encoding="utf-8")
+        if property_name != "":
+            for node_obj in all_nodes:
+                nodeUtils.addProperty(node_obj=node_obj, property_name=property_name, property_value=property_value)
+        return ''
 
 
 # 提供一个动态路由地址，供前端网页调用

@@ -852,7 +852,7 @@ function updateNodeOrLink() {
 }
 //编辑节点：增、删、改
 function submmitModifyNode(node, action) {
-  $.post("/editor/post", {
+  $.post("/editor/modify", {
         type: "node",
         node: JSON.stringify(node),
         act: action
@@ -869,10 +869,28 @@ function submmitModifyNode(node, action) {
 }
 //编辑关系：增、删、改
 function submmitModifyLink(link, action) {
-  $.post("/editor/post", {
+  $.post("/editor/modify", {
         type: "link",
         link: JSON.stringify(link),
         act: action
     }, function(data){
+  })
+}
+//给节点增加一个属性
+function addPropertyForNodes() {
+  property_name = $('input[id=node_property_value]').val();
+  property_value = '';
+
+  $('#node_property_button').button('loading');
+  $.post("/editor/addproperty", {
+        nodes: JSON.stringify(nodes),
+        property_name: property_name,
+        property_value: property_value
+    }, function(data){
+        for(i in nodes){
+            nodes[i][property_name] = property_value;
+        }
+        restart();
+        $('#node_property_button').button('reset');
   })
 }
