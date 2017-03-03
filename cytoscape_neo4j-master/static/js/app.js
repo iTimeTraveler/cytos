@@ -208,13 +208,14 @@ function restart() {
   // 更新已存在的link
   path.classed('selected', function(d) { return d === selected_link; })
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
-    .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; });
+    .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
+    .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? "12px" : Math.sqrt(d.weight) + "px"; });
 
   // 添加新link
   path.enter().append('svg:path')
     .attr('class', 'link')
     .attr("id", function(d) { return "edgepath" + d.id; })
-    .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? "8px" : Math.sqrt(d.weight); })
+    .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? "12px" : Math.sqrt(d.weight) + "px"; })
     .classed('selected', function(d) { return d === selected_link; })
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
     .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
@@ -235,24 +236,26 @@ function restart() {
   // 边上的文字
   pathtext = pathtext.data(links);
 
-  ////更新已存在的边上的文字
+  //更新已存在的边上的文字
   pathtext.selectAll('text')
     .text(function(d) { return d.relation; });
 
-  // 添加边上的文字
-  var text = pathtext.enter()
-    .append("text")
-    .attr('class', 'edgetext')
-    .attr("x", 6)
-    .attr("dy", -5)
-    .append('textPath')
-    .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
-    .style("text-anchor","middle")
-    .attr("startOffset","50%")
-    .text(function(d) { return d.relation; });
+  if(links.length < 40){
+      // 添加边上的文字
+      var text = pathtext.enter()
+        .append("text")
+        .attr('class', 'edgetext')
+        .attr("x", 6)
+        .attr("dy", -7)
+        .append('textPath')
+        .attr('xlink:href', function(d) { return "#edgepath" + d.id; })
+        .style("text-anchor","middle")
+        .attr("startOffset","50%")
+        .text(function(d) { return d.relation; });
 
-  // 删除旧的link上的文字
-  pathtext.exit().remove();
+      // 删除旧的link上的文字
+      pathtext.exit().remove();
+  }
 
 
 
@@ -738,8 +741,6 @@ function setAppMode(newMode) {
       .on('mousedown.drag', null)
       .on('touchstart.drag', null);
     svg.classed('ctrl', false);
-
-    path.attr("stroke-width", "8px");
   } else if(newMode === MODE.EVAL) {
     // 禁用listeners (except for I-bar prevention)
     svg.classed('edit', false)
@@ -756,8 +757,6 @@ function setAppMode(newMode) {
     circle.call(force.drag);
     svg.classed('ctrl', true);
     lastKeyDown = -1;
-
-    path.attr("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
     // in case still dragging
     drag_line
@@ -795,22 +794,12 @@ function setShowCommunities() {
     restart();
 }
 
+/**
+ * 显示总人数
+ */
 function setTotalPeople(total) {
     d3.select('#peopleCount').html(total);
 }
-
-
-//enter键 to evaluate formula
-evalInput.select('input')
-  .on('keyup', function() {
-    // enter
-    if(d3.event.keyCode === 13) evaluateFormula();
-  })
-  .on('keydown', function() {
-    // enter -- needed on IE9
-    if(d3.event.keyCode === 13) d3.event.preventDefault();
-  });
-
 
 
 

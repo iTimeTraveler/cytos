@@ -44,10 +44,8 @@
                             <tr>
                                 {% set array = [] %}
                                 {% for people in nodes %}
-                                    {% for key, value in people.iteritems() %}
-                                        {% if key and key not in array %}
-                                            {% if array.append(key|e) %}
-                                            {% endif %}
+                                    {% for key, value in people.iteritems() if key and key not in array and key != "temp_index" %}
+                                        {% if array.append(key|e) %}
                                         {% endif %}
                                     {% endfor %}
                                 {% endfor %}
@@ -101,7 +99,9 @@
                             "linear-gradient(45deg,#62da5b,#46c36a)",
                             "linear-gradient(-45deg,#26a59a,#6fcdc4)",
                             "linear-gradient(-45deg,#ffa31e,#fee0a5)",
-                            "linear-gradient(-45deg,#2b56b5,#458ce8)", "#23c6c8", "#ed5565"] %}
+                            "linear-gradient(-45deg,#2b56b5,#458ce8)",
+                            "linear-gradient(45deg,#283444,#050d1a)",
+                            "linear-gradient(45deg,#bb77bd,#49259e)", "#23c6c8", "#ed5565"] %}
         {% set avatars = ["chanyou", "guixie", "lingsha", "mengli", "suyao", "suyu", "taiqing", "tianhe", "tianqing", "xizhong" ] %}
         {% for people in nodes %}
             <div class="col-lg-3">
@@ -114,7 +114,7 @@
                     {% if(people.community)%}
                         src="{{ url_for('static',filename='img/' + avatars[people.community] + '.png') }}">
                     {% else %}
-                        src="{{ url_for('static',filename='img/blacktocat.png') }}">
+                        src="{{ url_for('static',filename='img/avatar-default.png') }}">
                     {% endif %}
                     <div>
                         <span>ID：{{people.id}}</span> |

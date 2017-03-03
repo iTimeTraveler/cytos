@@ -16,21 +16,24 @@
 
 {% block maintitle %}
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-8">
+        <div class="col-sm-9">
             <div class="title-action" style="float:left">
                 <div id="mode-select" class="btn-group">
-                  <button class="btn btn-primary active" onclick="setAppMode(MODE.EDIT)">
+                  <button class="btn btn-warning btn-outline active" onclick="setAppMode(MODE.EDIT)">
                     <i class="fa fa-pencil"></i> 编辑模式
                   </button>
-                  <button class="btn btn-warning" onclick="setAppMode(MODE.EVAL)">
+                  <button class="btn btn-warning btn-outline" onclick="setAppMode(MODE.EVAL)">
                     <i class="fa fa-eye"></i> 预览模式
                   </button>
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
-            <div class="title-action">
-                  <button class="btn btn-inverse" onclick="">submmitGraph</button>
+        <div class="col-sm-3">
+            <div class="input-group title-action">
+                <input type="text" placeholder="给节点添加一个属性" class="input-sm form-control">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> 添加</button>
+                </span>
             </div>
         </div>
 

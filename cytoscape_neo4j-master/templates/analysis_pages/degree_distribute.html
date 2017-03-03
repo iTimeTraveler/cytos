@@ -110,6 +110,7 @@
                 {
                     name:'频率',
                     type:'bar',
+                    barWidth: 5,
                     data: [{% for item in matrix %}
                                 [{{ item[0] }}, {{ item[1] }}]
                                 {% if not loop.last %},{% endif %}
@@ -128,7 +129,7 @@
                     },
                     itemStyle: {
                         normal: {
-                            color: '#87cefa'
+                            color: '#9962ce'
                         }
                     }
                 }
@@ -261,7 +262,7 @@
         myChart.setOption(option);
     </script>
     </div>
-    <hr>
+    <hr style="height: 2px; background: linear-gradient(to right, #599e47, #306a94, #492860, #c03d32, #d17337);">
     <br>
 
 
@@ -319,6 +320,7 @@
                 {
                     name:'degree',
                     type:'bar',
+                    barWidth: 5,
                     data:[{% for key, value in degreedict %}
                                 {{ value|e }}
                                 {% if not loop.last %},{% endif %}
