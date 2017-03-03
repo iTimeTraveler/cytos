@@ -352,7 +352,7 @@ function restart() {
       })[0];
 
       if(link == null) {
-        link = {source: source, target: target, relation: 'INTERACTS', left: false, right: true};
+        link = {source: source, target: target, relation: '关系名称', left: false, right: true};
         links.push(link);
         submmitModifyLink(link, ModifyAction.ADD);
       }
@@ -441,10 +441,8 @@ function mousedown() {
 //鼠标move事件处理
 function mousemove() {
   if(!mousedown_node) return;
-
   // update drag line
   drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
-
   restart();
 }
 

@@ -72,7 +72,6 @@ class NodeUtils:
 
     # 删除节点
     def deleteNode(self, node_obj):
-        print("deleteNode: %s" % node_obj)
         query = '''
         MATCH (n)
         WHERE n.name = {x}
@@ -91,6 +90,15 @@ class NodeUtils:
                 n[property_name] = property_value
             n.push()
             print("添加一个属性后: %s" % n)
+
+
+    # 删除一个属性
+    def removeProperty(self, property_name):
+        query = '''
+        MATCH (n)
+        REMOVE n.{x}
+        '''
+        graph.run(query, x=property_name)
         return ''
 
 
