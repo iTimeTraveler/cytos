@@ -10,8 +10,8 @@ $(function(){
     var edges = [];
     root.edges.forEach(function(e) {
         // Get the source and target nodes
-        var sourceNode = root.nodes.filter(function(n) { return n.name === e.source; })[0],
-            targetNode = root.nodes.filter(function(n) { return n.name === e.target; })[0];
+        var sourceNode = root.nodes.filter(function(n) { return n.id === e.source; })[0],
+            targetNode = root.nodes.filter(function(n) { return n.id === e.target; })[0];
 
         // Add the edge to the array
         edges.push({source: sourceNode, target: targetNode, relation: e.relation, weight: e.weight, id: e.id, left: false, right: true});
@@ -260,12 +260,12 @@ function restart() {
 
 
   // 节点
-  circle = circle.data(nodes, function(d) { return d.temp_index; });
+  circle = circle.data(nodes, function(d) { return d.id; });
 
   // 更新已存在的nodes (reflexive & selected visual states)
   circle.selectAll('circle')
     .style('stroke', function(d) {
-        return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.temp_index)).brighter().toString() : colors(showCommunty ? d.community : d.temp_index);
+        return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.id)).brighter().toString() : colors(showCommunty ? d.community : d.id);
     })
     .classed('reflexive', function(d) { return d.reflexive; });
 
@@ -295,7 +295,7 @@ function restart() {
         return "url(#catpattern" + i + ")";
     })
     .style('stroke', function(d) {
-        return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.temp_index)).brighter().toString() : colors(showCommunty ? d.community : d.temp_index);
+        return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.id)).brighter().toString() : colors(showCommunty ? d.community : d.id);
      })
     .classed('reflexive', function(d) { return d.reflexive; })
     .on('mouseover', function(d) {
@@ -340,7 +340,7 @@ function restart() {
       d3.select(this).attr('transform', '');
 
       // add transition to model
-      model.addTransition(mousedown_node.temp_index, mouseup_node.temp_index);
+      model.addTransition(mousedown_node.id, mouseup_node.id);
 
       //生成新的连线 (update if exists)
       // note: links are strictly source < target; arrows separately specified by booleans
@@ -366,7 +366,7 @@ function restart() {
   // 更新已存在的节点文字 (reflexive & selected visual states)
   circle.selectAll('text')
     .style('fill', function(d) {
-          return colors(showCommunty ? d.community : d.temp_index);
+          return colors(showCommunty ? d.community : d.id);
       })
 
   //显示 node Name
@@ -374,14 +374,14 @@ function restart() {
       .attr('x', 0)
       .attr('y', 4)
       .attr("dx",function(d){
-        return d.name.length * -0.5;
+        return (d.name) ? d.name.length * -0.5 : 0;
       })
       .attr("dy",radius + 7)
       .attr('class', 'id')
       .style('fill', function(d) {
-        return colors(showCommunty ? d.community : d.temp_index);
+        return colors(showCommunty ? d.community : d.id);
       })
-      .text(function(d) { return d.name == null ? d.temp_index : d.name; });
+      .text(function(d) { return d.name == null ? d.id : d.name; });
 
   //文字阴影
   g.append('svg:text')
@@ -418,13 +418,13 @@ function mousedown() {
     exist = false;
     ++lastNodeIndex;
     for(i in nodes) {
-        if(nodes[i].temp_index == lastNodeIndex) exist = true;
+        if(nodes[i].id == lastNodeIndex) exist = true;
     }
   }while(exist)
 
   //添加新节点
   var point = d3.mouse(this),
-      node = {temp_index: lastNodeIndex+"", "label":"Character", "name": lastNodeIndex+"", "weight":1};
+      node = {"label":"Character", "name": lastNodeIndex+"", "weight":1};
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
@@ -464,8 +464,8 @@ function mouseup() {
 
 function removeLinkFromModel(link) {
   submmitModifyLink(link, ModifyAction.DELETE);
-  var sourceId = link.source.temp_index,
-      targetId = link.target.temp_index;
+  var sourceId = link.source.id,
+      targetId = link.target.id;
 
   // remove leftward transition
   if(link.left) model.removeTransition(targetId, sourceId);
@@ -521,7 +521,7 @@ function keydown() {
     case 8: // backspace键
     case 46: // delete键
       if(selected_node) {
-        model.removeState(selected_node.temp_index);
+        model.removeState(selected_node.id);
         nodes.splice(nodes.indexOf(selected_node), 1);
         spliceLinksForNode(selected_node);
       } else if(selected_link) {
@@ -533,8 +533,8 @@ function keydown() {
       break;
     case 66: // B键
       if(selected_link) {
-        var sourceId = selected_link.source.temp_index,
-            targetId = selected_link.target.temp_index;
+        var sourceId = selected_link.source.id,
+            targetId = selected_link.target.id;
         // 把单向箭头改为双向
         if(!selected_link.left) {
           selected_link.left = true;
@@ -549,8 +549,8 @@ function keydown() {
       break;
     case 76: // L键
       if(selected_link) {
-        var sourceId = selected_link.source.temp_index,
-            targetId = selected_link.target.temp_index;
+        var sourceId = selected_link.source.id,
+            targetId = selected_link.target.id;
         // 把箭头改为指向source
         if(!selected_link.left) {
           selected_link.left = true;
@@ -568,14 +568,14 @@ function keydown() {
         // toggle node reflexivity
         if(selected_node.reflexive) {
           selected_node.reflexive = false;
-          model.removeTransition(selected_node.temp_index, selected_node.temp_index);
+          model.removeTransition(selected_node.id, selected_node.id);
         } else {
           selected_node.reflexive = true;
-          model.addTransition(selected_node.temp_index, selected_node.temp_index);
+          model.addTransition(selected_node.id, selected_node.id);
         }
       } else if(selected_link) {
-        var sourceId = selected_link.source.temp_index,
-            targetId = selected_link.target.temp_index;
+        var sourceId = selected_link.source.id,
+            targetId = selected_link.target.id;
         // 把箭头改为指向target
         if(selected_link.left) {
           selected_link.left = false;
@@ -611,7 +611,7 @@ var modeButtons = d3.selectAll('#mode-select button'),
 
 
 
-var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'temp_index', 'left', 'right', 'hash']);
+var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'left', 'right', 'hash']);
 
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
@@ -622,7 +622,7 @@ function setSelectedNodeOrLink(node, link) {
 
   if (node) {       // 选中节点、更新编辑面板
       // 更新选中节点标签
-      selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.temp_index+'</strong>' : '未选中人物');
+      selectedNodeLabel.html(selected_node ? '<strong>选中了人物：'+selected_node.id+'</strong>' : '未选中人物');
 
       // 更新左侧变量面板
       varTable.classed('inactive', !selected_node);
@@ -886,7 +886,9 @@ function addPropertyForNodes() {
         property_value: property_value
     }, function(data){
         for(i in nodes){
-            nodes[i][property_name] = property_value;
+            if(!nodes[i].hasOwnProperty(property_name)){
+                nodes[i][property_name] = property_value;
+            }
         }
         restart();
         $('#node_property_button').button('reset');

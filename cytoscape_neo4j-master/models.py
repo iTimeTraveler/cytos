@@ -1,29 +1,25 @@
 #!/usr/bin/env python
 #coding:utf8
 
-from flask import Flask, jsonify
+from flask import jsonify
 from py2neo import Graph, Node, Relationship
 
 
 graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 
-hideKeys = {'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right'}
+hideKeys = {'id', 'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right'}
 
 
 #节点操作
 class NodeUtils:
-    global count
-    count = 0
     def __init__(self):
         return
 
     # 对数据库里取出来的节点进行包装（这里是规范一下数据的格式）
     @staticmethod
     def wrapNodes(nodeRecord):
-        global count
-        data = {"id": nodeRecord['id'], "temp_index": count, "label": next(iter(nodeRecord['n'].labels()))}  # 对每一个节点都构造包装成一个这样的格式
+        data = {"id": nodeRecord['id'], "label": next(iter(nodeRecord['n'].labels())), "weight": 1}  # 对每一个节点都构造包装成一个这样的格式
         data.update(nodeRecord['n'].properties)
-        count += 1
         return data
 
 
@@ -86,7 +82,7 @@ class NodeUtils:
         # 数据库是否存在节点
         if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
             n = graph.node(node_obj['id'])
-            if property_name not in hideKeys:
+            if not n.has_key(property_name) and property_name not in hideKeys:
                 n[property_name] = property_value
             n.push()
             print("添加一个属性后: %s" % n)
@@ -114,9 +110,9 @@ class LinkUtils:
     @staticmethod
     def wrapEdges(relationRecord):
         data = {"id": relationRecord['id'],
-                "source": relationRecord['r'].start_node()['name'],
-                "target": relationRecord['r'].end_node()['name'],
-                "weight": relationRecord['r']['weight'],
+                "source": relationRecord['sid'],
+                "target": relationRecord['tid'],
+                "weight": relationRecord['r']['weight'] if relationRecord['r']['weight'] else 1,
                 "relation": str(relationRecord['r'].type())}  # 对每一个关系都构造包装成一个这样的格式， str()是一个方法，把括号里的参数转换为字符串类型
         data.update(relationRecord['r'].properties)
         return data
