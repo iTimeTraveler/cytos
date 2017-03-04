@@ -114,7 +114,10 @@ $(function(){
             .attr('x',function(d){
                 var re_en = /[a-zA-Z]+/g;
                 //如果是全英文，不换行
-                if(d.name.match(re_en)){
+                if(!d.name){
+                    return 0;
+                }
+                else if(d.name.match(re_en)){
                      d3.select(this).append('tspan')
                      .attr('x',0)
                      .attr('y',0)

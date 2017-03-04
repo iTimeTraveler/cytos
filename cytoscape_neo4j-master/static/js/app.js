@@ -613,7 +613,7 @@ var modeButtons = d3.selectAll('#mode-select button'),
 
 
 
-var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'left', 'right', 'hash']);
+var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'left', 'right', 'hash', 'fixed']);
 
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
@@ -845,7 +845,7 @@ function submmitModifyNode(node, action) {
         node: JSON.stringify(node),
         act: action
     }, function(data){})
-    .done(function() {
+    .done(function(data) {
        if(action === ModifyAction.ADD) {
             // 添加服务端返回的id
             temp = node;
@@ -862,7 +862,7 @@ function submmitModifyNode(node, action) {
             }
        }
     }).fail(function(data, textStatus, xhr) {
-         console.log("error", data.status + ", " + xhr);
+         alert("error", data.status + ", " + xhr);
     }).always(function() {
     });
 }
@@ -873,7 +873,7 @@ function submmitModifyLink(link, action) {
         link: JSON.stringify(link),
         act: action
     }, function(data){
-    }).done(function() {
+    }).done(function(data) {
        if(action === ModifyAction.ALTER){
             if(selected_link_pos != -1){
                 // 先删除再添加
@@ -884,7 +884,7 @@ function submmitModifyLink(link, action) {
             }
         }
     }).fail(function(data, textStatus, xhr) {
-         console.log("error", data.status + ", " + xhr);
+         alert("error", data.status + ", " + xhr);
     }).always(function() {
     });
 }
@@ -899,7 +899,7 @@ function addPropertyForNodes() {
         property_name: property_name,
         property_value: property_value
     }, function(data){
-    }).done(function() {
+    }).done(function(data) {
        for(i in nodes){
             if(!nodes[i].hasOwnProperty(property_name)){
                 nodes[i][property_name] = property_value;
@@ -908,16 +908,19 @@ function addPropertyForNodes() {
         restart();
         $('#node_property_button').button('reset');
     }).fail(function(data, textStatus, xhr) {
-         console.log("error", data.status + ", " + xhr);
+         alert("error", data.status + ", " + xhr);
     }).always(function() {
     });
 }
 //删除整个图谱
 function deleteGraph() {
-  $.post("/editor/delete_graph", {
+    $.post("/editor/delete_graph", {
     }, function(data){
+    }).done(function(data) {
         nodes=[];
         links=[];
         restart();
-  })
+    }).fail(function(data, textStatus, xhr) {
+         alert("error", data.status + ", " + xhr);
+    });
 }

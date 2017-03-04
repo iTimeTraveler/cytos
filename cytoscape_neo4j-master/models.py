@@ -7,7 +7,7 @@ from py2neo import Graph, Node, Relationship
 
 graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 
-hideKeys = {'id', 'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right', 'hash'}
+hideKeys = {'id', 'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right', 'hash', 'fixed'}
 
 
 #节点操作
@@ -169,3 +169,29 @@ class LinkUtils:
         '''
         graph.run(query)
         return ''
+
+
+
+class GraphUtils:
+
+    # Number of Nodes: 50013
+    # Number of Relationships: 4
+    # Number of Labels: 4
+    # Number of Relationships Types: 2
+    # Number of Property Keys: 9
+    # Number of Constraints:2
+    # Number of Indexes: 7
+    # Number of Procedures: 215
+    @staticmethod
+    def getInfo():
+        query='''
+        match (n) return 'Number of Nodes: ' + count(n) as output UNION
+        match ()-[]->() return 'Number of Relationships: ' + count(*) as output UNION
+        CALL db.labels() YIELD label RETURN 'Number of Labels: ' + count(*) AS output UNION
+        CALL db.relationshipTypes() YIELD relationshipType  RETURN 'Number of Relationships Types: ' + count(*) AS output UNION
+        CALL db.propertyKeys() YIELD propertyKey  RETURN 'Number of Property Keys: ' + count(*) AS output UNION
+        CALL db.constraints() YIELD description RETURN 'Number of Constraints:' + count(*) AS output UNION
+        CALL db.indexes() YIELD description RETURN 'Number of Indexes: ' + count(*) AS output UNION
+        CALL dbms.procedures() YIELD name RETURN 'Number of Procedures: ' + count(*) AS output
+        '''
+        graph.run(query)

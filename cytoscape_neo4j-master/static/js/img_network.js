@@ -161,7 +161,7 @@ $(function(){
                             .append("text")
                             .attr("class","nodetext")
                             .attr("dx",function(d){
-                                return d.name.length * -4;
+                                return d.name ? d.name.length * -4 : 0;
                             })
                             .attr("dy",text_dy)
                             .text(function(d){
