@@ -7,7 +7,7 @@ from py2neo import Graph, Node, Relationship
 
 graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 
-hideKeys = {'id', 'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right'}
+hideKeys = {'id', 'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right', 'hash'}
 
 
 #节点操作
@@ -65,17 +65,25 @@ class NodeUtils:
             print(result)
             return jsonify(result={"uid":result[0]['id']})
 
-
     # 删除节点
     def deleteNode(self, node_obj):
         query = '''
         MATCH (n)
-        WHERE n.name = {x}
+        WHERE ID(n) = {x}
         DELETE n
         '''
-        graph.run(query, x=node_obj['name'])
+        graph.run(query, x=node_obj['id'])
         return ''
 
+    # 删除全部节点
+    @staticmethod
+    def deleteAllNodes():
+        query = '''
+        MATCH (n)
+        DELETE n
+        '''
+        graph.run(query)
+        return ''
 
     # 添加一个属性
     def addProperty(self, node_obj, property_name, property_value):
@@ -86,7 +94,6 @@ class NodeUtils:
                 n[property_name] = property_value
             n.push()
             print("添加一个属性后: %s" % n)
-
 
     # 删除一个属性
     def removeProperty(self, property_name):
@@ -151,4 +158,14 @@ class LinkUtils:
         DELETE r
         '''
         graph.run(query, src=link_obj['source']['name'], tag=link_obj['target']['name'])
+        return ''
+
+    # 删除所有关系
+    @staticmethod
+    def deleteAllLinks():
+        query = '''
+        MATCH ()-[r]-()
+        DELETE r
+        '''
+        graph.run(query)
         return ''

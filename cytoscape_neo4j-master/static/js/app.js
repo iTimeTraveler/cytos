@@ -132,6 +132,8 @@ var path = svg.append('svg:g').selectAll('path'),
 // 鼠标事件
 var selected_node = null,
     selected_link = null,
+    selected_node_pos = -1,
+    selected_link_pos = -1,
     mousedown_link = null,
     mousedown_node = null,
     mouseup_node = null;
@@ -374,9 +376,9 @@ function restart() {
       .attr('x', 0)
       .attr('y', 4)
       .attr("dx",function(d){
-        return (d.name) ? d.name.length * -0.5 : 0;
+        return (d.name) ? d.name.length * -0.1 : 0;
       })
-      .attr("dy",radius + 7)
+      .attr("dy",radius + 10)
       .attr('class', 'id')
       .style('fill', function(d) {
         return colors(showCommunty ? d.community : d.id);
@@ -810,7 +812,7 @@ var ModifyAction ={
 function updateNodeOrLink() {
   if(selected_node) {
     // 读取左侧表格节点的数据
-    var posi = nodes.indexOf(selected_node);
+    selected_node_pos = nodes.indexOf(selected_node);
     var nodeKeys = Object.keys(selected_node);
     for(var i in nodeKeys){
         var input = document.getElementById(nodeKeys[i]+'_value');
@@ -823,15 +825,9 @@ function updateNodeOrLink() {
     }
     submmitModifyNode(selected_node, ModifyAction.ALTER);
 
-    // 先删除再添加
-    nodes.splice(posi, 1);
-    restart();
-    nodes.splice(posi, 0, selected_node);
-    restart();
-
   }else if(selected_link) {
     // 读取左侧表格边的数据
-    var pos_l = links.indexOf(selected_link);
+    selected_link_pos = links.indexOf(selected_link);
     var linkKeys = Object.keys(selected_link);
     for(var i in linkKeys){
         var input = document.getElementById(linkKeys[i]+'_value');
@@ -840,30 +836,35 @@ function updateNodeOrLink() {
         }
     }
     submmitModifyLink(selected_link, ModifyAction.ALTER);
-
-    // 先删除再添加
-    links.splice(pos_l, 1);
-    restart();
-    links.splice(pos_l, 0, selected_link);
-    restart();
   }
 }
 //编辑节点：增、删、改
 function submmitModifyNode(node, action) {
-  $.post("/editor/modify", {
+    $.post("/editor/modify", {
         type: "node",
         node: JSON.stringify(node),
         act: action
-    }, function(data){
-        if(action === ModifyAction.ADD) {
+    }, function(data){})
+    .done(function() {
+       if(action === ModifyAction.ADD) {
             // 添加服务端返回的id
             temp = node;
             temp['id'] = data.result.uid;
             nodes.splice(nodes.indexOf(node), 1, temp);
             restart();
-        }else if(action === ModifyAction.ALTER){
-        }
-  })
+       }else if(action === ModifyAction.ALTER){
+            if(selected_node_pos != -1){
+                // 先删除再添加
+                nodes.splice(selected_node_pos, 1);
+                restart();
+                nodes.splice(selected_node_pos, 0, selected_node);
+                restart();
+            }
+       }
+    }).fail(function(data, textStatus, xhr) {
+         console.log("error", data.status + ", " + xhr);
+    }).always(function() {
+    });
 }
 //编辑关系：增、删、改
 function submmitModifyLink(link, action) {
@@ -872,25 +873,51 @@ function submmitModifyLink(link, action) {
         link: JSON.stringify(link),
         act: action
     }, function(data){
-  })
+    }).done(function() {
+       if(action === ModifyAction.ALTER){
+            if(selected_link_pos != -1){
+                // 先删除再添加
+                links.splice(selected_link_pos, 1);
+                restart();
+                links.splice(selected_link_pos, 0, selected_link);
+                restart();
+            }
+        }
+    }).fail(function(data, textStatus, xhr) {
+         console.log("error", data.status + ", " + xhr);
+    }).always(function() {
+    });
 }
 //给节点增加一个属性
 function addPropertyForNodes() {
-  property_name = $('input[id=node_property_value]').val();
-  property_value = '';
+    property_name = $('input[id=node_property_value]').val();
+    property_value = '';
 
-  $('#node_property_button').button('loading');
-  $.post("/editor/addproperty", {
+    $('#node_property_button').button('loading');
+    $.post("/editor/addproperty", {
         nodes: JSON.stringify(nodes),
         property_name: property_name,
         property_value: property_value
     }, function(data){
-        for(i in nodes){
+    }).done(function() {
+       for(i in nodes){
             if(!nodes[i].hasOwnProperty(property_name)){
                 nodes[i][property_name] = property_value;
             }
         }
         restart();
         $('#node_property_button').button('reset');
+    }).fail(function(data, textStatus, xhr) {
+         console.log("error", data.status + ", " + xhr);
+    }).always(function() {
+    });
+}
+//删除整个图谱
+function deleteGraph() {
+  $.post("/editor/delete_graph", {
+    }, function(data){
+        nodes=[];
+        links=[];
+        restart();
   })
 }

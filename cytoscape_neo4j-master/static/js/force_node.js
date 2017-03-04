@@ -11,8 +11,8 @@ $(function(){
     var edges = [];
     root.edges.forEach(function(e) {
         // Get the source and target nodes
-        var sourceNode = root.nodes.filter(function(n) { return n.name === e.source; })[0],
-            targetNode = root.nodes.filter(function(n) { return n.name === e.target; })[0];
+        var sourceNode = root.nodes.filter(function(n) { return n.id === e.source; })[0],
+            targetNode = root.nodes.filter(function(n) { return n.id === e.target; })[0];
             relationShip = e.relation;
 
         // Add the edge to the array
@@ -160,8 +160,8 @@ $(function(){
                     highlight = i;
                     //突出连接线
                     edges_line.style("stroke-opacity",function(edge){
-                        if( edge.source.name === d.name || edge.target.name === d.name ){
-                            relateIds.add((edge.source.name === d.name) ? edge.target : edge.source);
+                        if( edge.source.id === d.id || edge.target.id === d.id ){
+                            relateIds.add((edge.source.id === d.id) ? edge.target : edge.source);
                             return 1;
                         } else {
                             return 0;
@@ -169,13 +169,13 @@ $(function(){
                     });
                     //单击时让连接线加粗
                     edges_line.style("stroke-width",function(line){
-                        if(line.source.name === d.name || line.target.name === d.name){
+                        if(line.source.id === d.id || line.target.id === d.id){
                             return 3;
                         }
                     });
                     //显示连接线上的文字
                     edges_text.style("fill-opacity",function(edge){
-                        if( edge.source.name === d.name || edge.target.name === d.name ){
+                        if( edge.source.id === d.id || edge.target.id === d.id ){
                             return 1.0;
                         }
                     });
@@ -200,7 +200,7 @@ $(function(){
 
         //处理节点的显示与隐藏
         var dealwithOpacity = function(every, d, relateIds){
-            if( every.name === d.name ) {
+            if( every.id === d.id ) {
                 return 1.0;
             } else if (relateIds.has(every)){
                 return 0.7;

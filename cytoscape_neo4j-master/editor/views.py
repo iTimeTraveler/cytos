@@ -50,6 +50,15 @@ def addNodeProperty():
         return ''
 
 
+# 删除整个图谱
+@editor.route('/delete_graph', methods=['POST'])
+def deleteAllGraph():
+    if request.method == 'POST':
+        LinkUtils.deleteAllLinks()
+        NodeUtils.deleteAllNodes()
+        return ''
+
+
 # 提供一个动态路由地址，供前端网页调用
 @editor.route('/graph', methods=['GET', 'POST'])
 def get_graph():
