@@ -1,5 +1,5 @@
 $(function(){
-  $.get('/editor/graph', {id: 'Robin', password: '123456'}, function(result) {
+  $.get('/'+projectId+'/editor/graph', {id: 'Robin', password: '123456'}, function(result) {
 
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));
@@ -426,7 +426,7 @@ function mousedown() {
 
   //添加新节点
   var point = d3.mouse(this),
-      node = {"label":"Character", "name": lastNodeIndex+"", "weight":1};
+      node = {"name": lastNodeIndex+"", "weight":1};
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
@@ -613,7 +613,7 @@ var modeButtons = d3.selectAll('#mode-select button'),
 
 
 
-var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'index', 'left', 'right', 'hash', 'fixed']);
+var hideKeys = new Set(['x', 'y', 'px', 'py', 'id', 'label', 'index', 'left', 'right', 'hash', 'fixed']);
 
 function setSelectedNodeOrLink(node, link) {
   if (node != null && link != null) {
@@ -840,7 +840,7 @@ function updateNodeOrLink() {
 }
 //编辑节点：增、删、改
 function submmitModifyNode(node, action) {
-    $.post("/editor/modify", {
+    $.post('/'+projectId+"/editor/modify", {
         type: "node",
         node: JSON.stringify(node),
         act: action
@@ -868,7 +868,7 @@ function submmitModifyNode(node, action) {
 }
 //编辑关系：增、删、改
 function submmitModifyLink(link, action) {
-  $.post("/editor/modify", {
+  $.post('/'+projectId+"/editor/modify", {
         type: "link",
         link: JSON.stringify(link),
         act: action
@@ -894,7 +894,7 @@ function addPropertyForNodes() {
     property_value = '';
 
     $('#node_property_button').button('loading');
-    $.post("/editor/addproperty", {
+    $.post('/'+projectId+"/editor/addproperty", {
         nodes: JSON.stringify(nodes),
         property_name: property_name,
         property_value: property_value
@@ -914,7 +914,7 @@ function addPropertyForNodes() {
 }
 //删除整个图谱
 function deleteGraph() {
-    $.post("/editor/delete_graph", {
+    $.post('/'+projectId+"/editor/delete_graph", {
     }, function(data){
     }).done(function(data) {
         nodes=[];

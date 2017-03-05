@@ -3,37 +3,38 @@
 
 
 from . import analysis
-from analysis.analyse import *
-from flask import render_template, jsonify
+from analysis.analyse import AnalyseUtils
+from flask import render_template
 from models import graph, NodeUtils, LinkUtils
 
 
 @analysis.route('/demo_force',methods=['GET','POST'])
-def demo_force():
-    return render_template('analysis_pages/demo_force.html', navId = "demoforce")
+def demo_force(projectId):
+    return render_template('analysis_pages/demo_force.html', navId = "demoforce", projectId=projectId)
 
 @analysis.route('/demo_image',methods=['GET','POST'])
-def demo_image():
-    return render_template('analysis_pages/demo_image.html', navId = "demoimage")
+def demo_image(projectId):
+    return render_template('analysis_pages/demo_image.html', navId = "demoimage", projectId=projectId)
 
 
 @analysis.route('/degree_distribute',methods=['GET','POST'])
-def degree():
-    matrix = degree_distribution()
-    cdd = cumulative_degree_distribution()
-    dl = degree_of_people()
-    nd = shortest_path()
+def degree(projectId):
+    analyse_utils = AnalyseUtils(projectId)
+    matrix = analyse_utils.degree_distribution()
+    cdd = analyse_utils.cumulative_degree_distribution()
+    dl = analyse_utils.degree_of_people()
+    nd = analyse_utils.shortest_path()
 
-    nodes = map(NodeUtils.wrapNodes, graph.run('MATCH (n) RETURN n,ID(n) as id').data())  # 从数据库里取出所有节点，交给buildNodes函数加工处理
-    edges = map(LinkUtils.wrapEdges, graph.run('MATCH (a)-[r]->(b) RETURN r,ID(r) as id, ID(a) as sid, ID(b) as tid').data())  # 从数据库里取出所有关系，交给buildEdges加工处理
+    nodes = NodeUtils.getAllNodes(projectId)
+    edges = LinkUtils.getAllLinks(projectId)
 
-    return render_template('analysis_pages/degree_distribute.html', navId = "degreedistribute",
+    return render_template('analysis_pages/degree_distribute.html', navId = "degreedistribute", projectId=projectId,
                            matrix = matrix, cumulative_degree = cdd, degreedict = dl, networkdiameter = nd, nodes = nodes, links = edges)
 
 
 # 提供一个动态路由地址，供前端网页调用
 @analysis.route('/peoplelist', methods=['GET', 'POST'])
-def getGraph():
-    nodes = map(NodeUtils.wrapNodes, graph.run('MATCH (n) RETURN n,ID(n) as id').data())  # 从数据库里取出所有节点，交给buildNodes函数加工处理
+def getGraph(projectId):
+    nodes = NodeUtils.getAllNodes(projectId)
 
-    return render_template('analysis_pages/peoplelist.html', nodes = nodes, navId = "peoplelist")
+    return render_template('analysis_pages/peoplelist.html', nodes = nodes, navId = "peoplelist", projectId=projectId)

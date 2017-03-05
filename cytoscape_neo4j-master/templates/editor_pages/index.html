@@ -269,6 +269,9 @@
 {% block script %}
     {{ super() }}
 
+    <script type="text/javascript">
+        var projectId = '{{ projectId }}';
+    </script>
     <script src="{{ url_for('static',filename='lib/d3.v3.min.js') }}"></script>
     <script src="{{ url_for('static',filename='lib/formula-parser.min.js') }}"></script>
     <script src="{{ url_for('static',filename='js/MPL.js') }}"></script>

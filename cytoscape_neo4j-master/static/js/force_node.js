@@ -1,5 +1,5 @@
 $(function(){
-  $.get('/editor/graph', function(result) {
+  $.get('/'+projectId+'/editor/graph', function(result) {
 
     //接受服务端返回的json数据
     var result = JSON.parse(JSON.stringify(result));

@@ -7,13 +7,23 @@ from py2neo import Graph, Node, Relationship
 
 graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 
-hideKeys = {'id', 'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right', 'hash', 'fixed'}
+hideKeys = {'id', 'label', 'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right', 'hash', 'fixed'}
 
 
 #节点操作
 class NodeUtils:
     def __init__(self):
         return
+
+    # 取出所有节点
+    @staticmethod
+    def getAllNodes(projectId):
+        query='''
+        MATCH (n:{}'''.format(projectId) + ''')
+        RETURN n,ID(n) as id
+        '''
+        allnodes = map(NodeUtils.wrapNodes, graph.run(query).data())  # 从数据库里取出所有节点，交给buildNodes函数加工处理
+        return allnodes
 
     # 对数据库里取出来的节点进行包装（这里是规范一下数据的格式）
     @staticmethod
@@ -24,16 +34,16 @@ class NodeUtils:
 
 
     ##### 更改节点 #####
-    def dispacthNode(self, node_obj, action):
+    def dispacthNode(self, projectId, node_obj, action):
         if action == '1':
-            return self.createNode(node_obj)
+            return self.createNode(projectId, node_obj)
         elif action == '2':
-            return self.deleteNode(node_obj)
+            return self.deleteNode(projectId, node_obj)
         elif action == '3':
-            return self.createNode(node_obj)
+            return self.createNode(projectId, node_obj)
 
     # 创建节点
-    def createNode(self, node_obj):
+    def createNode(self, projectId, node_obj):
         # 数据库已存在则更新
         if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
             n = graph.node(node_obj['id'])
@@ -45,10 +55,12 @@ class NodeUtils:
             return ''
         # 不存在则新建
         else:
-            newNode = Node(node_obj['label'], name=node_obj['name'])
+            print(node_obj)
+            newNode = Node('Character', name=node_obj['name'])
             for key in node_obj.keys():
                 if key not in hideKeys:
                     newNode[key] = node_obj[key]
+            newNode.add_label(str(projectId))
             h = str(hash(newNode))
             newNode['hash'] = h
             graph.merge(newNode)
@@ -57,7 +69,7 @@ class NodeUtils:
 
             # 返回新增节点的id
             query = '''
-            MATCH (n)
+            MATCH (n:{}'''.format(projectId) + ''')
             WHERE n.hash = {x} and n.name = {y}
             RETURN n, ID(n) as id
             '''
@@ -66,9 +78,9 @@ class NodeUtils:
             return jsonify(result={"uid":result[0]['id']})
 
     # 删除节点
-    def deleteNode(self, node_obj):
+    def deleteNode(self, projectId, node_obj):
         query = '''
-        MATCH (n)
+        MATCH (n:{}'''.format(projectId) + ''')
         WHERE ID(n) = {x}
         DELETE n
         '''
@@ -77,15 +89,15 @@ class NodeUtils:
 
     # 删除全部节点
     @staticmethod
-    def deleteAllNodes():
+    def deleteAllNodes(projectId):
         query = '''
-        MATCH (n)
+        MATCH (n:{}'''.format(projectId) + ''')
         DELETE n
         '''
         graph.run(query)
         return ''
 
-    # 添加一个属性
+    # 全部节点添加一个属性
     def addProperty(self, node_obj, property_name, property_value):
         # 数据库是否存在节点
         if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
@@ -95,10 +107,10 @@ class NodeUtils:
             n.push()
             print("添加一个属性后: %s" % n)
 
-    # 删除一个属性
-    def removeProperty(self, property_name):
+    # 全部节点删除一个属性
+    def removeProperty(self, projectId, property_name):
         query = '''
-        MATCH (n)
+        MATCH (n:{}'''.format(projectId) + ''')
         REMOVE n.{x}
         '''
         graph.run(query, x=property_name)
@@ -113,6 +125,16 @@ class LinkUtils:
     def __init__(self):
         return
 
+    # 取出所有关系
+    @staticmethod
+    def getAllLinks(projectId):
+        query = '''
+        MATCH (a:{}'''.format(projectId) + ''')-[r]->(b:{}'''.format(projectId) + ''')
+        RETURN r,ID(r) as id, ID(a) as sid, ID(b) as tid
+        '''
+        alllinks = map(LinkUtils.wrapEdges, graph.run(query).data())  # 从数据库里取出所有关系，交给buildEdges加工处理
+        return alllinks
+
     # 对数据库里取出来的关系进行包装（这里也是规范一下数据的格式）
     @staticmethod
     def wrapEdges(relationRecord):
@@ -125,23 +147,23 @@ class LinkUtils:
         return data
 
     ##### 更改关系 #####
-    def dispacthLink(self, link_obj, action):
+    def dispacthLink(self, projectId, link_obj, action):
         if action == '1':
-            return self.createLink(link_obj)
+            return self.createLink(projectId, link_obj)
         elif action == '2':
-            return self.deleteLink(link_obj)
+            return self.deleteLink(projectId, link_obj)
         elif action == '3':
-            return self.createLink(link_obj)
+            return self.createLink(projectId, link_obj)
 
     # 创建关系
-    def createLink(self, link_obj):
+    def createLink(self, projectId, link_obj):
         if not link_obj.has_key('relation'):
             return
         print(link_obj)
-        srcNode = Node(link_obj['source']['label'], name=link_obj['source']['name'])
-        tarNode = Node(link_obj['target']['label'], name=link_obj['target']['name'])
-        newLink = Relationship(srcNode, link_obj['relation'], tarNode)
-        self.deleteLink(link_obj)    # 删除已存在的关系
+        srcNode = graph.node(int(link_obj['source']['id']))
+        tarNode = graph.node(int(link_obj['target']['id']))
+        newLink = Relationship(srcNode, 'CONNECT', tarNode)
+        self.deleteLink(projectId, link_obj)    # 删除已存在的关系
         graph.merge(newLink)
         for key in link_obj.keys():
             if key not in hideKeys:
@@ -150,10 +172,10 @@ class LinkUtils:
         return ''
 
     # 删除关系
-    def deleteLink(self, link_obj):
+    def deleteLink(self, projectId, link_obj):
         print("deleteLink: %s" % link_obj)
         query = '''
-        MATCH (n)-[r]->(m)
+        MATCH (n:{}'''.format(projectId) + ''')-[r]->(m:{}'''.format(projectId) + ''')
         WHERE (n.name = {src} and m.name = {tag})
         DELETE r
         '''
@@ -162,9 +184,9 @@ class LinkUtils:
 
     # 删除所有关系
     @staticmethod
-    def deleteAllLinks():
+    def deleteAllLinks(projectId):
         query = '''
-        MATCH ()-[r]-()
+        MATCH (a:{}'''.format(projectId) + ''')-[r]-(b:{}'''.format(projectId) + ''')
         DELETE r
         '''
         graph.run(query)
@@ -173,6 +195,8 @@ class LinkUtils:
 
 
 class GraphUtils:
+    def __init__(self):
+        return
 
     # Number of Nodes: 50013
     # Number of Relationships: 4
@@ -182,8 +206,7 @@ class GraphUtils:
     # Number of Constraints:2
     # Number of Indexes: 7
     # Number of Procedures: 215
-    @staticmethod
-    def getInfo():
+    def getInfo(self):
         query='''
         match (n) return 'Number of Nodes: ' + count(n) as output UNION
         match ()-[]->() return 'Number of Relationships: ' + count(*) as output UNION
@@ -195,3 +218,12 @@ class GraphUtils:
         CALL dbms.procedures() YIELD name RETURN 'Number of Procedures: ' + count(*) AS output
         '''
         graph.run(query)
+
+    def countCommunities(self, projectId):
+        query = '''
+        MATCH (n:{}'''.format(projectId) + ''')
+        RETURN distinct n.community AS index, count(*) as count
+        ORDER BY n.community ASC
+        '''
+        count = graph.run(query).data()
+        return count

@@ -29,34 +29,36 @@
                 <a href="/"><i class="fa fa-home"></i> <span class="nav-label">首页</span></a>
             </li>
 
+            {% if(projectId) %}
             <li id="demoforce">
-                <a href="/analysis/demo_force"><i class="fa fa-connectdevelop"></i> <span class="nav-label">demo_force</span></a>
+                <a href="/{{projectId}}/analysis/demo_force"><i class="fa fa-connectdevelop"></i> <span class="nav-label">{{projectId}} demo_force</span></a>
             </li>
 
             <li id="demoimage">
-                <a href="/analysis/demo_image"><i class="fa fa-picture-o"></i> <span class="nav-label">demo_image</span></a>
+                <a href="/{{projectId}}/analysis/demo_image"><i class="fa fa-picture-o"></i> <span class="nav-label">{{projectId}} demo_image</span></a>
             </li>
 
 
             <li id="editor">
-                <a href="\editor"><i class="fa fa-pencil-square-o"></i> <span class="nav-label">人物编辑</span></a>
+                <a href="/{{projectId}}/editor"><i class="fa fa-pencil-square-o"></i> <span class="nav-label">{{projectId}} 人物编辑</span></a>
             </li>
 
             <li id="peoplelist">
-                <a href="\analysis\peoplelist"><i class="fa fa-list-ul"></i> <span class="nav-label">人物列表</span></a>
+                <a href="/{{projectId}}/analysis/peoplelist"><i class="fa fa-list-ul"></i> <span class="nav-label">{{projectId}} 人物列表</span></a>
             </li>
 
 
             <li id="analyse">
-                <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">分析</span><span class="fa arrow"></span></a>
+                <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">{{projectId}} 分析</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" style="height: 0px;">
 
                     <li id="degreedistribute">
-                        <a href="/analysis/degree_distribute"><i class="fa fa-area-chart"></i> <span class="nav-label">度分布</span></a>
+                        <a href="/{{projectId}}/analysis/degree_distribute"><i class="fa fa-area-chart"></i> <span class="nav-label">度分布</span></a>
                     </li>
 
                 </ul>
             </li>
+            {% endif %}
 
         </ul>
 
