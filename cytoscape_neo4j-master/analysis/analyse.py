@@ -36,7 +36,6 @@ class AnalyseUtils:
         WHERE ID(c) = n.id
         SET c.pagerank = n.pg
         '''
-        print(write_clusters_query)
         graph.run(write_clusters_query, nodes=pgvs)
 
         # 随机游走的社区发现算法

@@ -82,7 +82,7 @@
 
                 <!-- 上传头像 -->
                 <div id="avatar-content" style="display:none;">
-                    <form id="myform" action="/editor/upload/avatar" method=post enctype=multipart/form-data>
+                    <form id="myform" action="/{{ projectId }}/editor/upload/avatar" method=post enctype=multipart/form-data>
                         <input id="lefile" type="file" name="file" style="display:none;" onchange="onfileChange()">
                         <div class="input-append">
                             <input id="avatar_value" type="text" class="form-control" style="height:34px; width: 54%; display: inline-block;" onclick="$('input[id=lefile]')[0].click();">

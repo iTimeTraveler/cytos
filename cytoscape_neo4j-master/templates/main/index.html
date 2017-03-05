@@ -9,12 +9,20 @@
     <title>人物关系图谱</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <style type="text/css">
+        col-md-4 {height: 370px;}
+    </style>
 {% endblock head %}
 
 
 {% block maintitle %}
     {{ super() }}
 {% endblock maintitle %}
+
+{% block titletext %}
+    影视剧列表
+{% endblock titletext %}
 
 
 
@@ -25,52 +33,77 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
+    {% for prj in all_projects %}
+        <div class="col-md-3">
+            <div class="ibox">
+                <div class="ibox-content product-box">
+                        <div class="product-imitation" style="padding:0;">
+                            <img src="{{ url_for('static',filename='img/default.jpg') }}" class="img-responsive">
+                        </div>
+                        <div class="product-desc">
+                            <div class="pull-right dropdown">
+                                <button data-toggle="dropdown" class="dropdown-toggle btn-white" aria-expanded="false">
+                                    <i class="fa fa-angle-down"></i>
+                                </button>
+                                <ul class="dropdown-menu m-t-xs">
+                                    <li><a onclick="doDeleteProject({{ prj['pid'] }})" class="btn btn-warning">删除</a></li>
+                                </ul>
+                            </div>
+                            <span class="product-price">
+                                {{ prj['p']['prj_id'] }}
+                            </span>
+                            <small class="text-muted">Project</small>
+                            <a href="/{{ prj['p']['prj_id'] }}" class="product-name "> {{ prj['p']['name'] }}</a>
+
+                            <!--<div class="small m-t-xs">-->
+                                <!--{{ prj['pid'] }}-->
+                            <!--</div>-->
+                            <div class="m-t text-righ">
+                                <a href="/{{ prj['p']['prj_id'] }}" class="btn btn-xs btn-outline btn-primary">点击进入 <i class="fa fa-long-arrow-right"></i> </a>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+
+
+    <div class="col-md-3">
         <div class="ibox">
             <div class="ibox-content product-box">
-                <div class="product-imitation">
-                    [ INFO ]
-                </div>
-                <div class="product-desc">
-                    <span class="product-price">
-                        $10
-                    </span>
-                    <small class="text-muted">Category</small>
-                    <a href="/No1" class="product-name"> Product</a>
-
-                    <div class="small m-t-xs">
-                        Many desktop publishing packages and web page editors now.
+                <a data-toggle="modal" data-target="#myModal">
+                    <div class="product-imitation" style="font-size: 80px">
+                        +
                     </div>
-                    <div class="m-t text-righ">
-                        <a href="/No1" class="btn btn-xs btn-outline btn-primary">Info <i class="fa fa-long-arrow-right"></i> </a>
-                    </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="ibox">
-            <div class="ibox-content product-box">
-                <div class="product-imitation">
-                    [ INFO ]
-                </div>
-                <div class="product-desc">
-                    <span class="product-price">
-                        $10
-                    </span>
-                    <small class="text-muted">Category</small>
-                    <a href="/No2" class="product-name"> Product</a>
 
-                    <div class="small m-t-xs">
-                        Many desktop publishing packages and web page editors now.
-                    </div>
-                    <div class="m-t text-righ">
-                        <a href="/No2" class="btn btn-xs btn-outline btn-primary">Info <i class="fa fa-long-arrow-right"></i> </a>
-                    </div>
-                </div>
-            </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h2 class="modal-title" id="myModalLabel"><i class="fa fa-plus fa-1x"></i> 添加一部剧</h2>
+          </div>
+          <div class="modal-body">
+              <form method="get" class="form-horizontal">
+                  <div class="form-group has-warning">
+                      <label class="col-sm-4 control-label">请输入影视剧名称</label>
+                      <div class="col-sm-8"><input id="prj_value" type="text" class="form-control"></div>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button onclick="doCreateProject()" type="button" class="btn btn-primary" data-dismiss="modal">创建</button>
+          </div>
         </div>
+      </div>
     </div>
 
 </div>
@@ -81,4 +114,40 @@
 
 {% block script %}
     {{ super() }}
+    <script type="text/javascript">
+        //创建一部影视剧
+        function doCreateProject(){
+            value = $('input[id=prj_value]').val();
+            if(value == ''){
+                alert("请填写影视剧名称");
+                return;
+            }
+            $.post("/", {
+                action: 'create',
+                prjname: value
+            }, function(data){
+            }).done(function(data) {
+                 console.log("success, pid:" + data);
+                 location.reload(true);
+            }).fail(function(data, textStatus, xhr) {
+                 alert("error", data.status + ", " + xhr);
+            });
+        }
+
+        //删除一个影视剧
+        function doDeleteProject(prj_id){
+            if(prj_id <= 0){
+                return;
+            }
+            $.post("/", {
+                action: 'delete',
+                prj_id: prj_id
+            }, function(data){
+            }).done(function(data) {
+                 location.reload(true);
+            }).fail(function(data, textStatus, xhr) {
+                 alert("error", data.status + ", " + xhr);
+            });
+        }
+    </script>
 {% endblock script %}

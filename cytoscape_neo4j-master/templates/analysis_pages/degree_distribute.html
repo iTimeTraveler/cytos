@@ -402,8 +402,8 @@
                             {%- endfor %}
                     ],
                     links: [{% for item in links -%}
-                                {source:'{{ item.source }}', target:'{{ item.target }}', relation:'{{ item.relation }}', weight: {% if(item.weight==None) %}1{% else %}{{item.weight}}{% endif %} },
-                                {target:'{{ item.source }}', source:'{{ item.target }}', relation:'{{ item.relation }}', weight: {% if(item.weight==None) %}1{% else %}{{item.weight}}{% endif %}} // RibbonType的和弦图每一对节点之间必须是双向边
+                                {source:'{{ item.sname }}', target:'{{ item.tname }}', relation:'{{ item.relation }}', weight: {% if(item.weight==None) %}1{% else %}{{item.weight}}{% endif %} },
+                                {target:'{{ item.sname }}', source:'{{ item.tname }}', relation:'{{ item.relation }}', weight: {% if(item.weight==None) %}1{% else %}{{item.weight}}{% endif %}} // RibbonType的和弦图每一对节点之间必须是双向边
                                 {% if not loop.last -%},{%- endif %}
                             {%- endfor %}
                     ]

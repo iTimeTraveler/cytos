@@ -130,7 +130,7 @@ class LinkUtils:
     def getAllLinks(projectId):
         query = '''
         MATCH (a:{}'''.format(projectId) + ''')-[r]->(b:{}'''.format(projectId) + ''')
-        RETURN r,ID(r) as id, ID(a) as sid, ID(b) as tid
+        RETURN r,ID(r) as id, ID(a) as sid, ID(b) as tid, a.name AS sname, b.name AS tname
         '''
         alllinks = map(LinkUtils.wrapEdges, graph.run(query).data())  # 从数据库里取出所有关系，交给buildEdges加工处理
         return alllinks
@@ -141,6 +141,8 @@ class LinkUtils:
         data = {"id": relationRecord['id'],
                 "source": relationRecord['sid'],
                 "target": relationRecord['tid'],
+                "sname": relationRecord['sname'],
+                "tname": relationRecord['tname'],
                 "weight": relationRecord['r']['weight'] if relationRecord['r']['weight'] else 1,
                 "relation": str(relationRecord['r'].type())}  # 对每一个关系都构造包装成一个这样的格式， str()是一个方法，把括号里的参数转换为字符串类型
         data.update(relationRecord['r'].properties)
@@ -219,6 +221,11 @@ class GraphUtils:
         '''
         graph.run(query)
 
+    # 获取所有节点的Labels
+    def getNodeLabels(self):
+        return graph.node_labels
+
+    # 社区数量
     def countCommunities(self, projectId):
         query = '''
         MATCH (n:{}'''.format(projectId) + ''')
@@ -227,3 +234,47 @@ class GraphUtils:
         '''
         count = graph.run(query).data()
         return count
+
+
+
+
+class ProjectUtils:
+    def __init__(self):
+        return
+
+    # 创建一个影视剧项目
+    def createOne(self, prjname):
+        query = '''
+        CREATE (p:Project{name: \'''' + str(prjname) + '''\'})
+        RETURN ID(p) as pid
+        '''
+        pid = graph.run(query).data()[0]['pid']
+
+        info_query = '''
+        MATCH (p:Project)
+        RETURN max(p.no) as max_no
+        '''
+        max_no = graph.run(info_query).data()[0]['max_no']
+        if max_no is None:
+            max_no = 0
+        new_prj_node = graph.node(pid)
+        new_prj_node['no'] = (max_no + 1)
+        new_prj_node['prj_id'] = "No" + str(max_no + 1)
+        new_prj_node.push()
+        return pid
+
+    # 删除一个影视剧项目
+    def deleteOne(self, pid):
+        prj_node = graph.node(int(pid))
+        if prj_node is not None:
+            LinkUtils.deleteAllLinks(prj_node['prj_id'])
+            NodeUtils.deleteAllNodes(prj_node['prj_id'])
+            graph.delete(prj_node)
+
+    # 获取所有的影视剧
+    def getAllProjects(self):
+        query = '''
+        MATCH (p:Project)
+        RETURN p, ID(p) as pid
+        '''
+        return graph.run(query).data()

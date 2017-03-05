@@ -892,7 +892,10 @@ function submmitModifyLink(link, action) {
 function addPropertyForNodes() {
     property_name = $('input[id=node_property_value]').val();
     property_value = '';
-
+    if(property_name == '') {
+        alert("请填写属性名称");
+        return;
+    }
     $('#node_property_button').button('loading');
     $.post('/'+projectId+"/editor/addproperty", {
         nodes: JSON.stringify(nodes),

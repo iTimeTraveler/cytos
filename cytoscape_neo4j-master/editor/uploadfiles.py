@@ -15,7 +15,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @editor.route('/upload/avatar', methods=['GET', 'POST'])
-def upload_file():
+def upload_file(projectId):
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):

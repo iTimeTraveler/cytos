@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding:utf8
 
-from flask import Flask, jsonify, json, render_template, redirect, request, url_for, current_app
+from flask import Flask, render_template, redirect, url_for
 # 导入py2neo包里的graph（图数据库）
 from py2neo import Graph
 from analysis.analyse import AnalyseUtils
@@ -30,7 +30,7 @@ def index():
 def select_project(projectId):
     analysis_utils = AnalyseUtils(projectId)
     analysis_utils.calculate_communities()
-    return render_template('main/index.html', projectId=projectId)
+    return redirect(url_for('editor.getEditor', projectId=projectId))
 
 
 # 启动server服务器
