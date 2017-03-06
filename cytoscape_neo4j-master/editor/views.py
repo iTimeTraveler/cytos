@@ -16,7 +16,7 @@ graphUtils = GraphUtils()
 
 @editor.route('/',methods=['GET','POST'])
 def getEditor(projectId):
-    communities = graphUtils.countCommunities(projectId)
+    communities = GraphUtils.countCommunities(projectId)
     return render_template('editor_pages/index.html', navId = "editor", projectId=projectId, communities = communities)
 
 

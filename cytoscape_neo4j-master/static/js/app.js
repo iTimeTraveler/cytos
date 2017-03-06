@@ -420,7 +420,7 @@ function mousedown() {
     exist = false;
     ++lastNodeIndex;
     for(i in nodes) {
-        if(nodes[i].id == lastNodeIndex) exist = true;
+        if(nodes[i].name == lastNodeIndex) exist = true;
     }
   }while(exist)
 
@@ -890,7 +890,7 @@ function submmitModifyLink(link, action) {
 }
 //给节点增加一个属性
 function addPropertyForNodes() {
-    property_name = $('input[id=node_property_value]').val();
+    property_name = $('input[id=node_property_value]').val().trim();
     property_value = '';
     if(property_name == '') {
         alert("请填写属性名称");
@@ -910,7 +910,7 @@ function addPropertyForNodes() {
         }
         restart();
         $('#node_property_button').button('reset');
-        toastr.success("点击任何一个节点查看属性", '属性[' + property_name + ']已添加成功!');
+        toastr.success('属性[' + property_name + ']已添加成功!', "点击任何一个节点查看属性");
     }).fail(function(data, textStatus, xhr) {
          alert("error", data.status + ", " + xhr);
     }).always(function() {

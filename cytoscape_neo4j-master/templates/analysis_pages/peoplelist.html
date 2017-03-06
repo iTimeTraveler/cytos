@@ -42,6 +42,7 @@
                     <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
                         <thead>
                             <tr>
+                                <th>编号</th>
                                 {% set array = [] %}
                                 {% for people in nodes %}
                                     {% for key, value in people.iteritems() if key and key not in array and key != "temp_index" %}
@@ -60,12 +61,14 @@
                                 {% endfor %}
 
                                 <!--<th data-toggle="true">ID</th>-->
-                                <th>保存状态</th></tr>
+                                <th>保存状态</th>
+                            </tr>
                         </thead>
                         <tbody>
 
                             {% for people in nodes %}
                                 <tr>
+                                    <td><span class="badge badge-info">{{ loop.index }}</span></td>
                                     {% for key in array %}
                                         <td>{{ people[key] }}</td>
                                     {% endfor %}

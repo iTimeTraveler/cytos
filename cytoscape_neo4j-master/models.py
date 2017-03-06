@@ -226,7 +226,8 @@ class GraphUtils:
         return graph.node_labels
 
     # 社区数量
-    def countCommunities(self, projectId):
+    @staticmethod
+    def countCommunities(projectId):
         query = '''
         MATCH (n:{}'''.format(projectId) + ''')
         RETURN distinct n.community AS index, count(*) as count
@@ -277,4 +278,13 @@ class ProjectUtils:
         MATCH (p:Project)
         RETURN p, ID(p) as pid
         '''
-        return graph.run(query).data()
+        data = graph.run(query).data()
+        for d in data:
+            prj_id = d['p']['prj_id']
+            nodes = NodeUtils.getAllNodes(projectId=prj_id)
+            links = LinkUtils.getAllLinks(projectId=prj_id)
+            commus = GraphUtils.countCommunities(projectId=prj_id)
+            d['nodes_count'] = len(nodes)
+            d['links_count'] = len(links)
+            d['communities_count'] = len(commus)
+        return data
