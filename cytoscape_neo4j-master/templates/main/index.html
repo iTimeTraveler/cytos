@@ -74,8 +74,20 @@
             <div class="ibox-content product-box">
                 <a data-toggle="modal" data-target="#myModal">
                     <div class="product-imitation" style="font-size: 80px">
-                        +
+                        <span id="prj-plus"> + </span>
+                        <div id="prj-loading" class="sk-spinner sk-spinner-cube-grid" style="display:none;">
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                        </div>
                     </div>
+
                 </a>
             </div>
         </div>
@@ -83,28 +95,29 @@
 
 
     <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
+    <div class="modal inmodal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h2 class="modal-title" id="myModalLabel"><i class="fa fa-plus fa-1x"></i> 添加一部剧</h2>
-          </div>
-          <div class="modal-body">
-              <form method="get" class="form-horizontal">
-                  <div class="form-group has-warning">
-                      <label class="col-sm-4 control-label">请输入影视剧名称</label>
-                      <div class="col-sm-8"><input id="prj_value" type="text" class="form-control"></div>
-                  </div>
-              </form>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-              <button onclick="doCreateProject()" type="button" class="btn btn-primary" data-dismiss="modal">创建</button>
-          </div>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <i class="fa fa-film modal-icon"></i>
+                    <h4 class="modal-title">创 建</h4>
+                    <small class="">你可以添加一部全新的人物图谱</small>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group has-warning">
+                        <label class="control-label">请输入影视剧名称</label>
+                        <input id="prj_value" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">取 消</button>
+                    <button onclick="doCreateProject()" type="button" class="btn btn-primary" data-dismiss="modal">创 建</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
+
 
 </div>
 {% endblock content %}
@@ -122,12 +135,14 @@
                 alert("请填写影视剧名称");
                 return;
             }
+            $('span[id=prj-plus]').hide();
+            $('div[id=prj-loading]').show();
+
             $.post("/", {
                 action: 'create',
                 prjname: value
             }, function(data){
             }).done(function(data) {
-                 console.log("success, pid:" + data);
                  location.reload(true);
             }).fail(function(data, textStatus, xhr) {
                  alert("error", data.status + ", " + xhr);
