@@ -2,12 +2,13 @@
 
 
 {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap/css/plugins/toastr/toastr.min.css') }}">
+
     {{ super() }}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>编辑</title>
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/app.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/d3.css') }}">
@@ -248,7 +249,7 @@
                           </div>
                           <div class="modal-footer">
                               <button onclick="deleteGraph()" type="button" class="btn btn-default" data-dismiss="modal">删除</button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
                           </div>
                         </div>
                       </div>
@@ -267,13 +268,14 @@
 
 
 {% block script %}
-    {{ super() }}
-
     <script type="text/javascript">
         var projectId = '{{ projectId }}';
     </script>
+
+    {{ super() }}
     <script src="{{ url_for('static',filename='lib/d3.v3.min.js') }}"></script>
     <script src="{{ url_for('static',filename='lib/formula-parser.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='bootstrap/js/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ url_for('static',filename='js/MPL.js') }}"></script>
     <script src="{{ url_for('static',filename='js/app.js') }}"></script>
     <script type="text/javascript">

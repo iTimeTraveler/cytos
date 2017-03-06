@@ -910,6 +910,7 @@ function addPropertyForNodes() {
         }
         restart();
         $('#node_property_button').button('reset');
+        toastr.success("点击任何一个节点查看属性", '属性[' + property_name + ']已添加成功!');
     }).fail(function(data, textStatus, xhr) {
          alert("error", data.status + ", " + xhr);
     }).always(function() {
@@ -923,6 +924,7 @@ function deleteGraph() {
         nodes=[];
         links=[];
         restart();
+        toastr.error("现在已无法恢复数据", '图谱已删除!');
     }).fail(function(data, textStatus, xhr) {
          alert("error", data.status + ", " + xhr);
     });

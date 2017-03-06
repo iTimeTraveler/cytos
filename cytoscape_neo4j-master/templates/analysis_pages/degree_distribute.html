@@ -65,8 +65,6 @@
             toolbox: {
                 show : true,
                 feature : {
-                    mark : {show: true},
-                    dataZoom : {show: true},
                     dataView : {show: true, readOnly: false},
                     magicType: {show: true, type: ['line', 'bar']},
                     restore : {show: true},
@@ -185,8 +183,6 @@
             toolbox: {
                 show : true,
                 feature : {
-                    mark : {show: true},
-                    dataZoom : {show: true},
                     dataView : {show: true, readOnly: false},
                     magicType: {show: true, type: ['line', 'bar']},
                     restore : {show: true},
@@ -292,9 +288,8 @@
             toolbox: {
                 show : true,
                 feature : {
-                    mark : {show: true},
                     dataView : {show: true, readOnly: false},
-                    magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    magicType: {show: true, type: ['line', 'bar']},
                     restore : {show: true},
                     saveAsImage : {show: true}
                 }
@@ -378,8 +373,9 @@
             toolbox: {
                 show : true,
                 feature : {
-                    restore : {show: true},
+                    dataView : {show: true, readOnly: false},
                     magicType: {show: true, type: ['force', 'chord']},
+                    restore : {show: true},
                     saveAsImage : {show: true}
                 }
             },
