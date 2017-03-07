@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/app.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/d3.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap/css/plugins/switchery/switchery.css') }}">
 {% endblock head %}
 
 
@@ -188,10 +189,11 @@
 
                   <div class="widget style1 red-bg" style="background-image: linear-gradient(45deg,#62da5b,#46c36a);">
                     <div class="row">
-                        <div class="col-xs-8 text-center">
-                            <a class="check-link" style="color:white; font-size: 18px;" href="javascript:void(0)" onclick="setShowCommunities()"><i class="fa fa-square-o fa-1x"></i>
-                                <span class="m-l-xs" style="color:white;">区分社区颜色</span>
-                            </a>
+                        <div class="col-xs-12">
+                                <span class="m-l-xs" style="float:left; line-height: 32px;"><small class="text-white" style="font-size:18px">区分社区颜色</small></span>
+                                <div style="float:right;">
+                                    <input type="checkbox" class="js-switch" />
+                                </div>
                         </div>
                     </div>
                   </div>
@@ -276,6 +278,7 @@
     <script src="{{ url_for('static',filename='lib/d3.v3.min.js') }}"></script>
     <script src="{{ url_for('static',filename='lib/formula-parser.min.js') }}"></script>
     <script src="{{ url_for('static',filename='bootstrap/js/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='bootstrap/js/plugins/switchery/switchery.js') }}"></script>
     <script src="{{ url_for('static',filename='js/MPL.js') }}"></script>
     <script src="{{ url_for('static',filename='js/app.js') }}"></script>
     <script type="text/javascript">
@@ -288,5 +291,11 @@
             {% endif %}
         {%- endfor %}
         $("#communitiesWrap").html(str);
+
+        var checkButton = document.querySelector('.js-switch');
+        var switchery = new Switchery(checkButton, { color: '#f8ac59' });
+        checkButton.onchange = function() {
+            setShowCommunities(checkButton.checked);
+        };
     </script>
 {% endblock script %}

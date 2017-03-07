@@ -22,6 +22,8 @@
 {% endblock pagename %}
 
 
+{% set avatars = ["chanyou", "guixie", "lingsha", "mengli", "suyao", "suyu", "taiqing", "tianhe", "tianqing", "xizhong" ] %}
+
 
 <!-- 内容区 start -->
 {% block content %}
@@ -39,10 +41,10 @@
                 </div>
 
                 <div class="ibox-content">
-                    <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
+                    <table class="footable table table-stripped toggle-arrow-tiny issue-tracker" data-page-size="15">
                         <thead>
                             <tr>
-                                <th>编号</th>
+                                <th>头像</th>
                                 {% set array = [] %}
                                 {% for people in nodes %}
                                     {% for key, value in people.iteritems() if key and key not in array and key != "temp_index" %}
@@ -68,7 +70,17 @@
 
                             {% for people in nodes %}
                                 <tr>
-                                    <td><span class="badge badge-info">{{ loop.index }}</span></td>
+                                    <td><span class="client-avatar">
+                                        <img alt="image" style="border: 1px solid #e7eaec; background:#ddd;"
+                                            {% if(people.avatar) %}
+                                                src="{{ people.avatar }}">
+                                            {% elif(people.community) %}
+                                                src="{{ url_for('static',filename='img/' + avatars[people.community] + '.png') }}">
+                                            {% else %}
+                                                src="{{ url_for('static',filename='img/avatar-default.png') }}">
+                                            {% endif %} </span>
+                                    </td>
+
                                     {% for key in array %}
                                         <td>{{ people[key] }}</td>
                                     {% endfor %}
@@ -105,7 +117,6 @@
                             "linear-gradient(-45deg,#2b56b5,#458ce8)",
                             "linear-gradient(45deg,#1d2338,#4d5c8d)",
                             "linear-gradient(45deg,#bb77bd,#49259e)", "#23c6c8", "#ed5565"] %}
-        {% set avatars = ["chanyou", "guixie", "lingsha", "mengli", "suyao", "suyu", "taiqing", "tianhe", "tianqing", "xizhong" ] %}
         {% for people in nodes %}
             <div class="col-lg-3">
                 <div class="widget-head-color-box navy-bg p-lg text-center" style="background: {{bgcolors[people.community]}}">

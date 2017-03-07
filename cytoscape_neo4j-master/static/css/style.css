@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    font-family: "open sans", "Helvetica Neue", "黑体", Helvetica, Arial, sans-serif;
+    font-family: "open sans", "Helvetica Neue", "微软雅黑", "华文细黑", Helvetica, Arial, sans-serif;
 }
 
 .search-form-submit {
@@ -12,4 +12,17 @@ body {
     color: #21216e;
     display: block;
     margin: 2px 0 5px 0;
+}
+
+.product-box {
+    padding: 0;
+    border: 1px solid #e7eaec;
+    transition: all .2s linear;
+}
+
+.product-box:hover{
+    -webkit-box-shadow:0 15px 30px rgba(0,0,0,0.1);
+    box-shadow:0 15px 30px rgba(0,0,0,0.1);
+    -webkit-transform:translate3d(0, -2px, 0);
+    transform:translate3d(0, -2px, 0)
 }

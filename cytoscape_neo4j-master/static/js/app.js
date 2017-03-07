@@ -789,8 +789,8 @@ function setAppMode(newMode) {
 /**
  * 显示社区区分的颜色
  */
-function setShowCommunities() {
-    showCommunty = !showCommunty;
+function setShowCommunities(show) {
+    showCommunty = show;
     restart();
 }
 
