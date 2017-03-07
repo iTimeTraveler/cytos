@@ -2,7 +2,7 @@
 #coding:utf8
 
 from models import graph
-from igraph import Graph as IGraph
+from igraph import Graph as IGraph  # 从igraph这个文件里面引入Graph类
 import sys
 
 # 防止中文编译不过
@@ -25,7 +25,7 @@ class AnalyseUtils:
     # 随机游走的社区发现算法
     def calculate_communities(self):
         # pageRank
-        pageRank = self.ig.pagerank()
+        pageRank = self.ig.pagerank()     # 通过ig里面的PageRank（）函数直接计算出PageRank值，表示权重？
         pgvs = []
         for p in zip(self.ig.vs, pageRank):
             print(p)
@@ -39,7 +39,7 @@ class AnalyseUtils:
         graph.run(write_clusters_query, nodes=pgvs)
 
         # 随机游走的社区发现算法
-        clusters = IGraph.community_walktrap(self.ig, weights=None).as_clustering()
+        clusters = IGraph.community_walktrap(self.ig, weights=None).as_clustering()     # 通过IGraph.community_walktra（）函数计算
         nodes = [{"id": node["name"], "tmp_index": node.index} for node in self.ig.vs]
         print(nodes)
         for n in nodes:

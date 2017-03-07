@@ -12,12 +12,12 @@ app = Flask(__name__)
 graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 
 
-from main import main as main_blueprint
-app.register_blueprint(blueprint=main_blueprint,url_prefix='/')
+from main import main as main_blueprint     # 蓝本类，将网址分模块处理
+app.register_blueprint(blueprint=main_blueprint, url_prefix='/')
 from editor import editor as editor_blueprint
-app.register_blueprint(blueprint=editor_blueprint,url_prefix='/<projectId>/editor')
+app.register_blueprint(blueprint=editor_blueprint, url_prefix='/<projectId>/editor')
 from analysis import analysis as analysis_blueprint
-app.register_blueprint(blueprint=analysis_blueprint,url_prefix='/<projectId>/analysis')
+app.register_blueprint(blueprint=analysis_blueprint, url_prefix='/<projectId>/analysis')
 
 
 
@@ -28,12 +28,12 @@ def index():
 
 @app.route('/<projectId>/')
 def select_project(projectId):
-    analysis_utils = AnalyseUtils(projectId)
-    analysis_utils.calculate_communities()
+    analysis_utils = AnalyseUtils(projectId)    # 实例化类
+    analysis_utils.calculate_communities()  # 调用函数
     return redirect(url_for('editor.getEditor', projectId=projectId))
 
 
 # 启动server服务器
 if __name__ == '__main__':
     # app.run(debug = True)
-    app.run(port=2000, debug = True)
+    app.run(port=2000, debug = True)    # 显示调试信息

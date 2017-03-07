@@ -40,17 +40,17 @@ class NodeUtils:
         elif action == '2':
             return self.deleteNode(projectId, node_obj)
         elif action == '3':
-            return self.createNode(projectId, node_obj)
+            return self.createNode(projectId, node_obj)     # 修改节点
 
     # 创建节点
     def createNode(self, projectId, node_obj):
         # 数据库已存在则更新
-        if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
-            n = graph.node(node_obj['id'])
+        if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):     # 通过id进行判断 节点是否存在
+            n = graph.node(node_obj['id'])  # 用py2neo的graph取出节点
             for key in node_obj.keys():
                 if key not in hideKeys:
                     n[key] = node_obj[key]
-            n.push()
+            n.push()    # 改完之后重新存入数据库
             print("更新节点: %s" % n)
             return ''
         # 不存在则新建
@@ -97,13 +97,13 @@ class NodeUtils:
         graph.run(query)
         return ''
 
-    # 全部节点添加一个属性
+    # 给一个节点添加一个属性
     def addProperty(self, node_obj, property_name, property_value):
         # 数据库是否存在节点
         if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
             n = graph.node(node_obj['id'])
-            if not n.has_key(property_name) and property_name not in hideKeys:
-                n[property_name] = property_value
+            if not n.has_key(property_name) and property_name not in hideKeys:  # 如果没有属性名且新属性名不存在原定的属性库里（黑名单）
+                n[property_name] = property_value   # 把值赋给新增属性
             n.push()
             print("添加一个属性后: %s" % n)
 
@@ -165,7 +165,7 @@ class LinkUtils:
         srcNode = graph.node(int(link_obj['source']['id']))
         tarNode = graph.node(int(link_obj['target']['id']))
         newLink = Relationship(srcNode, 'CONNECT', tarNode)
-        self.deleteLink(projectId, link_obj)    # 删除已存在的关系
+        self.deleteLink(projectId, link_obj)    # 删除已存在的关系 如果不存在就不执行此操作
         graph.merge(newLink)
         for key in link_obj.keys():
             if key not in hideKeys:
@@ -221,10 +221,6 @@ class GraphUtils:
         '''
         graph.run(query)
 
-    # 获取所有节点的Labels
-    def getNodeLabels(self):
-        return graph.node_labels
-
     # 社区数量
     @staticmethod
     def countCommunities(projectId):
@@ -233,7 +229,8 @@ class GraphUtils:
         RETURN distinct n.community AS index, count(*) as count
         ORDER BY n.community ASC
         '''
-        count = graph.run(query).data()
+        # distinct过滤掉相同的communit值数不同社区的数量
+        count = graph.run(query).data()[0]['count']
         return count
 
 
@@ -245,12 +242,14 @@ class ProjectUtils:
 
     # 创建一个影视剧项目
     def createOne(self, prjname):
+        # 创建一个节点 只有标签、名字属性
         query = '''
         CREATE (p:Project{name: \'''' + str(prjname) + '''\'})
         RETURN ID(p) as pid
         '''
         pid = graph.run(query).data()[0]['pid']
 
+        # 添加属性：No值，先去数据库找是否存在No值，进行加1
         info_query = '''
         MATCH (p:Project)
         RETURN max(p.no) as max_no
@@ -266,11 +265,11 @@ class ProjectUtils:
 
     # 删除一个影视剧项目
     def deleteOne(self, pid):
-        prj_node = graph.node(int(pid))
+        prj_node = graph.node(int(pid))     # 取出节点
         if prj_node is not None:
-            LinkUtils.deleteAllLinks(prj_node['prj_id'])
-            NodeUtils.deleteAllNodes(prj_node['prj_id'])
-            graph.delete(prj_node)
+            LinkUtils.deleteAllLinks(prj_node['prj_id'])    # 删除项目内部的关系
+            NodeUtils.deleteAllNodes(prj_node['prj_id'])    # 删除项目内部的节点
+            graph.delete(prj_node)  # 删除项目本身的节点
 
     # 获取所有的影视剧
     def getAllProjects(self):
@@ -280,11 +279,11 @@ class ProjectUtils:
         '''
         data = graph.run(query).data()
         for d in data:
-            prj_id = d['p']['prj_id']
+            prj_id = d['p']['prj_id']   # 取出项目的编号No,用来获取内部节点、关系等
             nodes = NodeUtils.getAllNodes(projectId=prj_id)
             links = LinkUtils.getAllLinks(projectId=prj_id)
             commus = GraphUtils.countCommunities(projectId=prj_id)
             d['nodes_count'] = len(nodes)
             d['links_count'] = len(links)
-            d['communities_count'] = len(commus)
+            d['communities_count'] = commus
         return data

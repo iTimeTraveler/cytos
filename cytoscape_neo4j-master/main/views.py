@@ -8,7 +8,6 @@ from models import GraphUtils, ProjectUtils
 graphUtils = GraphUtils()
 projectUtils = ProjectUtils()
 
-
 @main.route('/', methods=['GET','POST'])
 def home():
     # 用来创建新影视剧
@@ -17,13 +16,13 @@ def home():
             prjname = request.values.get('prjname', "")
             if prjname == "":
                 return ''
-            pid = projectUtils.createOne(prjname)
+            pid = projectUtils.createOne(prjname)   # 调用创建影视剧项目的函数
             return str(pid)
         elif request.values.get('action', "") == 'delete':
             pid = request.values.get('prj_id', "")
             if pid == "":
                 return ''
-            projectUtils.deleteOne(pid)
+            projectUtils.deleteOne(pid)  # 调用删除影视剧项目的函数
             return ''
     else:
         all_projects = projectUtils.getAllProjects()
