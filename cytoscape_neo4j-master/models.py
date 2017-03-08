@@ -221,17 +221,17 @@ class GraphUtils:
         '''
         graph.run(query)
 
-    # 社区数量
+    # 每个社区的人数
     @staticmethod
-    def countCommunities(projectId):
+    def countCommunityPeoples(projectId):
         query = '''
         MATCH (n:{}'''.format(projectId) + ''')
-        RETURN distinct n.community AS index, count(*) as count
+        RETURN distinct n.community AS index, count(*) as peoples_count
         ORDER BY n.community ASC
         '''
         # distinct过滤掉相同的communit值数不同社区的数量
-        count = graph.run(query).data()[0]['count']
-        return count
+        communityList = graph.run(query).data()
+        return communityList
 
 
 
@@ -282,8 +282,8 @@ class ProjectUtils:
             prj_id = d['p']['prj_id']   # 取出项目的编号No,用来获取内部节点、关系等
             nodes = NodeUtils.getAllNodes(projectId=prj_id)
             links = LinkUtils.getAllLinks(projectId=prj_id)
-            commus = GraphUtils.countCommunities(projectId=prj_id)
+            communityList = GraphUtils.countCommunityPeoples(projectId=prj_id)
             d['nodes_count'] = len(nodes)
             d['links_count'] = len(links)
-            d['communities_count'] = commus
+            d['communities_count'] = len(communityList)
         return data

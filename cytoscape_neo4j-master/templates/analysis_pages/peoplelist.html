@@ -112,14 +112,15 @@
 
 
     <div class="row">
-        {% set bgcolors = ["linear-gradient(45deg,#00b6ee,#0080e2)",
+        {% set bgcolors = ["#ed5565",
+                            "linear-gradient(45deg,#00b6ee,#0080e2)",
                             "linear-gradient(45deg,#ffba6a,#ff7575)",
                             "linear-gradient(45deg,#62da5b,#46c36a)",
                             "linear-gradient(-45deg,#26a59a,#6fcdc4)",
                             "linear-gradient(-45deg,#ffa31e,#fee0a5)",
                             "linear-gradient(-45deg,#2b56b5,#458ce8)",
                             "linear-gradient(45deg,#1d2338,#4d5c8d)",
-                            "linear-gradient(45deg,#bb77bd,#49259e)", "#23c6c8", "#ed5565"] %}
+                            "linear-gradient(45deg,#bb77bd,#49259e)", "#23c6c8"] %}
         {% for people in nodes %}
             <div class="col-lg-3">
                 <div class="widget-head-color-box navy-bg p-lg text-center" style="background: {{bgcolors[people.community]}}">

@@ -45,7 +45,7 @@ class AnalyseUtils:
         for n in nodes:
             print(n)
             idx = n["tmp_index"]
-            n["community"] = clusters.membership[idx]
+            n["community"] = clusters.membership[idx] + 1   # 社区编号从1开始，而不是0
 
         write_clusters_query = '''
         UNWIND {nodes} AS n ''' + '''MATCH (c:{projectId}'''.format(projectId=self.projectId) + ''')

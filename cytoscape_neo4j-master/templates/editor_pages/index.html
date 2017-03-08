@@ -285,9 +285,9 @@
         var str = "";
         {% for commu in communities -%}
             {% if(commu.index) %}
-                 str += '<li><a> <i class="fa fa-circle text-navy" style="color:' + colors({{ commu.index }}) + '"></i> 社区{{ commu.index }} : {{ commu.count }}人</a></li>';
+                 str += '<li><a> <i class="fa fa-circle text-navy" style="color:' + colors({{ commu.index }}) + '"></i> 社区{{ commu.index }} : {{ commu.peoples_count }}人</a></li>';
             {% else %}
-                str += '<li><a> <i class="fa fa-circle text-navy" style="color:#000000"></i> 无社区 : {{ commu.count }}人</a></li>';
+                str += '<li><a> <i class="fa fa-circle text-navy" style="color:#000000"></i> 无社区 : {{ commu.peoples_count }}人</a></li>';
             {% endif %}
         {%- endfor %}
         $("#communitiesWrap").html(str);
