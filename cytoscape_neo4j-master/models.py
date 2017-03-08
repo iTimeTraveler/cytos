@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #coding:utf8
+# 可能用到的函数库，数据库相关操作
 
 from flask import jsonify
 from py2neo import Graph, Node, Relationship
@@ -60,6 +61,7 @@ class NodeUtils:
             for key in node_obj.keys():
                 if key not in hideKeys:
                     newNode[key] = node_obj[key]
+        # 每次创建节点的时候都要加一个新标签projectID 用以和主项目编号（prj-id）进行呼应
             newNode.add_label(str(projectId))
             h = str(hash(newNode))
             newNode['hash'] = h
@@ -77,7 +79,7 @@ class NodeUtils:
             print(result)
             return jsonify(result={"uid":result[0]['id']})
 
-    # 删除节点
+    # 删除节点 匹配ID找到节点
     def deleteNode(self, projectId, node_obj):
         query = '''
         MATCH (n:{}'''.format(projectId) + ''')
@@ -101,13 +103,13 @@ class NodeUtils:
     def addProperty(self, node_obj, property_name, property_value):
         # 数据库是否存在节点
         if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
-            n = graph.node(node_obj['id'])
+            n = graph.node(node_obj['id'])  # 取出节点
             if not n.has_key(property_name) and property_name not in hideKeys:  # 如果没有属性名且新属性名不存在原定的属性库里（黑名单）
                 n[property_name] = property_value   # 把值赋给新增属性
             n.push()
             print("添加一个属性后: %s" % n)
 
-    # 全部节点删除一个属性
+    # 全部节点删除一个属性 匹配出所有节点，再删除属性的名字
     def removeProperty(self, projectId, property_name):
         query = '''
         MATCH (n:{}'''.format(projectId) + ''')
@@ -157,12 +159,12 @@ class LinkUtils:
         elif action == '3':
             return self.createLink(projectId, link_obj)
 
-    # 创建关系
+    # 创建关系 link-obj自带了很多信息？
     def createLink(self, projectId, link_obj):
         if not link_obj.has_key('relation'):
             return
         print(link_obj)
-        srcNode = graph.node(int(link_obj['source']['id']))
+        srcNode = graph.node(int(link_obj['source']['id']))     # 给源节点起了个名字
         tarNode = graph.node(int(link_obj['target']['id']))
         newLink = Relationship(srcNode, 'CONNECT', tarNode)
         self.deleteLink(projectId, link_obj)    # 删除已存在的关系 如果不存在就不执行此操作
@@ -221,7 +223,7 @@ class GraphUtils:
         '''
         graph.run(query)
 
-    # 每个社区的人数
+    # 社区数量
     @staticmethod
     def countCommunityPeoples(projectId):
         query = '''
@@ -264,6 +266,7 @@ class ProjectUtils:
         return pid
 
     # 删除一个影视剧项目
+    # pid是项目自身在数据库里的ID，pri-id是自定义的项目编号么（一个属性）
     def deleteOne(self, pid):
         prj_node = graph.node(int(pid))     # 取出节点
         if prj_node is not None:
@@ -279,7 +282,7 @@ class ProjectUtils:
         '''
         data = graph.run(query).data()
         for d in data:
-            prj_id = d['p']['prj_id']   # 取出项目的编号No,用来获取内部节点、关系等
+            prj_id = d['p']['prj_id']   # 取出项目的编号No,用来获取内部节点、关系，用来首页计数展示
             nodes = NodeUtils.getAllNodes(projectId=prj_id)
             links = LinkUtils.getAllLinks(projectId=prj_id)
             communityList = GraphUtils.countCommunityPeoples(projectId=prj_id)

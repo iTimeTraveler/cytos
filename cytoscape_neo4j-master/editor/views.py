@@ -7,13 +7,14 @@ from flask import render_template, request, json, jsonify
 import sys
 
 # 防止中文编译不过
+# 路由就表示为用户请求的URL（网址）找出其对应的处理函数之意，建立他们之间的映射
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
 nodeUtils = NodeUtils()
 linkUtils = LinkUtils()
 graphUtils = GraphUtils()
-
+# 渲染模板 ：转到编辑界面那个HTML
 @editor.route('/',methods=['GET','POST'])
 def getEditor(projectId):
     communities = GraphUtils.countCommunityPeoples(projectId)
@@ -28,12 +29,12 @@ def modify(projectId):
             nodeStr = request.values.get('node', "")
             actionStr = request.values.get('act', "")
             newNode = json.loads(nodeStr, encoding="utf-8")
-            return nodeUtils.dispacthNode(projectId, newNode, actionStr)
+            return nodeUtils.dispacthNode(projectId, newNode, actionStr)    # 调用更改结点函数
         elif request.values.get('type', "") == 'link':
             linkStr = request.values.get('link', "")
             actionStr = request.values.get('act', "")
             newLink = json.loads(linkStr, encoding="utf-8")
-            return linkUtils.dispacthLink(projectId, newLink, actionStr)
+            return linkUtils.dispacthLink(projectId, newLink, actionStr)    # 调用更改关系函数
 
 
 
@@ -48,7 +49,7 @@ def addNodeProperty(projectId):
         if property_name != "":
             for node_obj in all_nodes:
                 nodeUtils.addProperty(node_obj=node_obj, property_name=property_name, property_value=property_value)
-        return ''
+        return ''   # 调用给一个节点添加属性的函数
 
 
 # 删除整个图谱

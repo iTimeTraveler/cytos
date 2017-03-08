@@ -12,7 +12,7 @@ app = Flask(__name__)
 graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 
 
-from main import main as main_blueprint     # 蓝本类，将网址分模块处理
+from main import main as main_blueprint     # 蓝本类，调用实例对象，将网址分模块处理
 app.register_blueprint(blueprint=main_blueprint, url_prefix='/')
 from editor import editor as editor_blueprint
 app.register_blueprint(blueprint=editor_blueprint, url_prefix='/<projectId>/editor')
@@ -25,11 +25,11 @@ app.register_blueprint(blueprint=analysis_blueprint, url_prefix='/<projectId>/an
 def index():
     return redirect(url_for('main.home'))
 
-
+# 路由重定向，全部交给geteditor处理
 @app.route('/<projectId>/')
 def select_project(projectId):
     analysis_utils = AnalyseUtils(projectId)    # 实例化类
-    analysis_utils.calculate_communities()  # 调用函数
+    analysis_utils.calculate_communities()  # 调用函数 随机游走社区发现算法
     return redirect(url_for('editor.getEditor', projectId=projectId))
 
 

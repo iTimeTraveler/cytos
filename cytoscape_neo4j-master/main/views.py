@@ -27,4 +27,5 @@ def home():
     else:
         all_projects = projectUtils.getAllProjects()
         print(all_projects)
+        # 渲染模板 交给index主页面-首页
         return render_template('main/index.html', navId = "main", all_projects=all_projects)
