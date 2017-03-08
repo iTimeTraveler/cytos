@@ -2,7 +2,7 @@ $(function(){
   $.get('/'+projectId+'/editor/graph', {id: 'Robin', password: '123456'}, function(result) {
 
     //接受服务端返回的json数据
-    var result = JSON.parse(JSON.stringify(result));
+    var result = JSON.parse(JSON.stringify(result));    // 解析json
     var root = result.elements;
     console.log(JSON.stringify(root));
 

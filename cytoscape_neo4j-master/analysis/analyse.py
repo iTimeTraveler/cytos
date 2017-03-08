@@ -2,7 +2,7 @@
 #coding:utf8
 
 from models import graph
-from igraph import Graph as IGraph  # 从igraph这个文件里面引入Graph类
+from igraph import Graph as IGraph  # 从igraph(用来进行网络分析的工具)这个包里面引入Graph类
 import sys
 
 # 防止中文编译不过
@@ -36,22 +36,27 @@ class AnalyseUtils:
         WHERE ID(c) = n.id
         SET c.pagerank = n.pg
         '''
+        # 把PageRank属性加入每个的节点的信息库里
         graph.run(write_clusters_query, nodes=pgvs)
 
         # 随机游走的社区发现算法
-        clusters = IGraph.community_walktrap(self.ig, weights=None).as_clustering()     # 通过IGraph.community_walktra（）函数计算
+        # 通过IGraph.community_walktra（）函数计算
+        # 计算结果就是每个节点属于哪个社区
+        clusters = IGraph.community_walktrap(self.ig, weights=None).as_clustering()
         nodes = [{"id": node["name"], "tmp_index": node.index} for node in self.ig.vs]
         print(nodes)
         for n in nodes:
             print(n)
             idx = n["tmp_index"]
-            n["community"] = clusters.membership[idx] + 1   # 社区编号从1开始，而不是0
+            n["community"] = clusters.membership[idx] + 1   # 遍历节点，把communityde 值依次赋给对应节点
+            # 社区编号从1开始，而不是0
 
         write_clusters_query = '''
         UNWIND {nodes} AS n ''' + '''MATCH (c:{projectId}'''.format(projectId=self.projectId) + ''')
         WHERE ID(c) = n.id
         SET c.community = toInt(n.community)
         '''
+        # 将更新的community属性存入数据库
         graph.run(write_clusters_query, nodes=nodes)
         return
 
@@ -91,7 +96,7 @@ class AnalyseUtils:
         names = [graph.node(i)['name'] for i in self.ig.vs['name']]
         for i in range(0, len(names), 1):
             temp[names[i]] = degrees[i]
-        mylist = sorted(temp.iteritems(), key=lambda (k,v): (v,k))
+        mylist = sorted(temp.iteritems(), key=lambda (k,v): (v,k))  # 按度从大到小排序
         return mylist
 
 

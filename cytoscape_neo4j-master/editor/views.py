@@ -14,6 +14,8 @@ sys.setdefaultencoding("utf-8")
 nodeUtils = NodeUtils()
 linkUtils = LinkUtils()
 graphUtils = GraphUtils()
+
+
 # 渲染模板 ：转到编辑界面那个HTML
 @editor.route('/',methods=['GET','POST'])
 def getEditor(projectId):
@@ -26,16 +28,15 @@ def getEditor(projectId):
 def modify(projectId):
     if request.method == 'POST':
         if request.values.get('type', "") == 'node':
-            nodeStr = request.values.get('node', "")
+            nodeStr = request.values.get('node', "")    # 把客户端的请求信息里的值取出来赋给nodeStr变量
             actionStr = request.values.get('act', "")
             newNode = json.loads(nodeStr, encoding="utf-8")
             return nodeUtils.dispacthNode(projectId, newNode, actionStr)    # 调用更改结点函数
         elif request.values.get('type', "") == 'link':
             linkStr = request.values.get('link', "")
             actionStr = request.values.get('act', "")
-            newLink = json.loads(linkStr, encoding="utf-8")
+            newLink = json.loads(linkStr, encoding="utf-8")     # 把节点的字符串信息转换成json格式，方便后期处理
             return linkUtils.dispacthLink(projectId, newLink, actionStr)    # 调用更改关系函数
-
 
 
 # 给节点增加一个属性
@@ -61,8 +62,8 @@ def deleteAllGraph(projectId):
         return ''
 
 
-# 提供一个动态路由地址，供前端网页调用
-@editor.route('/graph', methods=['GET', 'POST'])
+# 提供一个动态路由地址，获取某个项目的整个图谱（即所有的刷新页面）
+@editor.route('/graph', methods=['GET'])
 def get_graph(projectId):
     nodes = NodeUtils.getAllNodes(projectId)
     edges = LinkUtils.getAllLinks(projectId)

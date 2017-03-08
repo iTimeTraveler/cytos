@@ -7,8 +7,8 @@ from . import editor
 from flask import request, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
 
-# 没懂
-UPLOAD_FOLDER = app.static_folder + '\\avatar'
+# 服务端创建一个路由，用来分别匹配客户端传回来的请求，请求信息（一般在js代码段里）里面包含URL
+UPLOAD_FOLDER = app.static_folder + '\\avatar'  # 通过访问app里的static_folder变量设置保存文件夹
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -20,10 +20,10 @@ def upload_file(projectId):
         file = request.files['file']    # 请求取出file数据，赋值给变量file
         if file and allowed_file(file.filename):    # 判断file后缀是否符合标准
             filename = secure_filename(file.filename)   # 获取一个安全的文件名 不支持中文
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # 保存文件
-            avatar_url = url_for('static', filename='%s/%s' % ('avatar', filename))     # 获取文件的保存路径static-avatar里面
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # 保存文件，指明绝对路径地址
+            avatar_url = url_for('static', filename='%s/%s' % ('avatar', filename))     # 获取文件的相对路径static-avatar里面
             return avatar_url
-    return 'hello'
+    return ''
 
 
 @app.route('/uploads/<filename>')
@@ -33,4 +33,4 @@ def uploaded_file(filename):
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS     # 分离出图片名字.后面的部分，进行检验

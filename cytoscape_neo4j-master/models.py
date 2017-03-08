@@ -105,8 +105,8 @@ class NodeUtils:
         if node_obj.has_key('id') and graph.exists(graph.node(node_obj['id'])):
             n = graph.node(node_obj['id'])  # 取出节点
             if not n.has_key(property_name) and property_name not in hideKeys:  # 如果没有属性名且新属性名不存在原定的属性库里（黑名单）
-                n[property_name] = property_value   # 把值赋给新增属性
-            n.push()
+                n[property_name] = property_value   # 把空值赋给新增属性
+            n.push()    # 把空值加入节点的信息库，即添加了新属性进去
             print("添加一个属性后: %s" % n)
 
     # 全部节点删除一个属性 匹配出所有节点，再删除属性的名字
