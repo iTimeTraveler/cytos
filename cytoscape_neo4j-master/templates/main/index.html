@@ -46,19 +46,23 @@
                                     <i class="fa fa-angle-down"></i>
                                 </button>
                                 <ul class="dropdown-menu m-t-xs">
-                                    <li><a onclick="doDeleteProject({{ prj['pid'] }})" class="btn btn-warning">删除</a></li>
+                                    <li>
+                                        <a onclick="readyDeleteProject({{ prj['pid'] }})"  data-toggle="modal" data-target="#myModalDelete" class="btn btn-warning text-center">
+                                            <i class="fa fa-trash"></i> <span style="font-size: 16px; font-weight: bold">删 除</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <span class="product-price">
                                 {{ prj['p']['prj_id'] }}
                             </span>
-                            <small class="text-muted">Project</small>
+                            <small class="text-gray">Project</small>
                             <a href="/{{ prj['p']['prj_id'] }}" class="product-name "> {{ prj['p']['name'] }}</a>
 
                             <!--<div class="small m-t-xs">-->
                                 <!--{{ prj['pid'] }}-->
                             <!--</div>-->
-                            <div class="row text-muted">
+                            <div class="row text-gray">
                                 <div class="col-lg-6">
                                     <div class="row vertical-align">
                                         <div class="col-xs-12">
@@ -80,7 +84,7 @@
 
 
                             <div class="m-t text-righ">
-                                <a href="/{{ prj['p']['prj_id'] }}" class="btn btn-xs btn-outline btn-primary"> 点击进入 </i> </a>
+                                <a href="/{{ prj['p']['prj_id'] }}" class="btn btn-outline btn-primary"> 点击进入 </i> </a>
                             </div>
                         </div>
                 </div>
@@ -115,7 +119,7 @@
     </div>
 
 
-    <!-- Modal -->
+    <!-- Modal模态对话框（创建Project） -->
     <div class="modal inmodal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
         <div class="modal-content">
@@ -133,6 +137,32 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">取 消</button>
                     <button onclick="doCreateProject()" type="button" class="btn btn-primary" data-dismiss="modal">创 建</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal模态对话框（创建Project） -->
+    <div class="modal inmodal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+        <div class="modal-content">
+                <a class="modal-header list-group-item active" style="margin: 12px; background: #ed5565; border: 0;">
+                    <i class="fa fa-warning modal-icon ibox" style="color:#fff;"></i>
+                    <h4 class="modal-title">删 除</h4>
+                    <small class="list-group-item-text">该操作将会抹除该剧的所有数据</small>
+                </a>
+                <div class="modal-body">
+                    <div class="form-group has-warning">
+                        <div class="alert alert-danger alert-dismissable">
+                            删除影视剧后图谱数据将永久删除，无法恢复！
+                        </div>
+                        <h3><strong>你确定删除这部剧的所有数据吗?</strong></h3>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">取 消</button>
+                    <button onclick="doDeleteProject()" type="button" class="btn btn-danger" data-dismiss="modal">删 除</button>
                 </div>
             </div>
         </div>
@@ -169,8 +199,13 @@
             });
         }
 
+        var prj_id = -1;
+        function readyDeleteProject(prjId){
+            prj_id = prjId;
+        }
+
         //删除一个影视剧
-        function doDeleteProject(prj_id){
+        function doDeleteProject(){
             if(prj_id <= 0){
                 return;
             }
@@ -183,6 +218,7 @@
             }).fail(function(data, textStatus, xhr) {
                  alert("error", data.status + ", " + xhr);
             });
+            prj_id = -1;
         }
     </script>
 {% endblock script %}

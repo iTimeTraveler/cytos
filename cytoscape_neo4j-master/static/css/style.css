@@ -9,9 +9,9 @@ body {
 .product-name{
     font-size: 20px;
     font-weight: 600;
-    color: #21216e;
+    color: #3680d9;
     display: block;
-    margin: 2px 0 5px 0;
+    margin: 2px 0 15px 0;
 }
 
 .product-box {
@@ -25,4 +25,8 @@ body {
     box-shadow:0 15px 30px rgba(0,0,0,0.1);
     -webkit-transform:translate3d(0, -2px, 0);
     transform:translate3d(0, -2px, 0)
+}
+
+.text-gray {
+    color: #d1d5de;
 }
