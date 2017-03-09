@@ -3,15 +3,26 @@
 # 可能用到的函数库，数据库相关操作
 
 from flask import jsonify
+# 导入py2neo包里的graph（图数据库）
 from py2neo import Graph, Node, Relationship
+import sys
 
 
-graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
+# 获取系统默认的编码方式，防止中文编译不过，print打印乱码
+type = sys.getfilesystemencoding()
+
+
+# 尝试连接Neo4j数据库，如果出错，可能是Neo4j没启动或者用户名密码不正确
+try:
+    graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
+except Exception:
+    print ("你可能还没启动Neo4j数据库，或者数据库的用户名密码不正确").decode('UTF-8').encode(type)
+    exit()
 
 hideKeys = {'id', 'label', 'index', 'x', 'y', 'px', 'py', 'temp_index', 'source', 'target', 'left', 'right', 'hash', 'fixed'}
 
 
-#节点操作
+# 节点操作
 class NodeUtils:
     def __init__(self):
         return

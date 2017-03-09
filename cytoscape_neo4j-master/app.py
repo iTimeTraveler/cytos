@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 #coding:utf8
 
-from flask import Flask, render_template, redirect, url_for
-# 导入py2neo包里的graph（图数据库）
-from py2neo import Graph
+from flask import Flask, redirect, url_for
 from analysis.analyse import AnalyseUtils
 
 
 # 连接到neo4j相应数据库
 app = Flask(__name__)
-graph = Graph("http://neo4j:panchan@localhost:7474/db/data/")
 
 
 from main import main as main_blueprint     # 蓝本类，调用实例对象，将网址分模块处理

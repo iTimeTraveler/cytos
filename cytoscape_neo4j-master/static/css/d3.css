@@ -37,8 +37,7 @@
 }
 
 .name {
-    font-size: 10px ;
+    font-size: 5px ;
     font-family: Helvetica, "楷体", "Microsoft Yahei", Arial, sans-serif;
     fill:#333333;
-    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
 }

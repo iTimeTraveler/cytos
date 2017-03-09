@@ -24,7 +24,7 @@ $(function(){
     var width = window.screen.availWidth - 220;
     var height = window.screen.availHeight - 220;
     var colors = d3.scaleOrdinal(d3.schemeCategory20);
-    var radius = 20;
+    var radius = 10;
 
 
     var svg = d3.select("#force_content").append("svg")
@@ -34,7 +34,7 @@ $(function(){
 
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().distance(50).id(function(d) { return d.id; }))
-        .force("charge", d3.forceManyBody().strength(-200))
+        .force("charge", d3.forceManyBody().strength(-100))
         .force("center", d3.forceCenter(width / 2, height / 2));
 
 
@@ -109,7 +109,7 @@ $(function(){
             //返回缺失元素的占位对象（placeholder），指向绑定的数据中比选定元素集多出的一部分元素。
             .enter()
             .append("text")
-            .attr("dy", ".35em")
+            .attr("dy", "1em")
             .attr("text-anchor", "middle")//在圆圈中加上数据
             .attr('x',function(d){
                 var re_en = /[a-zA-Z]+/g;
