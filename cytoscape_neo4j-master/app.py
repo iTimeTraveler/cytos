@@ -25,6 +25,8 @@ def index():
 # 路由重定向，全部交给geteditor处理
 @app.route('/<projectId>/')
 def select_project(projectId):
+    if not str(projectId).startswith('No'):
+        return ''
     analysis_utils = AnalyseUtils(projectId)    # 实例化类
     analysis_utils.calculate_communities()  # 调用函数 随机游走社区发现算法
     return redirect(url_for('editor.getEditor', projectId=projectId))
