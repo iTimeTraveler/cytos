@@ -194,6 +194,7 @@
             xAxis : [
                 {
                     type : 'value',
+                    scale:true,
                     axisLabel : {
                         formatter: '{value} 度'
                     },
@@ -365,6 +366,7 @@
     <script type="text/javascript">
         var myChart3 = echarts.init(document.getElementById('chordContainer'), "macarons");
         option3 = {
+            backgroundColor: '#ffffff',
             title : {
                 text: '人物关系和弦图',
                 x:'left',
