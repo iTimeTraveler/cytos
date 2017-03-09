@@ -6,9 +6,10 @@
     <title>度分布</title>
 
     <!-- ECharts.js -->
-    <!--<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>-->
-    <script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
-    <script src="http://echarts.baidu.com/echarts2/doc/example/theme/macarons.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js?_v_=undefined"></script>
+    <!--<script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>-->
+    <!--<script src="http://echarts.baidu.com/echarts2/doc/example/theme/macarons.js"></script>-->
+    <script src="{{ url_for('static',filename='lib/echarts-theme-macarons.js') }}"></script>
 {% endblock head %}
 
 
@@ -75,7 +76,7 @@
             xAxis : [
                 {
                     type : 'value',
-                    scale:true,
+                    boundaryGap: [0,0.1],
                     axisLabel : {
                         formatter: '{value} 度'
                     },
@@ -108,7 +109,7 @@
                 {
                     name:'频率',
                     type:'bar',
-                    barWidth: 5,
+                    barWidth: 8,
                     data: [{% for item in matrix %}
                                 [{{ item[0] }}, {{ item[1] }}]
                                 {% if not loop.last %},{% endif %}
@@ -127,7 +128,7 @@
                     },
                     itemStyle: {
                         normal: {
-                            color: '#9962ce'
+                            color: '#357ed5'
                         }
                     }
                 }
@@ -193,7 +194,6 @@
             xAxis : [
                 {
                     type : 'value',
-                    scale: true,
                     axisLabel : {
                         formatter: '{value} 度'
                     },
@@ -210,6 +210,7 @@
                 {
                     type : 'value',
                     scale:true,
+                    boundaryGap: [0,0.1],
                     axisLabel : {
                         formatter: '{value} '
                     },
@@ -245,10 +246,19 @@
                     },
                     itemStyle: {
                         normal: {
-                            areaStyle: {
-                                type: 'default',
-                                color: '#87cefa'
-                            }
+                            color: ''
+                        }
+                    },
+                    areaStyle: {
+                        normal: {
+                            type: 'default',
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: '#357ed6'
+                            }, {
+                                offset: 1,
+                                color: '#00cdfc'
+                            }])
                         }
                     }
                 }
@@ -258,7 +268,7 @@
         myChart.setOption(option);
     </script>
     </div>
-    <hr style="height: 2px; background: linear-gradient(to right, #599e47, #306a94, #492860, #c03d32, #d17337);">
+    <hr>
     <br>
 
 
@@ -351,6 +361,7 @@
 
     <!-- 和弦图 -->
     <div id="chordContainer" style="height: 100%; min-height: 700px;"></div>
+    <script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
     <script type="text/javascript">
         var myChart3 = echarts.init(document.getElementById('chordContainer'), "macarons");
         option3 = {
