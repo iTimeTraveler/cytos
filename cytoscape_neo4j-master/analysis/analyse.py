@@ -10,7 +10,7 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 
-class AnalyseUtils:
+class AnalyseUtils:  # 计算分析页面要用到的数据
     def __init__(self, projectId):
         self.projectId = projectId
 
@@ -95,7 +95,7 @@ class AnalyseUtils:
         degrees = self.ig.vs.degree()
         names = [graph.node(i)['name'] for i in self.ig.vs['name']]
         for i in range(0, len(names), 1):
-            temp[names[i]] = degrees[i]
+            temp[names[i]] = degrees[i]     # 将每个人的度赋给他的名字
         mylist = sorted(temp.iteritems(), key=lambda (k,v): (v,k))  # 按度从大到小排序
         return mylist
 

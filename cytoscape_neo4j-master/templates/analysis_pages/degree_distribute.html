@@ -23,7 +23,7 @@
 
 
 {% block content %}
-
+    <!-- ECharts,一个纯Javascript的图表库，提供直观，生动，可交互，可高度个性化定制的数据可视化图表。 -->
     <!-- 度分布 -->
     <div class="row">
     <div class="col-lg-6"><div class="ibox-content">
@@ -231,7 +231,7 @@
                     smooth:true,
                     data: [{% for item in cumulative_degree %}
                                 [{{ item[0] }}, {{ item[1] }}]
-                                {% if not loop.last %},{% endif %}
+                                {% if not loop.last %},{% endif %}  <!-- 如果不是循环的最后一个元素 -->
                             {% endfor %}
                     ],
                     markPoint : {
@@ -283,7 +283,7 @@
     {% endif %}
     <div id="peopleContainer" style="height: 100%; min-height: {{height}}px;"></div>
     <script type="text/javascript">
-        // 基于准备好的dom，初始化echarts图表
+        // 基于准备好的dom，初始化echarts图表，将echarts这个类实例化
         var myChart2 = echarts.init(document.getElementById('peopleContainer'), "macarons");
         var option2 = {
             title : {
