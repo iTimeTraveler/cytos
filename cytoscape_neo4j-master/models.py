@@ -71,7 +71,7 @@ class NodeUtils:
             newNode = Node('Character', name=node_obj['name'])
             for key in node_obj.keys():
                 if key not in hideKeys:
-                    newNode[key] = node_obj[key]
+                    newNode[key] = node_obj[key]    # key是属性名称，[key]是访问key的数值
         # 每次创建节点的时候都要加一个新标签projectID 用以和主项目编号（prj-id）进行呼应
             newNode.add_label(str(projectId))
             h = str(hash(newNode))

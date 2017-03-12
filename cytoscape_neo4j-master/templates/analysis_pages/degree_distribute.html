@@ -44,13 +44,13 @@
                 showDelay : 0,
                 formatter : function (params) {
                     if (params.value.length > 1) {
-                        return params.seriesName + ' :<br/>'
-                           + params.value[0] + '度 '
+                        return params.value[0] + '度 <br/>'
+                           + params.seriesName + ': '
                            + params.value[1] + '';
                     }
                     else {
-                        return params.seriesName + ' :<br/>'
-                           + params.name + ' : '
+                        return params.name + ' <br/>'
+                           + params.seriesName + ' : '
                            + params.value + '';
                     }
                 },
@@ -162,14 +162,14 @@
                 showDelay : 0,
                 formatter : function (params) {
                     if (params.value.length > 1) {
-                        return params.seriesName + ' :<br/>'
-                           + params.value[0] + '度 '
-                           + params.value[1] + '人 ';
+                        return params.value[0] + '度 <br/>'
+                           + params.seriesName + ': '
+                           + params.value[1] + '';
                     }
                     else {
-                        return params.seriesName + ' :<br/>'
-                           + params.name + ' : '
-                           + params.value + '人 ';
+                        return params.name + ' <br/>'
+                           + params.seriesName + ' : '
+                           + params.value + '';
                     }
                 },
                 axisPointer:{
@@ -322,6 +322,7 @@
                             {% endfor %}]
                 }
             ],
+            //series字段,系列列表,每个系列通过 type 决定自己的图表类型，把x.y轴确定的每个数据一一对应画出来
             series : [
                 {
                     name:'degree',
@@ -410,6 +411,7 @@
                                 {name:'{{ item.name }}'}{% if not loop.last -%},{%- endif %}
                             {%- endfor %}
                     ],
+                    //和弦图每一对节点之间必须是双向边
                     links: [{% for item in links -%}
                                 {source:'{{ item.sname }}', target:'{{ item.tname }}', relation:'{{ item.relation }}', weight: {% if(item.weight==None) %}1{% else %}{{item.weight}}{% endif %} },
                                 {target:'{{ item.sname }}', source:'{{ item.tname }}', relation:'{{ item.relation }}', weight: {% if(item.weight==None) %}1{% else %}{{item.weight}}{% endif %}} // RibbonType的和弦图每一对节点之间必须是双向边

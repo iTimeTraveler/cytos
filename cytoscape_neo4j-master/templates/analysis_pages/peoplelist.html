@@ -48,6 +48,7 @@
                         <thead>
                             <tr>
                                 <th>头像</th>
+                                {# 遍历节点 收集所有属性名字，除了头像、保存状态 #}
                                 {% set array = [] %}
                                 {% for people in nodes %}
                                     {% for key, value in people.iteritems() if key and key not in array and key != "temp_index" %}
@@ -56,7 +57,7 @@
                                     {% endfor %}
                                 {% endfor %}
 
-
+                                {# 把属性展开，制表 #}
                                 {% for key in array %}
                                     {% if loop.index <= 5 %}
                                         <th>{{ key|e }}</th>
@@ -75,15 +76,17 @@
                                 <tr>
                                     <td><span class="client-avatar">
                                         <img alt="image" style="border: 1px solid #e7eaec; background:#ddd;"
+                                             {# 有头像就用自己的头像，没有的时候就用社区的头像，没社区的就用默认头像 #}
                                             {% if(people.avatar) %}
                                                 src="{{ people.avatar }}">
+                                             {# 同一个社区，头像相同。avatars就是一些头像的集合列表 #}
                                             {% elif(people.community) %}
                                                 src="{{ url_for('static',filename='img/' + avatars[people.community] + '.png') }}">
                                             {% else %}
                                                 src="{{ url_for('static',filename='img/avatar-default.png') }}">
                                             {% endif %} </span>
                                     </td>
-
+                                    {# 把单个人物的具体属性取出来 #}
                                     {% for key in array %}
                                         <td>{{ people[key] }}</td>
                                     {% endfor %}
@@ -110,10 +113,11 @@
         </div>
     </div>
 
-
+    {# 人物卡片 #}
     <div class="row">
         {% set bgcolors = ["#ed5565",
-                            "linear-gradient(45deg,#00b6ee,#0080e2)",
+                            "linear-gradient(90deg,#f84f4c,#ecbbc1)",
+                            "linear-gradient(45deg,#00b6ee,#c1d5f5)",
                             "linear-gradient(45deg,#ffba6a,#ff7575)",
                             "linear-gradient(45deg,#62da5b,#46c36a)",
                             "linear-gradient(-45deg,#26a59a,#6fcdc4)",
@@ -137,13 +141,11 @@
                         src="{{ url_for('static',filename='img/avatar-default.png') }}">
                     {% endif %}
                     <div>
-                        <span>ID：{{people.id}}</span> |
-                        <span>出度：{{people.id}}</span> |
-                        <span>入度：{{people.id}}</span>
+                        <span>ID：{{people.id}}</span>
+
                     </div>
                 </div>
                 <div class="widget-text-box">
-                    <h4 class="media-heading">{{people.name}}</h4>
                     <p>PageRank: {{people.pagerank}}<br>
                                 community: {{people.community}}</p>
                 </div>

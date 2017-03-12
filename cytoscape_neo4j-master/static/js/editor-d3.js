@@ -6,7 +6,7 @@ $(function(){
     var root = result.elements;
     console.log(JSON.stringify(root));
 
-    //把边的source和target转换成序号连接的
+    //把边的source和target转换成序号连接的,取出整个节点信息
     var edges = [];
     root.edges.forEach(function(e) {
         // Get the source and target nodes
@@ -23,8 +23,8 @@ $(function(){
         .links(links);
 
     //入口
-    setAppMode(MODE.EDIT);
-    setTotalPeople(nodes.length);
+    setAppMode(MODE.EDIT); // 设置两种模式
+    setTotalPeople(nodes.length); // 计算节点总数
 
 }, 'json');
 });
@@ -120,7 +120,7 @@ svg.append('svg:defs').append('svg:marker')
     .attr('d', 'M10,-5L0,0L10,5');
 
 // 编辑：拖拽节点出来的边
-var drag_line = svg.append('svg:path')
+var drag_line = svg.append('path')
   .attr('class', 'link dragline hidden')
   .attr('d', 'M0,0L0,0');
 
@@ -201,14 +201,14 @@ function tick() {
 
 
 
-// 更新整个svg布局 (called when needed)
+// 绘制整个svg布局 (called when needed)
 function restart() {
 
   //link
   path = path.data(links);
 
   // 更新已存在的link
-  path.classed('selected', function(d) { return d === selected_link; })
+  path.classed('selected', function(d) { return d === selected_link; })//判断是否选中边，选中了就执行selected样式
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
     .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
     .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? "12px" : Math.sqrt(d.weight) + "px"; });
@@ -222,7 +222,7 @@ function restart() {
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
     .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
     .on('mousedown', function(d) {
-      if(appMode !== MODE.EDIT || d3.event.ctrlKey) return;
+      if(appMode !== MODE.EDIT || d3.event.ctrlKey) return; // 不能执行下面的编辑操作
 
       //选中边
       mousedown_link = d;
@@ -269,6 +269,7 @@ function restart() {
     .style('stroke', function(d) {
         return (d === selected_node) ? d3.rgb(colors(showCommunty ? d.community : d.id)).brighter().toString() : colors(showCommunty ? d.community : d.id);
     })
+    // stroke指的是每个节点的圆形边框。若showCommunty为true的时候，就用节点的community属性值来添加颜色，为false时就用id来添加颜色
     .classed('reflexive', function(d) { return d.reflexive; });
 
   // 添加新节点
@@ -440,10 +441,11 @@ function mousedown() {
 }
 
 
-//鼠标move事件处理
+//鼠标move事件处理,按下鼠标进行拖拽
 function mousemove() {
-  if(!mousedown_node) return;
+  if(!mousedown_node) return;//没有选中节点，就什么都不执行
   // update drag line
+  // 选中了节点就把拖拽那条线画出来
   drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
   restart();
 }
@@ -453,7 +455,7 @@ function mouseup() {
   if(mousedown_node) {
     // hide drag line
     drag_line
-      .classed('hidden', true)
+      .classed('hidden', true) // 弹起时隐藏画出来的那条线
       .style('marker-end', '');
   }
 
@@ -511,7 +513,7 @@ function keydown() {
   if(lastKeyDown !== -1) return;
   lastKeyDown = d3.event.keyCode;
 
-  // ctrl键
+  // ctrl键，编辑模式时按下它节点就可以进行拖拽，即不选中节点
   if(d3.event.keyCode === 17) {
     circle.call(force.drag);
     svg.classed('ctrl', true);
@@ -520,12 +522,13 @@ function keydown() {
 
   if(!selected_node && !selected_link) return;
   switch(d3.event.keyCode) {
-    case 8: // backspace键
-    case 46: // delete键
+    case 8: // backspace键，退格键，选中节点删除
+    case 46: // delete键，同上
       if(selected_node) {
         model.removeState(selected_node.id);
         nodes.splice(nodes.indexOf(selected_node), 1);
         spliceLinksForNode(selected_node);
+        setTotalPeople(nodes.length);
       } else if(selected_link) {
         removeLinkFromModel(selected_link);
         links.splice(links.indexOf(selected_link), 1);
@@ -630,7 +633,7 @@ function setSelectedNodeOrLink(node, link) {
       varTable.classed('inactive', !selected_node);
       varSubmmit.classed('inactive', !selected_node);
 
-      //生成左侧变量表
+      //生成左侧变量
       if(selected_node){
           var htmlStr = "";
           var nodeKeys = Object.keys(selected_node);
@@ -802,7 +805,6 @@ function setTotalPeople(total) {
 }
 
 
-
 var ModifyAction ={
   ADD:1,
   DELETE:2,
@@ -852,6 +854,7 @@ function submmitModifyNode(node, action) {
             temp['id'] = data.result.uid;
             nodes.splice(nodes.indexOf(node), 1, temp);
             restart();
+            setTotalPeople(nodes.length);
        }else if(action === ModifyAction.ALTER){
             if(selected_node_pos != -1){
                 // 先删除再添加

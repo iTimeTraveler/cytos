@@ -97,7 +97,7 @@ class AnalyseUtils:  # 计算分析页面要用到的数据
         for i in range(0, len(names), 1):
             temp[names[i]] = degrees[i]     # 将每个人的度赋给他的名字
         mylist = sorted(temp.iteritems(), key=lambda (k,v): (v,k))  # 按度从大到小排序
-        return mylist
+        return mylist   # 列表里每个元素都是一个二元组
 
 
     # 图（网络）的直径

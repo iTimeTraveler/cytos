@@ -1,18 +1,22 @@
 {% extends "main.html" %}
+{# 继承main.html页面（父类）#}
 
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap/css/plugins/toastr/toastr.min.css') }}">
 
     {{ super() }}
+    {# 继承父类的head样式 #}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>编辑</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+    {# 引入字体格式 #}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/app.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/d3.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap/css/plugins/switchery/switchery.css') }}">
+    {# 引入switchery.css控件来操作“区分社区颜色”的按钮  #}
 {% endblock head %}
 
 
@@ -53,6 +57,7 @@
             <div id="edit-pane" class="tab-pane active">
               <div class="alert alert-info">
                 <div class="selected-node-id">未选中任何东西</div>
+                 {# 通过js（editor-d3.js）来填充变量列表 #}
                 <table class="propvars inactive">
                   <tbody>
                     <!-- 变量列表填充区 start -->
@@ -84,8 +89,9 @@
 
                 <!-- 上传头像 -->
                 <div id="avatar-content" style="display:none;">
-                    <form id="myform" action="/{{ projectId }}/editor/upload/avatar" method=post enctype=multipart/form-data>
+                    <form id="myform"  method=post enctype=multipart/form-data>
                         <input id="lefile" type="file" name="file" style="display:none;" onchange="onfileChange()">
+                        {# display:none不显示input这个控件，输入的内容在avatar_value进行显示 #}
                         <div class="input-append">
                             <input id="avatar_value" type="text" class="form-control" style="height:34px; width: 54%; display: inline-block;" onclick="$('input[id=lefile]')[0].click();">
                             <div class="btn btn-primary btn-file" onclick="doUpload()">
@@ -100,24 +106,24 @@
                         $('#avatar_value').val($('input[id=lefile]').val());
                     }
 
-
                     function doUpload(){
-                        //使用FormData来上传文件
-                        var formData = new FormData($("#myform")[0]);
+                        //使用FormData（表单数数据）来上传文件
+                        var formData = new FormData($("#myform")[0]);//通过jquery的FormData类获取数据：头像和它的地址
                          $.ajax({
-                              url: $('#myform').attr('action'),
+                              url: "/{{ projectId }}/editor/upload/avatar",
+                              // 指明上传头像的路由（在editor-upkoadfiles.py里面相对应）
                               type: 'POST',
                               data: formData,
                               async: false,
                               cache: false,
                               contentType: false,
                               processData: false,
-                              success: function (returndata) {
-                                  alert("上传成功，头像地址为：" + returndata + "，请点击[提交]保存人物信息");
-                                  $('#avatar_value').val(returndata);
+                              success: function (avatar_url) {     //avatar_url是上面路由的返回值
+                                  alert("上传成功，头像地址为：" + avatar_url + "，请点击[提交]保存人物信息");
+                                  $('#avatar_value').val(avatar_url);
                               },
-                              error: function (returndata) {
-                                  alert("上传出错：" +returndata);
+                              error: function (avatar_url) {
+                                  alert("上传出错：" +avatar_url);
                               }
                          });
                     }
@@ -138,6 +144,7 @@
                         <div class="col-xs-8 text-right">
                             <span> 总人数 </span>
                             <h2 id="peopleCount" class="font-bold">4,232</h2>
+                            {# peopleCount由editor_d3.js里的setTotalPeople进行计算的 #}
                         </div>
                     </div>
                   </div>
@@ -160,6 +167,7 @@
                                 <span class="m-l-xs" style="float:left; line-height: 32px;"><small class="text-white" style="font-size:18px">区分社区颜色</small></span>
                                 <div style="float:right;">
                                     <input type="checkbox" class="js-switch" />
+                                    {# 引入第三方开关组件switchery #}
                                 </div>
                         </div>
                     </div>
@@ -167,20 +175,22 @@
 
 
                   <div class="ibox float-e-margins">
+                    {# 社区信息标题框 #}
                     <div class="ibox-title">
                         <h5>社区信息</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
+                                {# font awesome第三方来画图标 #}
                             </a>
                         </div>
                     </div>
+                    {# 社区信息内容框 #}
                     <div class="ibox-content">
                         <ul id="communitiesWrap" class="category-list" style="padding: 0">
                         </ul>
                     </div>
                   </div>
-
 
 
                     <!-- 删除图谱对话框 -->
@@ -218,6 +228,7 @@
                           </div>
                           <div class="modal-footer">
                               <button onclick="deleteGraph()" type="button" class="btn btn-default" data-dismiss="modal">删除</button>
+                              {# deleteGraph（editor-d3.js）函数来删除数据 #}
                               <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
                           </div>
                         </div>
@@ -247,22 +258,26 @@
     <script src="{{ url_for('static',filename='bootstrap/js/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ url_for('static',filename='bootstrap/js/plugins/switchery/switchery.js') }}"></script>
     <script src="{{ url_for('static',filename='js/MPL.js') }}"></script>
-    <script src="{{ url_for('static',filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/editor-d3.js') }}"></script>
     <script type="text/javascript">
+        //显示社区信息的js
         var str = "";
         {% for commu in communities -%}
             {% if(commu.index) %}
                  str += '<li><a> <i class="fa fa-circle text-navy" style="color:' + colors({{ commu.index }}) + '"></i> 社区{{ commu.index }} : {{ commu.peoples_count }}人</a></li>';
             {% else %}
                 str += '<li><a> <i class="fa fa-circle text-navy" style="color:#000000"></i> 无社区 : {{ commu.peoples_count }}人</a></li>';
+            {# 独立存在的节点：无社区 #}
             {% endif %}
         {%- endfor %}
         $("#communitiesWrap").html(str);
 
+        //区分社区颜色的js
         var checkButton = document.querySelector('.js-switch');
         var switchery = new Switchery(checkButton, { color: '#f8ac59' });
         checkButton.onchange = function() {
             setShowCommunities(checkButton.checked);
+            //将Switchery的checkButton.checked操作得出一个值：true（打开按钮）或者false（关闭按钮）
         };
     </script>
 {% endblock script %}

@@ -1,3 +1,4 @@
+// d3 4.0版本
 $(function(){
   $.get('/'+projectId+'/editor/graph', function(result) {
 
