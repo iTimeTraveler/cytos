@@ -35,7 +35,7 @@ $(function(){
 // 模式：编辑和浏览
 var MODE = {
       EDIT: 0,
-      EVAL: 1
+      PREVIEW: 1
     },
     appMode = MODE.EDIT;
 
@@ -744,7 +744,7 @@ function setAppMode(newMode) {
       .on('mousedown.drag', null)
       .on('touchstart.drag', null);
     svg.classed('ctrl', false);
-  } else if(newMode === MODE.EVAL) {
+  } else if(newMode === MODE.PREVIEW) {
     // 禁用listeners (except for I-bar prevention)
     svg.classed('edit', false)
       .style('background', '#fff')

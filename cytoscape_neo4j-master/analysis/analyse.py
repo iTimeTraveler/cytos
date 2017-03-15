@@ -28,7 +28,6 @@ class AnalyseUtils:  # 计算分析页面要用到的数据
         pageRank = self.ig.pagerank()     # 通过ig里面的PageRank（）函数直接计算出PageRank值，表示权重？
         pgvs = []
         for p in zip(self.ig.vs, pageRank):
-            print(p)
             pgvs.append({"id": p[0]["name"], "pg": p[1]})
         write_clusters_query = '''
         UNWIND {nodes} AS n ''' + '''
@@ -44,9 +43,7 @@ class AnalyseUtils:  # 计算分析页面要用到的数据
         # 计算结果就是每个节点属于哪个社区
         clusters = IGraph.community_walktrap(self.ig, weights=None).as_clustering()
         nodes = [{"id": node["name"], "tmp_index": node.index} for node in self.ig.vs]
-        print(nodes)
         for n in nodes:
-            print(n)
             idx = n["tmp_index"]
             n["community"] = clusters.membership[idx] + 1   # 遍历节点，把communityde 值依次赋给对应节点
             # 社区编号从1开始，而不是0

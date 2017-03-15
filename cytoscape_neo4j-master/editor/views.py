@@ -2,8 +2,9 @@
 #coding:utf8
 
 from . import editor
-from models import NodeUtils, LinkUtils, GraphUtils ,graph
+from models import NodeUtils, LinkUtils, GraphUtils
 from flask import render_template, request, json, jsonify
+from analysis.views import calculateCommunities
 import sys
 
 # 防止中文编译不过
@@ -19,6 +20,7 @@ graphUtils = GraphUtils()
 # 渲染模板 ：转到编辑界面那个HTML
 @editor.route('/',methods=['GET','POST'])
 def getEditor(projectId):
+    calculateCommunities(projectId)
     communities = GraphUtils.countCommunityPeoples(projectId)
     return render_template('editor_pages/index.html', navId = "editor", projectId=projectId, communities = communities)
 

@@ -378,7 +378,8 @@
                 formatter: function (params) {
                     if (params.indicator2) {    // is edge
 {#                        return params.indicator2 + ' ' + params.name + ' ' + params.indicator;#}
-                        return params.name + ", Weight: " + params.value.weight;
+                        return params.name + ' <br/>'
+                                + "[" + params.value.relation + "],   weight : " + params.value.weight;
                     } else {    // is node
                         return params.name
                     }
