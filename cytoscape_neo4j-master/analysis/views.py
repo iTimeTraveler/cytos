@@ -4,8 +4,8 @@
 
 from . import analysis
 from analysis.analyse import AnalyseUtils
-from flask import render_template, request
-from models import  NodeUtils, LinkUtils
+from flask import render_template, jsonify, json
+from models import  NodeUtils, LinkUtils, GraphUtils
 
 # 通过指定路由，返回渲染html页面
 # 客户端的URL直接在链接里面
@@ -42,8 +42,14 @@ def getGraph(projectId):
 
 
 # 重新计算划分社区
-@analysis.route('/calculate_communities', methods=['GET'])
+@analysis.route('/calculate_communities', methods=['GET', 'POST'])
 def calculateCommunities(projectId):
     analysis_utils = AnalyseUtils(projectId)    # 实例化类
     analysis_utils.calculate_communities()      # 调用函数 随机游走社区发现算法
-    return ''
+
+    communities = GraphUtils.countCommunityPeoples(projectId)
+
+    nodes = NodeUtils.getAllNodes(projectId)  # 供和弦图使用
+    edges = LinkUtils.getAllLinks(projectId)  # 供和弦图使用
+
+    return jsonify({"communities": communities, "nodes": nodes, "edges": edges})
