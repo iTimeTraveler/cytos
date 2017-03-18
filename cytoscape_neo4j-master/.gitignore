@@ -58,3 +58,5 @@ target/
 # Intellij
 *.iml
 .idea/
+
+venv/
