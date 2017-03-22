@@ -51,6 +51,18 @@ var lastNodeIndex = 0,
     links = [];
 
 
+// d3颜色库
+var c10 = d3.scale.category10();
+var c20 = d3.scale.category20();
+var c20b = d3.scale.category20b();
+var c20c = d3.scale.category20c();
+
+function colores_google(n) {
+    var c = d3.shuffle(["#DD79FF", "#FFFC00", "#00FF30", "#5168FF", "#00C0FF", "#FF004B", "#00CDCD", "#f83f00", "#f800df", "#ff8d8f", "#ffcd00", "#184fff", "#ff7e00"]);
+    var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+    return colores_g[n % colores_g.length];
+}
+
 // set up SVG for D3
 var width  = 1200,
     height = 800,

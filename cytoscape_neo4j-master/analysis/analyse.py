@@ -24,6 +24,13 @@ class AnalyseUtils:  # 计算分析页面要用到的数据
 
     # 随机游走的社区发现算法
     def calculate_communities(self):
+        # 先移除所有节点的社区属性
+        clear_query = '''
+        MATCH (n:{}'''.format(self.projectId) + ''')
+        REMOVE n.pagerank, n.community
+        '''
+        graph.run(clear_query)
+
         # pageRank
         pageRank = self.ig.pagerank()     # 通过ig里面的PageRank（）函数直接计算出PageRank值，表示权重？
         pgvs = []
