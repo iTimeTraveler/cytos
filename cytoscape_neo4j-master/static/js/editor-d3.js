@@ -757,8 +757,6 @@ function setAppMode(newMode) {
       .on('touchstart.drag', null);
     svg.classed('ctrl', false);
   } else if(newMode === MODE.PREVIEW) {
-    recalculateCommunities();
-
     // 禁用listeners (except for I-bar prevention)
     svg.classed('edit', false)
       .style('background', '#fff')
@@ -816,13 +814,6 @@ function setShowCommunities(show) {
  */
 function setTotalPeople(total) {
     d3.select('#peopleCount').html(total);
-}
-
-/**
- * 刷新社区数
- */
-function setCommuniCount(count) {
-    d3.select('#commu-lenght').html(count);
 }
 
 
@@ -938,38 +929,6 @@ function addPropertyForNodes() {
     }).fail(function(data, textStatus, xhr) {
          alert("error", data.status + ", " + xhr);
     }).always(function() {
-    });
-}
-//重新划分社区
-function recalculateCommunities() {
-    $.post('/'+projectId+"/analysis/calculate_communities", {
-    }, function(data){
-    }).done(function(data) {
-        var result = JSON.parse(JSON.stringify(data));    // 解析json
-        var newEdges = [];
-        result.edges.forEach(function(e) {
-            // Get the source and target nodes
-            var sourceNode = result.nodes.filter(function(n) { return n.id === e.source; })[0],
-                targetNode = result.nodes.filter(function(n) { return n.id === e.target; })[0];
-
-            // Add the edge to the array
-            newEdges.push({source: sourceNode, target: targetNode, relation: e.relation, weight: e.weight, id: e.id, left: false, right: true});
-        });
-        nodes = result.nodes;
-        links = newEdges;
-        force.nodes(nodes)
-            .links(links);
-
-        console.log(JSON.stringify(nodes));
-        console.log(JSON.stringify(links));
-        restart();
-
-        communities = result.communities;
-        setCommuniCount(communities.length);
-        refreshCommuniInfo(communities);
-        toastr.info("点击区分社区颜色按钮查看划分结果", '社区划分已更新!');
-    }).fail(function(data, textStatus, xhr) {
-         alert("error", data.status + ", " + xhr);
     });
 }
 //删除整个图谱

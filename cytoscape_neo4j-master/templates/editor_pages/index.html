@@ -156,7 +156,7 @@
                         </div>
                         <div class="col-xs-8 text-right">
                             <span> 社区划分 </span>
-                            <h2 id="commu-lenght" class="font-bold">{{ communities|length }}</h2>
+                            <h2 class="font-bold">{{ communities|length }}</h2>
                         </div>
                     </div>
                   </div>
@@ -260,7 +260,7 @@
     <script src="{{ url_for('static',filename='js/MPL.js') }}"></script>
     <script src="{{ url_for('static',filename='js/editor-d3.js') }}"></script>
     <script type="text/javascript">
-        //第一次进入页面时显示社区信息的js
+        //显示社区信息的js
         var str = "";
         {% for commu in communities -%}
             {% if(commu.index) %}
@@ -271,20 +271,6 @@
             {% endif %}
         {%- endfor %}
         $("#communitiesWrap").html(str);
-
-
-        //函数：显示社区信息的js，供重新计算社区后更新
-        function refreshCommuniInfo(communities){
-            var str = "";
-            for(var i in communities){
-                if(communities[i].index != null){
-                    str += '<li><a> <i class="fa fa-circle text-navy" style="color:' + colors(communities[i].index) + '"></i> 社区' + communities[i].index + ': ' + communities[i].peoples_count + '人</a></li>';
-                }else{
-                    str += '<li><a> <i class="fa fa-circle text-navy" style="color:' + colors(undefined) + '"></i> 无社区: ' + communities[i].peoples_count + '人</a></li>';
-                }
-            }
-            $("#communitiesWrap").html(str);
-        }
 
         //区分社区颜色的js
         var checkButton = document.querySelector('.js-switch');
