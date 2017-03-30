@@ -43,6 +43,7 @@
                 trigger: 'axis',
                 showDelay : 0,
                 formatter : function (params) {
+                    params = params[0];
                     if (params.value.length > 1) {
                         return params.value[0] + '度 <br/>'
                            + params.seriesName + ': '
@@ -161,6 +162,7 @@
                 trigger: 'axis',
                 showDelay : 0,
                 formatter : function (params) {
+                    params = params[0];
                     if (params.value.length > 1) {
                         return params.value[0] + '度 <br/>'
                            + params.seriesName + ': '
