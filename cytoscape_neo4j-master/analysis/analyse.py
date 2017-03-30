@@ -70,11 +70,12 @@ class AnalyseUtils:  # 计算分析页面要用到的数据
     def degree_distribution(self):
         mylist = self.ig.vs.degree(type="in")
         myset = set(mylist)  #myset是另外一个列表，里面的内容是mylist里面的无重复项
-        matrix = [[0 for col in range(2)] for row in range(len(myset))]
+        matrix = [[0 for col in range(3)] for row in range(len(myset))]
         m = 0
         for item in myset:
           matrix[m][0] = item
           matrix[m][1] = round(mylist.count(item)/float(len(mylist)), 3)
+          matrix[m][2] = mylist.count(item)
           m += 1
         return matrix
 

@@ -6,7 +6,7 @@
     <title>度分布</title>
 
     <!-- ECharts.js -->
-    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js?_v_=undefined"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='lib/echarts-all-3.js') }}"></script>
     <!--<script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>-->
     <!--<script src="http://echarts.baidu.com/echarts2/doc/example/theme/macarons.js"></script>-->
     <script src="{{ url_for('static',filename='lib/echarts-theme-macarons.js') }}"></script>
@@ -46,13 +46,12 @@
                     params = params[0];
                     if (params.value.length > 1) {
                         return params.value[0] + '度 <br/>'
-                           + params.seriesName + ': '
-                           + params.value[1] + '';
+                           + params.seriesName + ': ' + params.value[1] + '<br/>'
+                           + '人数: ' + params.value[2] + "/" + {{ nodes|length }};
                     }
                     else {
                         return params.name + ' <br/>'
-                           + params.seriesName + ' : '
-                           + params.value + '';
+                           + params.seriesName + ' : ' + params.value + '';
                     }
                 },
                 axisPointer:{
@@ -112,7 +111,7 @@
                     type:'bar',
                     barWidth: 8,
                     data: [{% for item in matrix %}
-                                [{{ item[0] }}, {{ item[1] }}]
+                                [{{ item[0] }}, {{ item[1] }}, {{ item[2] }}]
                                 {% if not loop.last %},{% endif %}
                             {% endfor %}
                     ],
@@ -365,7 +364,7 @@
 
     <!-- 和弦图 -->
     <div id="chordContainer" style="height: 100%; min-height: 700px;"></div>
-    <script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='lib/echarts2-all.js') }}"></script>
     <script type="text/javascript">
         var myChart3 = echarts.init(document.getElementById('chordContainer'), "macarons");
         option3 = {

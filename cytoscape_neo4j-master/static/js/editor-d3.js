@@ -73,6 +73,7 @@ var width  = 1200,
 var img_w = 60,
     img_h = 70,
     radius = 25;	//圆形半径
+    link_width = 10;     //编辑界面线粗
 
 
 var svg = d3.select('#app-body .graph')
@@ -223,13 +224,13 @@ function restart() {
   path.classed('selected', function(d) { return d === selected_link; })//判断是否选中边，选中了就执行selected样式
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
     .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
-    .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? "12px" : Math.sqrt(d.weight) + "px"; });
+    .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? link_width + "px" : Math.sqrt(d.weight) + "px"; });
 
   // 添加新link
   path.enter().append('svg:path')
     .attr('class', 'link')
     .attr("id", function(d) { return "edgepath" + d.id; })
-    .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? "12px" : Math.sqrt(d.weight) + "px"; })
+    .attr("stroke-width", function(d) { return appMode == MODE.EDIT ? link_width + "px" : Math.sqrt(d.weight) + "px"; })
     .classed('selected', function(d) { return d === selected_link; })
     .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
     .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })

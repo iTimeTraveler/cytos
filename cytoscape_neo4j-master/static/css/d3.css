@@ -6,7 +6,7 @@
 }
 
 .linetext {
-    font-size: 10px ;
+    font-size: 13px ;
     font-family: "Microsoft Yahei", Arial, Helvetica, sans-serif;
     fill:#22cc00;
     fill-opacity:0.0;
@@ -30,14 +30,14 @@
 }
 
 .edgetext {
-    font-size: 1px ;
-    font-family: "Microsoft Yahei", Arial, Helvetica, sans-serif;
+    font-size: 15px ;
+    font-family: "楷体", "Microsoft Yahei", Arial, Helvetica, sans-serif;
     fill: #999;
     opacity: 0.6;
 }
 
 .name {
-    font-size: 5px ;
+    font-size: 13px ;
     font-family: Helvetica, "楷体", "Microsoft Yahei", Arial, sans-serif;
     fill:#333333;
 }

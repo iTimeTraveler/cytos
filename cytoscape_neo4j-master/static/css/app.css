@@ -230,6 +230,7 @@ text.shadow {
 text.id {
   text-anchor: middle;
   font-weight: bold;
+  font-size: 15px;
 }
 
 #whatis h2 {
