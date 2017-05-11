@@ -32,18 +32,18 @@ class AnalyseUtils:  # 计算分析页面要用到的数据
         graph.run(clear_query)
 
         # pageRank
-        pageRank = self.ig.pagerank()     # 通过ig里面的PageRank（）函数直接计算出PageRank值，表示权重？
-        pgvs = []
-        for p in zip(self.ig.vs, pageRank):
-            pgvs.append({"id": p[0]["name"], "pg": p[1]})
-        write_clusters_query = '''
-        UNWIND {nodes} AS n ''' + '''
-        MATCH (c:{}'''.format(self.projectId) + ''')
-        WHERE ID(c) = n.id
-        SET c.pagerank = n.pg
-        '''
-        # 把PageRank属性加入每个的节点的信息库里
-        graph.run(write_clusters_query, nodes=pgvs)
+        # pageRank = self.ig.pagerank()     # 通过ig里面的PageRank（）函数直接计算出PageRank值，表示权重？
+        # pgvs = []
+        # for p in zip(self.ig.vs, pageRank):
+        #     pgvs.append({"id": p[0]["name"], "pg": p[1]})
+        # write_clusters_query = '''
+        # UNWIND {nodes} AS n ''' + '''
+        # MATCH (c:{}'''.format(self.projectId) + ''')
+        # WHERE ID(c) = n.id
+        # SET c.pagerank = n.pg
+        # '''
+        # # 把PageRank属性加入每个的节点的信息库里
+        # graph.run(write_clusters_query, nodes=pgvs)
 
         # 随机游走的社区发现算法
         # 通过IGraph.community_walktra（）函数计算
